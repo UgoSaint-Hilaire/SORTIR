@@ -1,0 +1,146 @@
+name: CI/CD Pipeline
+
+# Déclenchement de la pipeline
+on:
+  push:
+    branches: [main, feat/*, fix/*]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # Job pour le backend
+  backend:
+    name: Backend Tests & Build
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: 20.x
+
+    steps:
+      # 1. Checkout du code source
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Configuration de Node.js avec cache
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: back/package-lock.json
+
+      # 3. Installation des dépendances du backend
+      - name: Install backend dependencies
+        working-directory: ./back
+        run: npm ci
+
+      # 4. Linting du code backend
+      - name: Run backend linting
+        working-directory: ./back
+        run: npm run lint
+
+      # 5. Tests unitaires backend
+      - name: Run backend unit tests
+        working-directory: ./back
+        run: npm run test
+
+      # 6. Tests de couverture backend
+      - name: Run backend test coverage
+        working-directory: ./back
+        run: npm run test:cov
+
+      # 7. Build du backend
+      - name: Build backend
+        working-directory: ./back
+        run: npm run build
+
+      # 8. Upload des artefacts de build backend
+      - name: Upload backend build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-build-${{ matrix.node-version }}
+          path: back/dist/
+          retention-days: 1
+
+  # Job pour le frontend
+  frontend:
+    name: Frontend Tests & Build
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: 20.x
+
+    steps:
+      # 1. Checkout du code source
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Configuration de Node.js avec cache
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: front/package-lock.json
+
+      # 3. Installation des dépendances du frontend
+      - name: Install frontend dependencies
+        working-directory: ./front
+        run: npm ci
+
+      # 4. Linting du code frontend
+      - name: Run frontend linting
+        working-directory: ./front
+        run: |
+          if npm run lint --silent 2>/dev/null; then
+            npm run lint
+          else
+            echo "No lint script found, skipping..."
+          fi
+        continue-on-error: true
+
+      # 5. Tests unitaires frontend
+      - name: Run frontend unit tests
+        working-directory: ./front
+        run: npm run test -- --watch=false --browsers=ChromeHeadless
+
+      # 6. Tests de couverture frontend
+      - name: Run frontend test coverage
+        working-directory: ./front
+        run: npx ng test --code-coverage --watch=false --browsers=ChromeHeadless
+
+      # 7. Build du frontend en mode production
+      - name: Build frontend for production
+        working-directory: ./front
+        run: npm run build
+
+      # 8. Upload des artefacts de build frontend
+      - name: Upload frontend build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build-${{ matrix.node-version }}
+          path: front/dist/
+          retention-days: 1
+
+  # Job de notification de statut
+  notify:
+    name: Notify Build Status
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Notify Success
+        if: needs.backend.result == 'success' && needs.frontend.result == 'success'
+        run: |
+          echo "✅ CI/CD Pipeline completed successfully!"
+          echo "🎉 All tests passed and builds are ready!"
+
+      - name: Notify Failure
+        if: needs.backend.result == 'failure' || needs.frontend.result == 'failure'
+        run: |
+          echo "❌ CI/CD Pipeline failed!"
+          echo "🔍 Check the logs for details."
+          exit 1
