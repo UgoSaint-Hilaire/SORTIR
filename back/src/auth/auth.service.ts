@@ -5,30 +5,33 @@ import {
   InternalServerErrorException,
   BadRequestException,
 } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 import { UsersService } from "../users/users.service";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
 import { User } from "src/users/user.entity";
+import { BlacklistedToken } from "./blacklisted-token.entity";
 
 @Injectable()
 export class AuthService {
-  private blacklistedTokens: Set<string> = new Set();
-
   constructor(
     private usersService: UsersService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    @InjectRepository(BlacklistedToken)
+    private blacklistedTokenRepository: Repository<BlacklistedToken>
   ) {}
 
-  async validateUser(email: string, password: string): Promise<any> {
+  async validateUser(email: string, password: string): Promise<Omit<User, 'password'> | null> {
     try {
-      const user = await this.usersService.findOne(email);
+      const user = await this.usersService.findByEmail(email);
       if (!user) {
-        throw new UnauthorizedException("Invalid credentials");
+        return null;
       }
 
       const isPasswordValid = await bcrypt.compare(password, user.password);
       if (!isPasswordValid) {
-        throw new UnauthorizedException("Invalid credentials");
+        return null;
       }
 
       const { password: _, ...result } = user;
@@ -58,16 +61,21 @@ export class AuthService {
     }
   }
 
-  async register(email: string, password: string) {
+  async register(username: string, email: string, password: string) {
     try {
-      const existingUser = await this.usersService.findOne(email);
-      if (existingUser) {
-        throw new ConflictException("User already exists");
+      const existingUserByEmail = await this.usersService.findByEmail(email);
+      if (existingUserByEmail) {
+        throw new ConflictException("User with this email already exists");
+      }
+
+      const existingUserByUsername = await this.usersService.findByUsername(username);
+      if (existingUserByUsername) {
+        throw new ConflictException("User with this username already exists");
       }
 
       const saltOrRounds = 10;
       const hashedPassword = await bcrypt.hash(password, saltOrRounds);
-      const user = await this.usersService.create(email, hashedPassword);
+      const user = await this.usersService.create(username, email, hashedPassword);
 
       if (!user) {
         throw new InternalServerErrorException("User creation failed");
@@ -83,10 +91,11 @@ export class AuthService {
     }
   }
 
-  async logout(user: any, token: string) {
+  async logout(user: Omit<User, 'password'>, token: string) {
     try {
       if (token) {
-        this.blacklistedTokens.add(token);
+        const blacklistedToken = this.blacklistedTokenRepository.create({ token });
+        await this.blacklistedTokenRepository.save(blacklistedToken);
       }
       return { message: "Logout successful" };
     } catch (error) {
@@ -94,7 +103,10 @@ export class AuthService {
     }
   }
 
-  isTokenBlacklisted(token: string): boolean {
-    return this.blacklistedTokens.has(token);
+  async isTokenBlacklisted(token: string): Promise<boolean> {
+    const blacklistedToken = await this.blacklistedTokenRepository.findOne({ 
+      where: { token } 
+    });
+    return !!blacklistedToken;
   }
 }

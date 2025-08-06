@@ -1,7 +1,24 @@
 # Changelog de SORTIR 2
 
-Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
-et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
+## [0.3.0] - 06.08.2025
+
+### Ajouté
+
+- Intégration drivers PostgreSQL et TypeORM
+- Ajout du champ username pour les users
+- Sauvegarde des tokens blacklistés en bdd
+
+### Modifié
+
+- Données RAM → PostgreSQL
+- UsersService avec un pattern Repository
+
+### Technique
+
+- Dépendances : @nestjs/typeorm, typeorm, pg
+- Configuration TypeORM avec synchronization
+- Entités User et BlacklistedToken
+- Méthodes findByEmail et findByUsername
 
 ## [0.2.0] - 06.08.2025
 

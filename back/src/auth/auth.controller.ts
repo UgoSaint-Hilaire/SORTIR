@@ -41,12 +41,20 @@ export class AuthController {
 
   @Post("register")
   @HttpCode(HttpStatus.CREATED)
-  async register(@Body() body: { email: string; password: string }) {
-    if (!body.email || !body.password) {
+  async register(@Body() body: { username: string; email: string; password: string }) {
+    if (!body.username || !body.email || !body.password) {
       throw new BadRequestException({
         success: false,
         code: 400,
-        message: "Email and password are required"
+        message: "Username, email and password are required"
+      });
+    }
+
+    if (body.username.length < 3) {
+      throw new BadRequestException({
+        success: false,
+        code: 400,
+        message: "Username must be at least 3 characters long"
       });
     }
 
@@ -67,7 +75,7 @@ export class AuthController {
     }
 
     try {
-      const result = await this.authService.register(body.email, body.password);
+      const result = await this.authService.register(body.username, body.email, body.password);
       return {
         success: true,
         code: 201,
