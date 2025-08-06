@@ -1,49 +1,45 @@
-# Changelog de SORTIR 2
+# Changelog Global - SORTIR
 
-Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
-et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
+## Notes
 
-## [0.1.0] - 31.08.2025
+Pour les changements spécifiques à chaque composant :
+
+- Voir [Backend CHANGELOG](./back/CHANGELOG.md)
+- Voir [Frontend CHANGELOG](./front/CHANGELOG.md)
+
+---
+
+## [0.2.0] - [back 0.2.0/0.3.0] - 06.08.2025
 
 ### Ajouté
 
-- Configuration initiale
+- Mise en place sécurisée de l'api d'authentification : register, login, logout
+- Mise en place sécurisée de l'api d'affichage profil user
+
+### Technique
+
+- Mise en place de la bdd locale psql
+- Mise en place de la persistence des users en base
+- Mise en place de la persistence des tokens blacklistés jwt en base
+
+---
+
+## [0.1.0] - 31.07.2025
+
+### Ajouté
+
+- Configuration initiale du projet
 - Frontend Angular 20 avec routing et structure basique
-- Backend NestJS avec API REST basqiue
+- Backend NestJS avec API REST basique
 - Configuration TypeScript pour frontend et backend
 - Tests unitaires avec Jest (backend) et Jasmine/Karma (frontend)
-- Workflows GitHub Actions pour le CI
+- Workflows GitHub Actions pour le CI/CD
 - Workflow automatisation des tests de sécurité
-- Début de la documentation technique
 
 ### Technique
 
 - Synchronisation des versions à 0.1.0 entre frontend et backend
-- Configuration de ESLint
-- Configuration de Prettier
+- Configuration ESLint et Prettier
+- Structure monorepo avec front/ et back/
 
 ---
-
-## MEMO : FORMATS POUR LA SUITE
-
-### [Version] - Date
-
-#### Ajouté
-
-- Nouvelles fonctionnalités
-
-#### Modifié
-
-- Modifications de fonctionnalités existantes
-
-#### Supprimé
-
-- Fonctionnalités supprimées
-
-#### Fix
-
-- Corrections de bugs
-
-#### Technique
-
-- Précisions technique
