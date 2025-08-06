@@ -9,7 +9,7 @@ Pour les changements spécifiques à chaque composant :
 
 ---
 
-## [0.2.0] - [back 0.2.0/0.3.0] - 06.08.2025
+## [0.2.0] - [back 0.2.0/0.3.0/0.3.1] - 06.08.2025
 
 ### Ajouté
 
@@ -21,6 +21,8 @@ Pour les changements spécifiques à chaque composant :
 - Mise en place de la bdd locale psql
 - Mise en place de la persistence des users en base
 - Mise en place de la persistence des tokens blacklistés jwt en base
+- Ajouts des tests module users
+- Ajouts des tests module auth
 
 ---
 
