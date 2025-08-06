@@ -1,5 +1,12 @@
 # Changelog Backend - SORTIR
 
+## [0.3.1] - 07.08.2025
+
+### Technique
+
+- Ajout tests module auth
+- Ajout tests module users
+
 ## [0.3.0] - 06.08.2025
 
 ### Ajouté
