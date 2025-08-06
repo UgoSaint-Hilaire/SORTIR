@@ -1,6 +1,6 @@
 {
   "name": "back",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "",
   "author": "",
   "private": true,
@@ -75,7 +75,11 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s"
+      "**/*.(t|j)s",
+      "!main.ts",
+      "!**/*.spec.ts",
+      "!**/*.d.ts",
+      "!**/*.module.ts"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
