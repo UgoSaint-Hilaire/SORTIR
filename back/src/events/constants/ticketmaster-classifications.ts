@@ -144,7 +144,7 @@ export const ARTS_THEATRE_GENRES = {
 // }
 
 // Permet de retrouver le nom du segment (catégorie) selon l'id envoyé
-export function getClassificationName(name: string): string | null {
+export function getClassificationName(id: string): string | null {
   const everyClassifications = [
     ...Object.values(TICKETMASTER_SEGMENTS),
     // ...Object.values(MISCELLANEOUS_GENRES),
@@ -153,6 +153,5 @@ export function getClassificationName(name: string): string | null {
     ...Object.values(ARTS_THEATRE_GENRES),
   ];
 
-  const nameMod = name.toLowerCase();
-  return everyClassifications.find((item) => item.name.toLowerCase() === nameMod)?.id ?? null;
+  return everyClassifications.find((item) => item.id === id)?.name ?? null;
 }

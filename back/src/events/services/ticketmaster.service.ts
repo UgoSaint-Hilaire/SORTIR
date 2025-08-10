@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { getClassificationName } from "./ticketmaster-classifications";
+import { getClassificationName } from "../constants/ticketmaster-classifications";
 import { EventsService } from "./events.service";
 
 /**

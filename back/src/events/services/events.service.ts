@@ -1,7 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { Event, EventDocument } from "./schemas/event.schema";
+import { Event, EventDocument } from "../schemas/event.schema";
 
 /**
  * Service qui gère les événements dans la base de données MongoDB

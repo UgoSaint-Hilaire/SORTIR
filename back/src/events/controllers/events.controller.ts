@@ -9,9 +9,9 @@ import {
   BadRequestException,
   InternalServerErrorException,
 } from "@nestjs/common";
-import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { TicketmasterService } from "./ticketmaster.service";
-import { EventsService } from "./events.service";
+import { JwtAuthGuard } from "../../auth/jwt-auth.guard";
+import { TicketmasterService } from "../services/ticketmaster.service";
+import { EventsService } from "../services/events.service";
 
 /**
  * Contrôleur pour récupérer les événements depuis l'api de Ticketmaster

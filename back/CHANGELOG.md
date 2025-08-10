@@ -1,5 +1,16 @@
 # Changelog Backend - SORTIR
 
+## [0.4.1] - 11.08.2025
+
+### Ajouté
+
+- Ajout tests module events
+
+### Modifié
+
+- Réorganisation de l'architecture du module Events avec des sous-dossiers
+- Correction du bug getClassificationName qui retournait undefined pour segment et genre
+
 ## [0.4.0] - 11.08.2025
 
 ### Ajouté
