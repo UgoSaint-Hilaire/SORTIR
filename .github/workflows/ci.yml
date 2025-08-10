@@ -28,7 +28,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-          cache-dependency-path: back/package-lock.json
+          cache-dependency-path: ./back/package-lock.json
 
       # 3. Installation des dépendances du backend
       - name: Install backend dependencies
@@ -83,7 +83,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-          cache-dependency-path: front/package-lock.json
+          cache-dependency-path: ./front/package-lock.json
 
       # 3. Installation des dépendances du frontend
       - name: Install frontend dependencies
