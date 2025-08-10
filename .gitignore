@@ -8,7 +8,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-package-lock.json
 yarn.lock
 
 # === ENVIRONNEMENT ===
@@ -67,59 +66,14 @@ jspm_packages/
 .cache
 .parcel-cache
 
-# === NEXT.JS ===
-.next
 
-# === NUXT.JS ===
-.nuxt
-
-# === VUEPRESS ===
-.vuepress/dist
-
-# === SERVERLESS ===
-.serverless/
-
-# === FUSEBOX CACHE ===
-.fusebox/
-
-# === DYNAMODB LOCAL ===
-.dynamodb/
-
-# === TERN PORT FILE ===
-.tern-port
-
-# === STORES ===
-.DS_Store
-Thumbs.db
 
 # === IDE / EDITORS ===
 .vscode/
-.idea/
-*.swp
-*.swo
-*~
 
 # === TEMPORARY FILES ===
 *.tmp
 *.temp
-
-# === OS GENERATED ===
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# === TESTING ===
-.nyc_output/
-
-# === MICROBUNDLE CACHE ===
-.rpt2_cache/
-.rts2_cache_cjs/
-.rts2_cache_es/
-.rts2_cache_umd/
 
 # === OPTIONAL ESLINT CACHE ===
 .eslintcache
@@ -127,13 +81,6 @@ Thumbs.db
 # === OPTIONAL STYLELINT CACHE ===
 .stylelintcache
 
-# === DOCUMENTATION ===
-docs/
-
-# === TERRAFORM ===
-*.tfstate
-*.tfstate.*
-.terraform/
 
 # === DOCKER ===
 docker-compose.override.yml
