@@ -9,6 +9,20 @@ Pour les changements spécifiques à chaque composant :
 
 ---
 
+## [0.3.0] - [back 0.4.0/0.4.1] - 11.08.2025
+
+### Ajouté
+
+- Mise en place du module de rapatriation des événements ticketmaster
+- Stockage des événements dans la base MongoDB
+
+### Technique
+
+- Mise en place de la bdd locale MongoDB
+- Ajouts des tests module events
+
+---
+
 ## [0.2.0] - [back 0.2.0/0.3.0/0.3.1] - 06.08.2025
 
 ### Ajouté
