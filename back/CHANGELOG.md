@@ -1,5 +1,20 @@
 # Changelog Backend - SORTIR
 
+## [0.4.0] - 11.08.2025
+
+### Ajouté
+
+- Module Events pour la gestion des événements
+- Service TicketmasterService pour récupérer les évents depuis l'API externe
+- Service EventsService pour gérer la persistance avec MongoDB
+- Controller avec endpoints /events/sync et /events/stats
+
+### Technique
+
+- Séparation des responsabilités dans deux services : API externe vs persistance
+- Gestion des erreurs avec BadRequestException et InternalServerErrorException
+- Intégration MongoDB avec Mongoose pour stockage événements
+
 ## [0.3.1] - 07.08.2025
 
 ### Technique
