@@ -43,10 +43,22 @@ jobs:
           npm audit --audit-level=moderate
           echo "✅ Frontend security audit completed"
 
+      # Vérifications supplémentaires de sécurité
+      - name: Check for sensitive files
+        run: |
+          echo "🔍 Checking for sensitive files..."
+          # Vérifier qu'il n'y a pas de fichiers sensibles commités
+          if find . -name "*.env*" -not -path "./node_modules/*" | grep -v ".env.example" | head -1; then
+            echo "WARNING: .env files detected in repository"
+            exit 1
+          fi
+          echo "No sensitive files detected"
+
       # Résumé final
       - name: Security Summary
         run: |
-          echo "🔒 Security audit completed successfully!"
-          echo "✅ Backend dependencies checked"
-          echo "✅ Frontend dependencies checked"
-          echo "📊 No high/critical vulnerabilities found"
+          echo "Security audit completed successfully!"
+          echo "Backend dependencies checked"
+          echo "Frontend dependencies checked"
+          echo "Sensitive files check passed"
+          echo "Repository security validated"
