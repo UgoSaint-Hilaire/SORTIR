@@ -1,12 +1,13 @@
 name: Security Audit
 
 # Déclenchement TOUS les lundis à 9h00 UTC
-# et sur chaque push vers le main
+# et sur chaque push vers le main, feat/*, fix/* - et merge sur main
+
 on:
   schedule:
     - cron: "0 9 * * 1"
   push:
-    branches: [main]
+    branches: [main, feat/*, fix/*]
   pull_request:
     branches: [main]
 
