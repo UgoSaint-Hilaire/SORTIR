@@ -155,3 +155,16 @@ export function getClassificationName(id: string): string | null {
 
   return everyClassifications.find((item) => item.id === id)?.name ?? null;
 }
+
+// Permet de retrouver l'ID selon le nom
+export function getClassificationId(name: string): string | null {
+  const everyClassifications = [
+    ...Object.values(TICKETMASTER_SEGMENTS),
+    // ...Object.values(MISCELLANEOUS_GENRES),
+    ...Object.values(SPORTS_GENRES),
+    ...Object.values(MUSIQUE_GENRES),
+    ...Object.values(ARTS_THEATRE_GENRES),
+  ];
+
+  return everyClassifications.find((item) => item.name === name)?.id ?? null;
+}

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { AuthService } from "./auth.service";
-import { UsersService } from "../users/users.service";
+import { UsersService } from "../users/services/users.service";
 import { JwtService } from "@nestjs/jwt";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { BlacklistedToken } from "./blacklisted-token.entity";

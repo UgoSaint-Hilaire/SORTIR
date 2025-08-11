@@ -1,5 +1,22 @@
 # Changelog Backend - SORTIR
 
+## [0.5.0] - 12.08.2025
+
+### Ajouté
+
+- Gestion des préférences utilisateurs (POST, GET, DELETE)
+- Tests unitaires pour les fonctionnalités de préférences
+
+### Modifié
+
+- Modification du profil utilisateur : affichage des préférences
+- Réorganisation de l'architecture du module Users avec des sous-dossiers
+
+### Technique
+
+- Nouvelle table PSQL 'user_preferences' avec clés étrangères
+- Nouvelle entité UserPreference qui fait le lien avec la DB
+
 ## [0.4.1] - 11.08.2025
 
 ### Ajouté
