@@ -9,6 +9,19 @@ Pour les changements spécifiques à chaque composant :
 
 ---
 
+## [0.4.0] - [back 0.5.0] - 11.08.2025
+
+### Ajouté
+
+- Gestion des préférences des types d'événements des utilisateurs
+
+### Technique
+
+- Mise en place d'une nouvelle table 'user_preferences'
+- Enrichissement des tests du module Users
+
+---
+
 ## [0.3.0] - [back 0.4.0/0.4.1] - 11.08.2025
 
 ### Ajouté
