@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { EventsModule } from './events/events.module';
+import { FeedModule } from './feed/feed.module';
 
 @Module({
   imports: [
@@ -38,7 +39,8 @@ import { EventsModule } from './events/events.module';
     }),
     AuthModule, 
     UsersModule,
-    EventsModule
+    EventsModule,
+    FeedModule
   ],
   controllers: [AppController],
   providers: [AppService],

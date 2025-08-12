@@ -1,5 +1,20 @@
 # Changelog Backend - SORTIR
 
+## [0.6.0] - 12.08.2025
+
+### Ajouté
+
+- Module Feed pour les recommandations d'événements
+- Feed cutomisé selon les préférences utilisateurs
+- Feed de découverte pour explorer de nouveaux genres (pour l'instant pas utilisé)
+- Feed public pour les utilisateurs non connectés
+- Filtrage par genres et segments dans le feed complet
+- Tests unitaires pour le les fonctionnalités du Feed
+
+### Technique
+
+- DTOs pour requêtes et réponses standardisées
+
 ## [0.5.0] - 12.08.2025
 
 ### Ajouté
