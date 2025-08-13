@@ -9,6 +9,25 @@ Pour les changements spécifiques à chaque composant :
 
 ---
 
+## [0.6.0] - [back 0.7.0] - 14.08.2025
+
+### Ajouté
+
+- Mise en place d'un job récupérant les événements ticketmaster sur J60 périodiquement (tous les jours à 6h)
+- Visualisation des logs possible depuis une route dédiée pour les admins
+
+---
+
+## [0.5.0] - [back 0.6.0] - 12.08.2025
+
+### Ajouté
+
+- Ajout d'un feed customisé selon les préférences des utilisateurs connectés
+- Ajout d'un feed basique pour les utilisateurs pas connectés
+- Système de filtres mis en place
+
+---
+
 ## [0.4.0] - [back 0.5.0] - 11.08.2025
 
 ### Ajouté
