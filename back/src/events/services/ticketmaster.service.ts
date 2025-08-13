@@ -32,7 +32,8 @@ export class TicketmasterService {
   private async getEventsBySegmentInFrance(
     segmentId: string,
     segmentName: string,
-    numberOfDays: number
+    numberOfDays: number,
+    startDate?: Date
   ): Promise<{
     events: any[];
     saveStats: { saved: number; updated: number; errors: number };
@@ -50,7 +51,7 @@ export class TicketmasterService {
 
     for (let dayOffset = 0; dayOffset < numberOfDays; dayOffset++) {
       try {
-        const currentDate = new Date();
+        const currentDate = startDate ? new Date(startDate) : new Date();
         currentDate.setDate(currentDate.getDate() + dayOffset);
         const nextDate = new Date(currentDate);
         nextDate.setDate(nextDate.getDate() + 1);
@@ -174,7 +175,7 @@ export class TicketmasterService {
    * Récupère et sauvegarde TOUS les événements français (Musique, Sports, Arts & Théâtre)
    * Fait la recherche jour par jour pour éviter les limites de l'API
    */
-  async fetchAllFrenchEvents(totalDays: number = 60): Promise<{
+  async fetchAllFrenchEvents(totalDays: number = 60, startDate?: Date): Promise<{
     events: any[];
     saveStats: { saved: number; updated: number; errors: number };
   }> {
@@ -194,7 +195,7 @@ export class TicketmasterService {
     for (const segment of segments) {
       this.logger.log(`!!! Début de la recherche ${segment.name}...`);
 
-      const result = await this.getEventsBySegmentInFrance(segment.id, segment.name, totalDays);
+      const result = await this.getEventsBySegmentInFrance(segment.id, segment.name, totalDays, startDate);
 
       // Enregistrer les stats par catégorie
       categoryStats[segment.name] = {

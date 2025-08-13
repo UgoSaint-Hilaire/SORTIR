@@ -1,5 +1,17 @@
 # Changelog Backend - SORTIR
 
+## [0.7.0] - 13.08.2025
+
+### Ajouté
+
+- CRON Jobs permettant la synchronisation événements J+60 à 6h tous les jours
+- Service de logs dédié avec fichier `logs/scheduler.log`
+- Tests unitaires ajoutés au module events
+
+### Technique
+
+- Dépendance @nestjs/schedule pour gestion cron jobs
+
 ## [0.6.0] - 12.08.2025
 
 ### Ajouté
