@@ -1,13 +1,11 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { MongooseModule } from '@nestjs/mongoose';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-import { EventsModule } from './events/events.module';
-import { FeedModule } from './feed/feed.module';
+import { Module } from "@nestjs/common";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { MongooseModule } from "@nestjs/mongoose";
+import { AuthModule } from "./auth/auth.module";
+import { UsersModule } from "./users/users.module";
+import { EventsModule } from "./events/events.module";
+import { FeedModule } from "./feed/feed.module";
 
 @Module({
   imports: [
@@ -18,12 +16,12 @@ import { FeedModule } from './feed/feed.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get('DB_HOST'),
-        port: +configService.get<number>('DB_PORT'),
-        username: configService.get('DB_USERNAME'),
-        password: configService.get('DB_PASSWORD'),
-        database: configService.get('DB_DATABASE'),
+        type: "postgres",
+        host: configService.get("DB_HOST"),
+        port: +configService.get<number>("DB_PORT"),
+        username: configService.get("DB_USERNAME"),
+        password: configService.get("DB_PASSWORD"),
+        database: configService.get("DB_DATABASE"),
         autoLoadEntities: true,
         synchronize: true,
       }),
@@ -33,16 +31,14 @@ import { FeedModule } from './feed/feed.module';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
-        uri: configService.get('MONGODB_URI') || 'mongodb://localhost:27017/sortir-events',
+        uri: configService.get("MONGODB_URI") || "mongodb://localhost:27017/sortir-events",
       }),
       inject: [ConfigService],
     }),
-    AuthModule, 
+    AuthModule,
     UsersModule,
     EventsModule,
-    FeedModule
+    FeedModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
