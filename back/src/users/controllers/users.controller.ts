@@ -13,7 +13,7 @@ import {
   ParseIntPipe,
 } from "@nestjs/common";
 import { UsersService } from "../services/users.service";
-import { JwtAuthGuard } from "../../auth/jwt-auth.guard";
+import { JwtAuthGuard } from "../../auth/guards/jwt-auth.guard";
 
 @Controller("users")
 export class UsersController {

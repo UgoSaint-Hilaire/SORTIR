@@ -7,11 +7,11 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { UsersService } from "../users/services/users.service";
+import { UsersService } from "../../users/services/users.service";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
-import { User } from "../users/entities/user.entity";
-import { BlacklistedToken } from "./blacklisted-token.entity";
+import { User } from "../../users/entities/user.entity";
+import { BlacklistedToken } from "../entities/blacklisted-token.entity";
 
 @Injectable()
 export class AuthService {

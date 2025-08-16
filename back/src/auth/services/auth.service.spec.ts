@@ -1,9 +1,9 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { AuthService } from "./auth.service";
-import { UsersService } from "../users/services/users.service";
+import { UsersService } from "../../users/services/users.service";
 import { JwtService } from "@nestjs/jwt";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { BlacklistedToken } from "./blacklisted-token.entity";
+import { BlacklistedToken } from "../entities/blacklisted-token.entity";
 import { Repository } from "typeorm";
 import { ConflictException, InternalServerErrorException } from "@nestjs/common";
 import * as bcrypt from "bcrypt";

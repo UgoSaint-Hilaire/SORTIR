@@ -9,9 +9,9 @@ import {
   BadRequestException,
   ConflictException 
 } from "@nestjs/common";
-import { AuthService } from "./auth.service";
-import { LocalAuthGuard } from "./local-auth.guard";
-import { JwtAuthGuard } from "./jwt-auth.guard";
+import { AuthService } from "../services/auth.service";
+import { LocalAuthGuard } from "../guards/local-auth.guard";
+import { JwtAuthGuard } from "../guards/jwt-auth.guard";
 
 @Controller("auth")
 export class AuthController {
