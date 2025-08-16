@@ -9,6 +9,17 @@ Pour les changements spécifiques à chaque composant :
 
 ---
 
+## [0.7.0] - [back 0.8.0] - 16.08.2025
+
+### Ajouté
+
+- Gestion des rôles des utilisateurs
+- Sécurisation de certaines routes pour permettre un accès aux administrateurs seulement
+
+---
+
+---
+
 ## [0.6.0] - [back 0.7.0] - 14.08.2025
 
 ### Ajouté
