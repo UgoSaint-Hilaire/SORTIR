@@ -10,6 +10,8 @@ import {
   InternalServerErrorException,
 } from "@nestjs/common";
 import { JwtAuthGuard } from "../../auth/jwt-auth.guard";
+import { RolesGuard } from "../../auth/roles.guard";
+import { Roles } from "../../auth/roles.decorator";
 import { TicketmasterService } from "../services/ticketmaster.service";
 import { EventsService } from "../services/events.service";
 
@@ -18,7 +20,7 @@ import { EventsService } from "../services/events.service";
  * Toutes les routes nécessitent une authentification JWT
  */
 @Controller("events")
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class EventsController {
   constructor(
     private readonly ticketmasterService: TicketmasterService,
@@ -27,6 +29,7 @@ export class EventsController {
 
   @Post("sync")
   @HttpCode(HttpStatus.OK)
+  @Roles('admin')
   async syncAllEvents(@Body() body: { days?: number }) {
     try {
       const days = body.days || 30;

@@ -22,8 +22,17 @@ export class UsersService {
     return this.usersRepository.findOne({ where: { username } });
   }
 
+  async findById(id: number): Promise<User | null> {
+    return this.usersRepository.findOne({ where: { id } });
+  }
+
   async create(username: string, email: string, password: string): Promise<User> {
-    const user = this.usersRepository.create({ username, email, password });
+    const user = this.usersRepository.create({ 
+      username, 
+      email, 
+      password,
+      role: 'member'
+    });
     return this.usersRepository.save(user);
   }
 
