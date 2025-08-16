@@ -1,5 +1,29 @@
 # Changelog Backend - SORTIR
 
+---
+
+## [0.8.0] - [back 0.8.0] - 16.08.2025
+
+### Ajouté
+
+- Nouvelle gestion des rôles utilisateurs (membre et admin)
+- Mise en place de guards protégeant des routes critiques admin :
+  - `/scheduler/manual-schedule`
+  - `/scheduler/logs`
+  - `/events/sync`
+
+### Modifié
+
+- Réorganisation des ficheirs du module d'authenfication
+
+### Technique
+
+- Changement du port par défaut (anciennement 3000, maintenant 3001)
+- Nouveau champs role dans la table users
+- Migration de la base de données pour ajouter le champ role
+- Mise à jour de certains test pour qu'ils prennent en compte le champs role
+- Suppression des tests pas utiles sur les strategies de Passport
+
 ## [0.7.0] - 13.08.2025
 
 ### Ajouté
