@@ -1,7 +1,3 @@
-# Exclusions spécifiques demandées
-CI-CD-Documentation.md
-.claude/
-
 # === NODE.JS ===
 node_modules/
 npm-debug.log*
@@ -22,51 +18,13 @@ dist/
 build/
 out/
 coverage/
-*.tgz
-*.tar.gz
 
 # === ANGULAR SPECIFIC ===
 .angular/
 .sass-cache/
 
-# === NESTJS SPECIFIC ===
-.nest/
-
 # === TYPESCRIPT ===
 *.tsbuildinfo
-
-# === LOGS ===
-logs/
-*.log
-pids/
-*.pid
-*.seed
-*.pid.lock
-
-# === RUNTIME DATA ===
-pids/
-*.pid
-*.seed
-*.pid.lock
-
-# === DEPENDENCIES ===
-jspm_packages/
-
-# === OPTIONAL NPM CACHE ===
-.npm
-.eslintcache
-
-# === OPTIONAL YARN INTEGRITY ===
-.yarn-integrity
-
-# === DOTENV ENVIRONMENT VARIABLES ===
-.env.test
-
-# === PARCEL-BUNDLER CACHE ===
-.cache
-.parcel-cache
-
-
 
 # === IDE / EDITORS ===
 .vscode/
@@ -74,13 +32,7 @@ jspm_packages/
 # === TEMPORARY FILES ===
 *.tmp
 *.temp
+.claude/settings.local.json
 
-# === OPTIONAL ESLINT CACHE ===
-.eslintcache
-
-# === OPTIONAL STYLELINT CACHE ===
-.stylelintcache
-
-
-# === DOCKER ===
-docker-compose.override.yml
+# === MES NOTES ===
+notes.md
