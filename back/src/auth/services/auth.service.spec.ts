@@ -225,6 +225,7 @@ describe("AuthService", () => {
         id: 1,
         username: "testuser",
         email: "test@test.com",
+        role: "member",
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -246,6 +247,7 @@ describe("AuthService", () => {
         id: 1,
         username: "testuser",
         email: "test@test.com",
+        role: "member",
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -261,6 +263,7 @@ describe("AuthService", () => {
         id: 1,
         username: "testuser",
         email: "test@test.com",
+        role: "member",
         createdAt: new Date(),
         updatedAt: new Date(),
       };

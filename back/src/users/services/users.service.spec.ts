@@ -69,6 +69,7 @@ describe("UsersService", () => {
         username: "testuser",
         email: "test@test.com",
         password: "hashedPassword",
+        role: "member",
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -97,6 +98,7 @@ describe("UsersService", () => {
         username: "testuser",
         email: "test@test.com",
         password: "hashedPassword",
+        role: "member",
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -124,6 +126,7 @@ describe("UsersService", () => {
         username: "testuser",
         email: "test@test.com",
         password: "hashedPassword",
+        role: "member",
       };
       const mockUser = {
         id: 1,
@@ -141,6 +144,7 @@ describe("UsersService", () => {
         username: "testuser",
         email: "test@test.com",
         password: "hashedPassword",
+        role: "member",
       });
       expect(repository.save).toHaveBeenCalledWith(mockUser);
       expect(result).toEqual(mockUser);
@@ -154,6 +158,7 @@ describe("UsersService", () => {
         username: "testuser",
         email: "test@test.com",
         password: "hashedPassword",
+        role: "member",
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -169,6 +174,7 @@ describe("UsersService", () => {
         id: 1,
         username: "testuser",
         email: "test@test.com",
+        role: "member",
         createdAt: mockUser.createdAt,
         updatedAt: mockUser.updatedAt,
         userPreferences: ["Rock", "Jazz"],
