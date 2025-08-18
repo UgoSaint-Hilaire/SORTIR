@@ -1,12 +1,20 @@
-<div class="container mx-auto px-4 py-8 max-w-6xl">
-  <div class="mb-6">
-    <nav class="flex gap-4 mb-4">
-      <button class="btn btn-primary">Tous</button>
-      <button class="btn btn-ghost">Musique</button>
-      <button class="btn btn-ghost">Sports</button>
-      <button class="btn btn-ghost">Arts & Théâtre</button>
-    </nav>
-  </div>
+<div class="container mx-auto px-4 py-8 max-w-5xl">
+  <div class="tabs tabs-lift tabs-lg">
+    <input
+      type="radio"
+      name="my_tabs_3"
+      class="tab"
+      aria-label="Tab 1"
+      checked="checked"
+    />
+    <div class="tab-content bg-base-100 border-base-300 p-6">
+      <app-public-feed></app-public-feed>
+    </div>
 
-  <app-public-feed></app-public-feed>
+    <input type="radio" name="my_tabs_3" class="tab" aria-label="Tab 2" />
+    <div class="tab-content bg-base-100 border-base-300 p-6">Tab content 2</div>
+
+    <input type="radio" name="my_tabs_3" class="tab" aria-label="Tab 3" />
+    <div class="tab-content bg-base-100 border-base-300 p-6">Tab content 3</div>
+  </div>
 </div>
