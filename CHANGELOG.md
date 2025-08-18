@@ -9,7 +9,7 @@ Pour les changements spécifiques à chaque composant :
 
 ---
 
-## [0.7.0] - [back 0.8.0] - 16.08.2025
+## [0.7.0] - [back 0.8.0 | front 0.2.0] - 16.08.2025
 
 ### Ajouté
 
