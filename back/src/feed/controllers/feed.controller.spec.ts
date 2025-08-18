@@ -333,6 +333,7 @@ describe("FeedPublicController", () => {
         success: false,
         code: HttpStatus.INTERNAL_SERVER_ERROR,
         message: "Erreur lors de la récupération du feed public",
+        error: "Database connection failed",
       });
     });
 

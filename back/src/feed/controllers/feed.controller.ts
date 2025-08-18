@@ -97,10 +97,12 @@ export class FeedPublicController {
         data: feed,
       };
     } catch (error) {
+      console.error('Erreur dans getPublicFeed:', error);
       return {
         success: false,
         code: HttpStatus.INTERNAL_SERVER_ERROR,
         message: "Erreur lors de la récupération du feed public",
+        error: error.message,
       };
     }
   }

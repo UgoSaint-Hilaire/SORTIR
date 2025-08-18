@@ -2,7 +2,23 @@
 
 ---
 
-## [0.8.0] - [back 0.8.0] - 16.08.2025
+## [0.9.0] - 18.08.2025
+
+### Ajouté
+
+- Configuration des CORS (demandera surement un refacto)
+
+### Modifié
+
+- Refacto de la logique de la méthode getPublicFeed
+
+### Technique
+
+- getPublicFeed retourne maintenant 150 événements sans pagination
+- mise en place de $sample
+- suppression de la méthode shuffleArray
+
+## [0.8.0] - 16.08.2025
 
 ### Ajouté
 

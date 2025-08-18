@@ -193,10 +193,6 @@ export class FeedService {
   }
 
   async getPublicFeed(query: GetFeedDto): Promise<FeedResponseDto> {
-    const page = query.page || 1;
-    const limit = query.limit || 30;
-    const skip = (page - 1) * limit;
-
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, "0");
@@ -207,7 +203,7 @@ export class FeedService {
     const minutes = String(now.getMinutes()).padStart(2, "0");
     const currentTimeString = `${hours}:${minutes}:00`;
 
-    const dateFilter = {
+    const matchFilter = {
       $or: [
         { "date.localDate": { $gt: currentDateString } },
         {
@@ -215,60 +211,32 @@ export class FeedService {
           "date.localTime": { $gte: currentTimeString },
         },
       ],
-    };
-
-    const baseFilter = {
-      ...dateFilter,
       status: { $ne: "cancelled" },
     };
 
-    const mainSegments = ["Sports", "Musique", "Arts & Théâtre"];
-    const eventsPerSegment = Math.floor(limit / mainSegments.length);
-    const remainder = limit % mainSegments.length;
+    const actualTotal = await this.eventModel.countDocuments(matchFilter);
 
-    let allEvents = [];
+    // Toujours récupérer 150 événements (ou le max dispo)
+    const sampleSize = Math.min(150, actualTotal);
 
-    for (let i = 0; i < mainSegments.length; i++) {
-      const segment = mainSegments[i];
-      const segmentLimit = eventsPerSegment + (i < remainder ? 1 : 0);
+    let events = [];
 
-      const segmentEvents = await this.eventModel
-        .find({
-          ...baseFilter,
-          segment: segment,
-        })
-        .sort({ syncedAt: -1, "date.localDate": 1, "date.localTime": 1 }) // Récents en premier, puis par date
-        .limit(segmentLimit)
-        .exec();
+    if (sampleSize > 0) {
+      const pipeline = [{ $match: matchFilter }, { $sample: { size: sampleSize } }];
 
-      allEvents = [...allEvents, ...segmentEvents];
+      events = await this.eventModel.aggregate(pipeline).exec();
     }
-
-    const shuffledEvents = this.shuffleArray(allEvents);
-
-    const paginatedEvents = shuffledEvents.slice(skip, skip + limit);
-
-    const total = await this.eventModel.countDocuments(baseFilter);
 
     return {
-      events: paginatedEvents,
+      events,
       pagination: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-        hasNext: page < Math.ceil(total / limit),
-        hasPrev: page > 1,
+        total: events.length,
+        page: 1,
+        limit: events.length,
+        totalPages: 1,
+        hasNext: false,
+        hasPrev: false,
       },
     };
-  }
-
-  private shuffleArray(array: any[]): any[] {
-    const shuffled = [...array];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
   }
 }
