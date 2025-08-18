@@ -2,10 +2,19 @@
 
 ## Notes
 
-Pour les changements spécifiques à chaque composant :
+Pour avoir un apperçu plus spécifiques des changements, consulter les docs de chaque composant :
 
 - Voir [Backend CHANGELOG](./back/CHANGELOG.md)
-- Voir [Frontend CHANGELOG](./front/CHANGELOG.md)
+- Voir [Frontend CHANGELOG](./front/CHANGELOG.md)\*
+
+---
+
+## [0.8.0] - [back 0.10.0 | front 0.3.0] - 18.08.2025
+
+### Ajouté
+
+- Interface feed fonctionnelle
+- Navbar et authentification fonctionnelle
 
 ---
 
