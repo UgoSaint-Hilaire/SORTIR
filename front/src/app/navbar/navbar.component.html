@@ -1,0 +1,246 @@
+<!-- Desktop Sidebar -->
+<div class="w-16 bg-base-100 shadow-lg fixed left-4 top-8 z-10 flex-col hidden lg:flex rounded-box border border-base-300">
+  <!-- Logo/Brand -->
+  <div class="p-3 border-b border-base-300 flex justify-center">
+    <div class="tooltip tooltip-right" data-tip="Sortir">
+      <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+        <span class="text-primary-content font-bold text-sm">S</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu principal -->
+  <div class="p-1">
+    <ul class="menu w-full p-0">
+      <li>
+        <div class="tooltip tooltip-right" data-tip="Accueil">
+          <a class="btn btn-ghost btn-sm w-full flex items-center justify-center p-2 min-h-[2.5rem]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+          </a>
+        </div>
+      </li>
+      <li>
+        <div class="tooltip tooltip-right" data-tip="Événements">
+          <a class="btn btn-ghost btn-sm w-full flex items-center justify-center p-2 min-h-[2.5rem]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </a>
+        </div>
+      </li>
+      <li>
+        <div class="tooltip tooltip-right" data-tip="À propos">
+          <a class="btn btn-ghost btn-sm w-full flex items-center justify-center p-2 min-h-[2.5rem]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </a>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Section utilisateur en bas -->
+  <div class="p-2 border-t border-base-300">
+    <!-- Non connecté -->
+    @if (!(isAuthenticated$ | async)) {
+    <div class="w-full">
+      <div class="tooltip tooltip-right" data-tip="Se connecter">
+        <button class="btn btn-primary btn-sm w-full flex items-center justify-center p-2 min-h-[2.5rem]" (click)="openAuthModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    }
+
+    <!-- Connecté -->
+    @if (isAuthenticated$ | async) {
+    <div class="w-full">
+      <!-- Avatar utilisateur -->
+      <div class="tooltip tooltip-right" [attr.data-tip]="(currentUser$ | async)?.username">
+        <div class="flex justify-center p-2">
+          <div class="avatar placeholder">
+            <div class="bg-neutral text-neutral-content rounded-full w-10">
+              <span class="text-sm">{{ (currentUser$ | async)?.username?.charAt(0)?.toUpperCase() }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Menu utilisateur -->
+      <ul class="menu w-full p-0">
+        <li>
+          <div class="tooltip tooltip-right" data-tip="Profil">
+            <a class="btn btn-ghost btn-sm w-full flex items-center justify-center p-2 min-h-[2.5rem]">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </a>
+          </div>
+        </li>
+        <li>
+          <div class="tooltip tooltip-right" data-tip="Paramètres">
+            <a class="btn btn-ghost btn-sm w-full flex items-center justify-center p-2 min-h-[2.5rem]">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </a>
+          </div>
+        </li>
+        <li>
+          <div class="tooltip tooltip-right" data-tip="Déconnexion">
+            <a class="btn btn-ghost btn-sm w-full flex items-center justify-center p-2 min-h-[2.5rem] text-error hover:bg-error hover:text-error-content" (click)="logout()">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </a>
+          </div>
+        </li>
+      </ul>
+    </div>
+    }
+  </div>
+</div>
+
+<!-- Mobile Navigation -->
+<div class="lg:hidden">
+  <!-- Bouton hamburger pour mobile -->
+  <button 
+    class="btn btn-square btn-ghost fixed top-4 left-4 z-30"
+    (click)="toggleMobileSidebar()">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  </button>
+
+  <!-- Overlay -->
+  @if (isMobileSidebarOpen) {
+  <div 
+    class="fixed inset-0 bg-black bg-opacity-50 z-20"
+    (click)="toggleMobileSidebar()">
+  </div>
+  }
+
+  <!-- Mobile Sidebar -->
+  <div 
+    class="h-screen w-64 bg-base-100 shadow-lg fixed left-0 top-0 z-25 flex flex-col transform transition-transform duration-300"
+    [class.translate-x-0]="isMobileSidebarOpen"
+    [class.-translate-x-full]="!isMobileSidebarOpen">
+    
+    <!-- Logo/Brand avec bouton fermer -->
+    <div class="p-6 border-b border-base-300 flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-primary">Sortir</h1>
+      <button class="btn btn-sm btn-ghost" (click)="toggleMobileSidebar()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Menu principal mobile -->
+    <div class="flex-1 p-4">
+      <ul class="menu w-full">
+        <li class="menu-title">
+          <span>Navigation</span>
+        </li>
+        <li>
+          <a class="flex items-center gap-3" (click)="toggleMobileSidebar()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            <span>Accueil</span>
+          </a>
+        </li>
+        <li>
+          <a class="flex items-center gap-3" (click)="toggleMobileSidebar()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <span>Événements</span>
+          </a>
+        </li>
+        <li>
+          <a class="flex items-center gap-3" (click)="toggleMobileSidebar()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>À propos</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Section utilisateur mobile -->
+    <div class="p-4 border-t border-base-300">
+      <!-- Non connecté -->
+      @if (!(isAuthenticated$ | async)) {
+      <div class="w-full">
+        <button class="btn btn-primary w-full" (click)="openAuthModal(); toggleMobileSidebar()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+          </svg>
+          Se connecter
+        </button>
+      </div>
+      }
+
+      <!-- Connecté -->
+      @if (isAuthenticated$ | async) {
+      <div class="w-full">
+        <!-- Profil utilisateur -->
+        <div class="flex items-center gap-3 p-3 rounded-lg bg-base-200 mb-3">
+          <div class="avatar placeholder">
+            <div class="bg-neutral text-neutral-content rounded-full w-10">
+              <span class="text-sm">{{ (currentUser$ | async)?.username?.charAt(0)?.toUpperCase() }}</span>
+            </div>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium truncate">{{ (currentUser$ | async)?.username }}</p>
+            <p class="text-xs text-base-content/70 truncate">{{ (currentUser$ | async)?.email }}</p>
+          </div>
+        </div>
+
+        <!-- Menu utilisateur -->
+        <ul class="menu w-full p-0">
+          <li>
+            <a class="flex items-center gap-3" (click)="toggleMobileSidebar()">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              <span>Profil</span>
+            </a>
+          </li>
+          <li>
+            <a class="flex items-center gap-3" (click)="toggleMobileSidebar()">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <span>Paramètres</span>
+            </a>
+          </li>
+          <li>
+            <a class="flex items-center gap-3 text-error" (click)="logout(); toggleMobileSidebar()">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              <span>Déconnexion</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      }
+    </div>
+  </div>
+</div>
+
+<!-- Modal d'authentification -->
+<app-auth 
+  [isOpen]="isAuthModalOpen" 
+  (close)="closeAuthModal()">
+</app-auth>

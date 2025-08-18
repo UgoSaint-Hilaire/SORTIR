@@ -2,6 +2,26 @@
 
 ---
 
+## [0.3.0] - 18.08.2025
+
+### Ajouté
+
+- Interface d'authentification
+- Composant AuthComponent pour connexion et inscription avec modal responsive
+- Support des tokens JWT avec validation d'expiration auto
+- Navbar verticale compacte avec icônes et tooltips (à refacto)
+
+### Modifié
+
+- Enrichissement du module auth avec gestion des préférences
+- Réorganisation de l'architecture : déplacement du module auth vers core/auth
+- Tests unitaires complets pour les services et composants d'authentification
+
+### Technique
+
+- Persistance localStorage pour les jwt
+- Validation JWT côté client avec vérification d'expiration
+
 ## [0.2.0] - 18.08.2025
 
 ### Ajouté

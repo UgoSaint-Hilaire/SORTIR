@@ -53,8 +53,21 @@ export class AuthService {
 
       const access_token = this.jwtService.sign(payload);
 
+      // Récupérer les préférences utilisateur
+      const preferences = await this.usersService.getUserPreferences(user.id);
+      const userPreferences = preferences.map((preference) => ({
+        id: preference.id,
+        classificationId: preference.classificationId,
+        classificationName: preference.classificationName,
+        createdAt: preference.createdAt,
+        updatedAt: preference.updatedAt,
+      }));
+
+      const { password: _, ...userResult } = user;
       return {
+        user: userResult,
         access_token,
+        preferences: userPreferences,
       };
     } catch (error) {
       throw new InternalServerErrorException("Token generation failed");
@@ -81,8 +94,30 @@ export class AuthService {
         throw new InternalServerErrorException("User creation failed");
       }
 
-      const { password: _, ...result } = user;
-      return result;
+      // Générer le token JWT pour le nouvel utilisateur
+      const payload = {
+        sub: user.id,
+        iat: Math.floor(Date.now() / 1000),
+      };
+
+      const access_token = this.jwtService.sign(payload);
+
+      // Récupérer les préférences utilisateur (vides pour un nouvel utilisateur)
+      const preferences = await this.usersService.getUserPreferences(user.id);
+      const userPreferences = preferences.map((preference) => ({
+        id: preference.id,
+        classificationId: preference.classificationId,
+        classificationName: preference.classificationName,
+        createdAt: preference.createdAt,
+        updatedAt: preference.updatedAt,
+      }));
+
+      const { password: _, ...userResult } = user;
+      return {
+        user: userResult,
+        access_token,
+        preferences: userPreferences,
+      };
     } catch (error) {
       if (error instanceof ConflictException || error instanceof InternalServerErrorException) {
         throw error;

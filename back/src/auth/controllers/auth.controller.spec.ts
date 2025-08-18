@@ -35,7 +35,10 @@ describe("AuthController", () => {
   describe("login", () => {
     it("should return success response with access token", async () => {
       const mockUser = { id: 1, username: "testuser", email: "test@test.com" };
-      const mockResult = { access_token: "jwt-token" };
+      const mockResult = { 
+        user: { id: 1, username: "testuser", email: "test@test.com" },
+        access_token: "jwt-token" 
+      };
       mockAuthService.login.mockResolvedValue(mockResult);
 
       const req = { user: mockUser };
@@ -46,6 +49,7 @@ describe("AuthController", () => {
         success: true,
         code: 200,
         message: "Login successful",
+        user: { id: 1, username: "testuser", email: "test@test.com" },
         access_token: "jwt-token",
       });
     });
@@ -68,7 +72,11 @@ describe("AuthController", () => {
         email: "test@test.com",
         password: "password123",
       };
-      mockAuthService.register.mockResolvedValue({ id: 1, username: "testuser", email: "test@test.com" });
+      const mockResult = {
+        user: { id: 1, username: "testuser", email: "test@test.com" },
+        access_token: "mockAccessToken"
+      };
+      mockAuthService.register.mockResolvedValue(mockResult);
 
       const result = await controller.register(body);
 
@@ -77,6 +85,8 @@ describe("AuthController", () => {
         success: true,
         code: 201,
         message: "User registered successfully",
+        user: { id: 1, username: "testuser", email: "test@test.com" },
+        access_token: "mockAccessToken"
       });
     });
 

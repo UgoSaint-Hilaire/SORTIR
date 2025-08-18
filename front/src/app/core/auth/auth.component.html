@@ -1,0 +1,186 @@
+<div class="modal" [class.modal-open]="isOpen">
+  <div class="modal-box max-w-md">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-2xl font-bold">
+        {{ isLoginMode ? "Connexion" : "Inscription" }}
+      </h3>
+      <button class="btn btn-sm btn-circle btn-ghost" (click)="closeModal()">
+        ✕
+      </button>
+    </div>
+
+    <div class="tabs tabs-boxed mb-6">
+      <button
+        class="tab"
+        [class.tab-active]="isLoginMode"
+        (click)="isLoginMode = true; clearMessages(); resetForms()"
+      >
+        Connexion
+      </button>
+      <button
+        class="tab"
+        [class.tab-active]="!isLoginMode"
+        (click)="isLoginMode = false; clearMessages(); resetForms()"
+      >
+        Inscription
+      </button>
+    </div>
+
+    @if (errorMessage) {
+    <div class="alert alert-error mb-4">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="stroke-current shrink-0 h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+      <span>{{ errorMessage }}</span>
+    </div>
+    } @if (successMessage) {
+    <div class="alert alert-success mb-4">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="stroke-current shrink-0 h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+      <span>{{ successMessage }}</span>
+    </div>
+    } @if (isLoginMode) {
+    <form (ngSubmit)="onSubmit()" class="space-y-4">
+      <div class="form-control w-full">
+        <label class="label">
+          <span class="label-text">Email</span>
+        </label>
+        <input
+          type="email"
+          placeholder="Votre email"
+          class="input input-bordered w-full"
+          [(ngModel)]="loginForm.email"
+          name="email"
+          required
+          [disabled]="isLoading"
+        />
+      </div>
+
+      <div class="form-control w-full">
+        <label class="label">
+          <span class="label-text">Mot de passe</span>
+        </label>
+        <input
+          type="password"
+          placeholder="Votre mot de passe"
+          class="input input-bordered w-full"
+          [(ngModel)]="loginForm.password"
+          name="password"
+          required
+          [disabled]="isLoading"
+        />
+      </div>
+
+      <div class="form-control mt-6">
+        <button
+          type="submit"
+          class="btn btn-primary w-full"
+          [disabled]="isLoading"
+        >
+          @if (isLoading) {
+          <span class="loading loading-spinner"></span>
+          }
+          {{ isLoading ? "Connexion..." : "Se connecter" }}
+        </button>
+      </div>
+    </form>
+    } @if (!isLoginMode) {
+    <form (ngSubmit)="onSubmit()" class="space-y-4">
+      <div class="form-control w-full">
+        <label class="label">
+          <span class="label-text">Nom d'utilisateur</span>
+        </label>
+        <input
+          type="text"
+          placeholder="Votre nom d'utilisateur"
+          class="input input-bordered w-full"
+          [(ngModel)]="registerForm.username"
+          name="username"
+          required
+          [disabled]="isLoading"
+        />
+      </div>
+
+      <div class="form-control w-full">
+        <label class="label">
+          <span class="label-text">Email</span>
+        </label>
+        <input
+          type="email"
+          placeholder="Votre email"
+          class="input input-bordered w-full"
+          [(ngModel)]="registerForm.email"
+          name="email"
+          required
+          [disabled]="isLoading"
+        />
+      </div>
+
+      <div class="form-control w-full">
+        <label class="label">
+          <span class="label-text">Mot de passe</span>
+        </label>
+        <input
+          type="password"
+          placeholder="Votre mot de passe (min. 6 caractères)"
+          class="input input-bordered w-full"
+          [(ngModel)]="registerForm.password"
+          name="password"
+          required
+          [disabled]="isLoading"
+        />
+      </div>
+
+      <div class="form-control mt-6">
+        <button
+          type="submit"
+          class="btn btn-primary w-full"
+          [disabled]="isLoading"
+        >
+          @if (isLoading) {
+          <span class="loading loading-spinner"></span>
+          }
+          {{ isLoading ? "Inscription..." : "S'inscrire" }}
+        </button>
+      </div>
+    </form>
+    }
+
+    <div class="text-center mt-6">
+      <button
+        class="link link-primary"
+        (click)="toggleMode()"
+        [disabled]="isLoading"
+      >
+        {{
+          isLoginMode
+            ? "Pas encore de compte ? S'inscrire"
+            : "Déjà un compte ? Se connecter"
+        }}
+      </button>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" (click)="closeModal()"></div>
+</div>

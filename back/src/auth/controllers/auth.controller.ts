@@ -79,7 +79,8 @@ export class AuthController {
       return {
         success: true,
         code: 201,
-        message: "User registered successfully"
+        message: "User registered successfully",
+        ...result
       };
     } catch (error) {
       if (error.status === 409) {

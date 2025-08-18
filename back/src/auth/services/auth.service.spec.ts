@@ -21,6 +21,7 @@ describe("AuthService", () => {
     findByEmail: jest.fn(),
     findByUsername: jest.fn(),
     create: jest.fn(),
+    getUserPreferences: jest.fn(),
   };
 
   const mockJwtService = {
@@ -127,7 +128,18 @@ describe("AuthService", () => {
         email: "test@test.com",
       };
       const mockToken = "jwt-token";
+      const mockPreferences = [
+        {
+          id: 1,
+          classificationId: "KZFzniwnSyZfZ7v7nJ",
+          classificationName: "Music",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ];
+      
       mockJwtService.sign.mockReturnValue(mockToken);
+      mockUsersService.getUserPreferences.mockResolvedValue(mockPreferences);
 
       const result = await service.login(mockUser as any);
 
@@ -135,8 +147,23 @@ describe("AuthService", () => {
         sub: 1,
         iat: expect.any(Number),
       });
+      expect(usersService.getUserPreferences).toHaveBeenCalledWith(1);
       expect(result).toEqual({
+        user: {
+          id: 1,
+          username: "testuser",
+          email: "test@test.com",
+        },
         access_token: mockToken,
+        preferences: [
+          {
+            id: 1,
+            classificationId: "KZFzniwnSyZfZ7v7nJ",
+            classificationName: "Music",
+            createdAt: expect.any(Date),
+            updatedAt: expect.any(Date),
+          },
+        ],
       });
     });
 
@@ -146,6 +173,7 @@ describe("AuthService", () => {
         username: "testuser",
         email: "test@test.com",
       };
+      mockUsersService.getUserPreferences.mockResolvedValue([]);
       mockJwtService.sign.mockImplementation(() => {
         throw new Error("Token generation failed");
       });
@@ -166,6 +194,8 @@ describe("AuthService", () => {
       mockUsersService.findByUsername.mockResolvedValue(null);
       bcryptMock.hash.mockResolvedValue("hashedPassword" as never);
       mockUsersService.create.mockResolvedValue(mockUser);
+      mockUsersService.getUserPreferences.mockResolvedValue([]);
+      mockJwtService.sign.mockReturnValue("mockAccessToken");
 
       const result = await service.register("testuser", "test@test.com", "password123");
 
@@ -173,10 +203,16 @@ describe("AuthService", () => {
       expect(usersService.findByUsername).toHaveBeenCalledWith("testuser");
       expect(bcrypt.hash).toHaveBeenCalledWith("password123", 10);
       expect(usersService.create).toHaveBeenCalledWith("testuser", "test@test.com", "hashedPassword");
+      expect(usersService.getUserPreferences).toHaveBeenCalledWith(1);
+      expect(jwtService.sign).toHaveBeenCalled();
       expect(result).toEqual({
-        id: 1,
-        username: "testuser",
-        email: "test@test.com",
+        user: {
+          id: 1,
+          username: "testuser",
+          email: "test@test.com",
+        },
+        access_token: "mockAccessToken",
+        preferences: []
       });
     });
 

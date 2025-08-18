@@ -2,6 +2,17 @@
 
 ---
 
+## [0.10.0] - 18.08.2025
+
+### Ajouté
+
+- Intégration des préférences users dans la réponse d'authentification
+
+### Modifié
+
+- Service AuthService mis à jour pour inclure les préférences utilisateur lors de la connexion et l'inscription
+- Tests unitaires mis à jour pour valider l'intégration des préférences
+
 ## [0.9.0] - 18.08.2025
 
 ### Ajouté
