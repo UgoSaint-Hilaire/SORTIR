@@ -1,0 +1,77 @@
+@if (loading() && events().length === 0) {
+  <div class="flex justify-center items-center min-h-[400px]">
+    <div class="text-center">
+      <span class="loading loading-spinner loading-lg text-primary"></span>
+      <p class="mt-4 text-base-content/70">Chargement des événements...</p>
+    </div>
+  </div>
+  } @if (error()) {
+  <div class="alert alert-error mb-6">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="stroke-current shrink-0 h-6 w-6"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
+    <span>{{ error() }}</span>
+    <button (click)="refresh()" class="btn btn-sm">Réessayer</button>
+  </div>
+  } @if (!loading() && events().length === 0 && !error()) {
+  <div class="card bg-base-200 shadow-xl">
+    <div class="card-body text-center py-16">
+      <div class="flex justify-center mb-4">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-24 h-24 text-base-content/30"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
+          />
+        </svg>
+      </div>
+      <h2 class="card-title justify-center text-2xl mb-2">
+        Aucun événement disponible
+      </h2>
+      <p class="text-base-content/70">
+        Il n'y a pas encore d'événements à afficher.
+      </p>
+      <div class="card-actions justify-center mt-6">
+        <button class="btn btn-primary">Créer un événement</button>
+      </div>
+    </div>
+  </div>
+  }
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    @for (event of events(); track event._id || event.ticketmasterId; let i =
+    $index) {
+    <app-event-card [event]="event"></app-event-card>
+    }
+  </div>
+
+  @if (isLoadingMore()) {
+  <div class="flex justify-center mt-8 py-4">
+    <span class="loading loading-spinner loading-lg text-primary"></span>
+    <span class="ml-3 text-base-content/70"
+      >Chargement d'autres événements...</span
+    >
+  </div>
+  } @if (events().length > 0 && currentPage() === totalPages() && totalPages() >
+  1) {
+  <div class="text-center mt-8 text-base-content/70">
+    <p>Vous avez vu tous les événements disponibles</p>
+  </div>
+  }

@@ -18,8 +18,6 @@ Pour les changements spécifiques à chaque composant :
 
 ---
 
----
-
 ## [0.6.0] - [back 0.7.0] - 14.08.2025
 
 ### Ajouté
