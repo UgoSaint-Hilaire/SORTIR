@@ -1,0 +1,56 @@
+<div class="max-w-4xl mx-auto">
+  @if (error) {
+  <div class="alert alert-error mb-4">
+    <span>{{ error }}</span>
+  </div>
+  } @if (success) {
+  <div class="alert alert-success mb-4">
+    <span>{{ success }}</span>
+  </div>
+  }
+
+  <div class="mb-6">
+    @if (categoryGroups.length === 0) {
+    <p class="text-gray-500 text-center py-8">Aucune catégorie disponible</p>
+    } @else { @for (group of categoryGroups; track group.segment) {
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold text-primary mb-4">{{ group.title }}</h3>
+      <div class="flex flex-wrap gap-3">
+        @for (category of group.categories; track category.id) {
+        <label
+          class="cursor-pointer flex items-center space-x-2 px-3 py-2 border rounded-lg hover:bg-base-200 transition-colors"
+          [class.border-primary]="isSelected(category.name)"
+          [class.border-base-300]="!isSelected(category.name)"
+        >
+          <input
+            type="checkbox"
+            class="checkbox checkbox-primary checkbox-sm"
+            [checked]="isSelected(category.name)"
+            (change)="togglePreference(category.name)"
+          />
+          <span class="text-sm font-medium">{{ category.name }}</span>
+        </label>
+        }
+      </div>
+    </div>
+    } }
+  </div>
+
+  <div class="flex justify-center gap-4 mt-8">
+    <button class="btn btn-outline" (click)="clearSelection()">
+      Réinitialiser
+    </button>
+    <button
+      class="btn btn-primary"
+      (click)="savePreferences()"
+      [disabled]="loading || selectedPreferences.size === 0"
+      [class.loading]="loading"
+    >
+      @if (loading) {
+      <span>Enregistrement...</span>
+      } @else {
+      <span>Enregistrer ({{ selectedCount }})</span>
+      }
+    </button>
+  </div>
+</div>

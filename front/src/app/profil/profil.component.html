@@ -1,0 +1,208 @@
+@if (user) {
+<div class="container mx-auto pt-25 py-8 max-w-5xl px-4">
+  <!-- Version Desktop -->
+  <div class="hidden lg:flex gap-20">
+    <div class="flex flex-1/4 rounded-t-lg">
+      <div class="w-full">
+        <div class="flex flex-col">
+          <div class="avatar mb-4">
+            <div
+              class="w-52 rounded-xl bg-white flex items-center justify-center shadow-lg"
+            >
+              <div class="text-4xl font-bold text-primary">
+                {{ user.username.charAt(0).toUpperCase() }}
+              </div>
+            </div>
+          </div>
+          <div class="text-left">
+            <h1 class="text-2xl font-bold mb-3">{{ user.username }}</h1>
+            <div class="badge badge-info badge-lg">
+              {{ user.role || "Membre" }}
+            </div>
+          </div>
+        </div>
+        <div class="mt-20">
+          <div class="flex flex-col justify-start">
+            <button
+              class="text-left p-0 m-0 bg-transparent border-none cursor-pointer hover:text-primary"
+              [class.text-primary]="activeTab === 'profil'"
+              [class.font-bold]="activeTab === 'profil'"
+              [class.text-base-content]="activeTab !== 'profil'"
+              (click)="setActiveTab('profil')"
+            >
+              Profil
+            </button>
+            <button
+              class="text-left p-0 m-0 bg-transparent border-none mt-2"
+              disabled
+            >
+              <span class="text-base-content/50"
+                >Historique (bientôt disponible)</span
+              >
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-3/4 mt-6 relative z-10">
+      @if (activeTab === 'profil') {
+      <div class="space-y-6 w-full">
+        <div class="card bg-base-100">
+          <div class="card-body">
+            <h3 class="card-title">Informations personnelles</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="font-semibold text-base-content/70"
+                  >Nom d'utilisateur</label
+                >
+                <p>{{ user.username }}</p>
+              </div>
+              <div>
+                <label class="font-semibold text-base-content/70">Rôle</label>
+                <p>{{ user.role || "Membre" }}</p>
+              </div>
+              <div>
+                <label class="font-semibold text-base-content/70"
+                  >Membre depuis</label
+                >
+                <p>{{ user.createdAt | date : "dd/MM/yyyy" }}</p>
+              </div>
+              <div>
+                <label class="font-semibold text-base-content/70"
+                  >Préférences</label
+                >
+                <p>{{ preferenceCount }} catégorie(s) configurée(s)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card bg-base-100">
+          <div class="card-body">
+            <h3 class="card-title">Actions</h3>
+            <div class="flex flex-wrap gap-4">
+              <button
+                class="btn btn-primary btn-sm"
+                (click)="togglePreferences()"
+              >
+                @if (showPreferences) { Masquer préférences } @else { Gérer
+                préférences }
+              </button>
+            </div>
+          </div>
+        </div>
+
+        @if (showPreferences) {
+        <div class="card bg-base-100">
+          <div class="card-body">
+            <app-preferences-selector></app-preferences-selector>
+          </div>
+        </div>
+        }
+      </div>
+      } @else if (activeTab === 'historique') {
+      <div class="card bg-base-100">
+        <div class="card-body">
+          <h3 class="card-title">Historique des activités</h3>
+          <div class="text-center py-8">
+            <div class="text-6xl mb-4">📊</div>
+            <p class="text-base-content mb-4">
+              L'historique de vos activités sera bientôt disponible.
+            </p>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Version Mobile -->
+  <div class="lg:hidden">
+    <div class="text-center mb-6">
+      <div class="avatar mb-4">
+        <div
+          class="w-40 rounded-xl bg-white flex items-center justify-center shadow-lg mx-auto"
+        >
+          <div class="text-2xl font-bold text-primary">
+            {{ user.username.charAt(0).toUpperCase() }}
+          </div>
+        </div>
+      </div>
+      <h1 class="text-xl font-bold mb-3">{{ user.username }}</h1>
+      <div class="badge badge-info">
+        {{ user.role || "Membre" }}
+      </div>
+    </div>
+
+    <!-- Navigation mobile -->
+    <div class="tabs tabs-boxed mb-6 w-full">
+      <button
+        class="tab flex-1"
+        [class.tab-active]="activeTab === 'profil'"
+        (click)="setActiveTab('profil')"
+      >
+        Profil
+      </button>
+      <button class="tab flex-1 opacity-50" disabled>Historique</button>
+    </div>
+
+    @if (activeTab === 'profil') {
+    <div class="space-y-4">
+      <div class="card bg-base-100">
+        <div class="card-body">
+          <h3 class="card-title text-lg">Informations personnelles</h3>
+          <div class="space-y-3">
+            <div>
+              <label class="font-semibold text-base-content/70 text-sm"
+                >Nom d'utilisateur</label
+              >
+              <p>{{ user.username }}</p>
+            </div>
+            <div>
+              <label class="font-semibold text-base-content/70 text-sm"
+                >Rôle</label
+              >
+              <p>{{ user.role || "Membre" }}</p>
+            </div>
+            <div>
+              <label class="font-semibold text-base-content/70 text-sm"
+                >Membre depuis</label
+              >
+              <p>{{ user.createdAt | date : "dd/MM/yyyy" }}</p>
+            </div>
+            <div>
+              <label class="font-semibold text-base-content/70 text-sm"
+                >Préférences</label
+              >
+              <p>{{ preferenceCount }} catégorie(s) configurée(s)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card bg-base-100">
+        <div class="card-body">
+          <h3 class="card-title text-lg">Actions</h3>
+          <button
+            class="btn btn-primary btn-sm w-full"
+            (click)="togglePreferences()"
+          >
+            @if (showPreferences) { Masquer préférences } @else { Gérer
+            préférences }
+          </button>
+        </div>
+      </div>
+
+      @if (showPreferences) {
+      <div class="card bg-base-100">
+        <div class="card-body">
+          <app-preferences-selector></app-preferences-selector>
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
+</div>
+}

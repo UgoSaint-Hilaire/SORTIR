@@ -2,6 +2,16 @@
 
 ---
 
+## [0.4.0] - 18.08.2025
+
+### Ajouté
+
+- Interface profil utilisateur
+- Selecteur de gestion des préférences
+- Mise en place d'un guard d'authentification
+
+---
+
 ## [0.3.0] - 18.08.2025
 
 ### Ajouté

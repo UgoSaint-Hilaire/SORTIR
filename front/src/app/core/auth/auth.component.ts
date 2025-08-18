@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService, LoginRequest, RegisterRequest } from './auth.service';
 
 @Component({
@@ -29,7 +30,7 @@ export class AuthComponent {
     password: ''
   };
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   toggleMode(): void {
     this.isLoginMode = !this.isLoginMode;
@@ -96,9 +97,10 @@ export class AuthComponent {
       next: (response) => {
         this.isLoading = false;
         if (response.success) {
-          this.successMessage = 'Inscription réussie ! Vous êtes maintenant connecté.';
+          this.successMessage = 'Inscription réussie ! Redirection vers vos préférences...';
           setTimeout(() => {
             this.closeModal();
+            this.router.navigate(['/profile']);
           }, 1000);
         } else {
           this.errorMessage = response.message || 'Erreur lors de l\'inscription';

@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { AuthService, User } from '../core/services';
 import { AuthComponent } from '../core/auth/auth.component';
 import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
-  imports: [CommonModule, AuthComponent],
+  imports: [CommonModule, RouterModule, AuthComponent],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
 })
