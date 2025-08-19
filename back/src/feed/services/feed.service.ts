@@ -30,10 +30,6 @@ export class FeedService {
 
     const preferredGenres = userPreferences.map((pref) => pref.classificationName);
 
-    const page = query.page || 1;
-    const limit = query.limit || 20;
-    const skip = (page - 1) * limit;
-
     // Utilise la date ET l'heure locale cette fois
     const now = new Date();
     const year = now.getFullYear();
@@ -57,23 +53,29 @@ export class FeedService {
       status: { $ne: "cancelled" },
     };
 
-    const [events, total] = await Promise.all([
-      this.eventModel.find(filter).sort({ "date.localDate": 1, "date.localTime": 1 }).skip(skip).limit(limit).exec(),
-      this.eventModel.countDocuments(filter),
-    ]);
+    const total = await this.eventModel.countDocuments(filter);
 
     // Si aucun événement ne correspond aux genres préférés
     const noResultsReason = total === 0 ? "no_matching_genres" : null;
 
+    // Utiliser $sample pour randomiser les événements comme dans getPublicFeed
+    const sampleSize = Math.min(150, total);
+    let events = [];
+
+    if (sampleSize > 0) {
+      const pipeline = [{ $match: filter }, { $sample: { size: sampleSize } }];
+      events = await this.eventModel.aggregate(pipeline).exec();
+    }
+
     return {
       events,
       pagination: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-        hasNext: page < Math.ceil(total / limit),
-        hasPrev: page > 1,
+        total: events.length,
+        page: 1,
+        limit: events.length,
+        totalPages: 1,
+        hasNext: false,
+        hasPrev: false,
       },
       noResultsReason,
     };

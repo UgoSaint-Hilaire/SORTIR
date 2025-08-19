@@ -2,6 +2,12 @@
 
 ---
 
+## [0.10.1] - 19.08.2025
+
+### Modifié
+
+- Fix du comportement des modifications des préférences, maintenant fonctionnel
+
 ## [0.10.0] - 18.08.2025
 
 ### Ajouté

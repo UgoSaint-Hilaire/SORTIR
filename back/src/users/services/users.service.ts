@@ -62,22 +62,15 @@ export class UsersService {
       throw new BadRequestException("Au moins un nom de classification est requis");
     }
 
+    // Supprimer toutes les préférences existantes de l'utilisateur
+    await this.userPreferenceRepository.delete({ userId });
+
     const createdPreferences: UserPreference[] = [];
 
     for (const classificationName of data.classificationNames) {
       const classificationId = getClassificationId(classificationName);
       if (!classificationId) {
         throw new BadRequestException(`Classification "${classificationName}" non trouvée`);
-      }
-
-      const existingPreference = await this.userPreferenceRepository.findOne({
-        where: {
-          userId,
-          classificationId,
-        },
-      });
-
-      if (existingPreference) {
       }
 
       const preference = this.userPreferenceRepository.create({

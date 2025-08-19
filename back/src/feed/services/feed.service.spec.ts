@@ -113,6 +113,12 @@ describe("FeedService", () => {
       expect(result.pagination.total).toBe(2);
       expect(result.noResultsReason).toBeNull();
       expect(mockUsersService.getUserPreferences).toHaveBeenCalledWith(userId);
+      expect(mockEventModel.aggregate).toHaveBeenCalledWith([
+        expect.objectContaining({
+          $match: expect.any(Object),
+        }),
+        { $sample: { size: 2 } },
+      ]);
     });
 
     it("should return no_preferences reason when user has no preferences", async () => {
@@ -154,11 +160,14 @@ describe("FeedService", () => {
 
       await service.getCustomFeed(userId, query);
 
-      expect(mockEventModel.find).toHaveBeenCalledWith(
+      expect(mockEventModel.aggregate).toHaveBeenCalledWith([
         expect.objectContaining({
-          genre: { $in: ["Rock"] },
-        })
-      );
+          $match: expect.objectContaining({
+            genre: { $in: ["Rock"] },
+          })
+        }),
+        { $sample: { size: 1 } },
+      ]);
     });
 
     it("should apply date and time filtering", async () => {
@@ -166,29 +175,32 @@ describe("FeedService", () => {
       const query: GetFeedDto = { page: 1, limit: 20 };
 
       mockUsersService.getUserPreferences.mockResolvedValue(mockUserPreferences);
-      mockEventModel.exec.mockResolvedValue([]);
-      mockEventModel.countDocuments.mockResolvedValue(0);
+      mockEventModel.exec.mockResolvedValue([mockEvents[0]]);
+      mockEventModel.countDocuments.mockResolvedValue(1);
 
       await service.getCustomFeed(userId, query);
 
-      expect(mockEventModel.find).toHaveBeenCalledWith(
+      expect(mockEventModel.aggregate).toHaveBeenCalledWith([
         expect.objectContaining({
-          $or: expect.arrayContaining([
-            expect.objectContaining({
-              "date.localDate": expect.objectContaining({ $gt: expect.any(String) }),
-            }),
-            expect.objectContaining({
-              "date.localDate": expect.any(String),
-              "date.localTime": expect.objectContaining({ $gte: expect.any(String) }),
-            }),
-          ]),
-        })
-      );
+          $match: expect.objectContaining({
+            $or: expect.arrayContaining([
+              expect.objectContaining({
+                "date.localDate": expect.objectContaining({ $gt: expect.any(String) }),
+              }),
+              expect.objectContaining({
+                "date.localDate": expect.any(String),
+                "date.localTime": expect.objectContaining({ $gte: expect.any(String) }),
+              }),
+            ]),
+          })
+        }),
+        { $sample: { size: 1 } },
+      ]);
     });
 
-    it("should handle pagination correctly", async () => {
+    it("should use sample aggregation instead of pagination", async () => {
       const userId = 1;
-      const query: GetFeedDto = { page: 2, limit: 10 };
+      const query: GetFeedDto = { page: 1, limit: 10 };
 
       mockUsersService.getUserPreferences.mockResolvedValue(mockUserPreferences);
       mockEventModel.exec.mockResolvedValue([mockEvents[0]]);
@@ -196,12 +208,16 @@ describe("FeedService", () => {
 
       const result = await service.getCustomFeed(userId, query);
 
-      expect(mockEventModel.skip).toHaveBeenCalledWith(10);
-      expect(mockEventModel.limit).toHaveBeenCalledWith(10);
-      expect(result.pagination.page).toBe(2);
-      expect(result.pagination.totalPages).toBe(3);
-      expect(result.pagination.hasNext).toBe(true);
-      expect(result.pagination.hasPrev).toBe(true);
+      expect(mockEventModel.aggregate).toHaveBeenCalledWith([
+        expect.objectContaining({
+          $match: expect.any(Object),
+        }),
+        { $sample: { size: 25 } },
+      ]);
+      expect(result.pagination.page).toBe(1);
+      expect(result.pagination.totalPages).toBe(1);
+      expect(result.pagination.hasNext).toBe(false);
+      expect(result.pagination.hasPrev).toBe(false);
     });
   });
 
