@@ -1,19 +1,19 @@
 import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EventCardComponent } from '../../events/event-card/event-card.component';
-import { PublicFeedService } from './public-feed.service';
+import { CustomFeedService } from './custom-feed.service';
 import { Event } from '../../models/event.model';
 import { ConfigService } from '../../core/services';
 
 @Component({
-  selector: 'app-public-feed',
+  selector: 'app-custom-feed',
   standalone: true,
   imports: [CommonModule, EventCardComponent],
-  templateUrl: './public-feed.component.html',
-  styleUrl: './public-feed.component.css',
+  templateUrl: './custom-feed.component.html',
+  styleUrl: './custom-feed.component.css',
 })
-export class PublicFeedComponent implements OnInit, OnDestroy {
-  private publicFeedService = inject(PublicFeedService);
+export class CustomFeedComponent implements OnInit, OnDestroy {
+  private customFeedService = inject(CustomFeedService);
   public configService = inject(ConfigService);
 
   events = signal<Event[]>([]);
@@ -67,9 +67,9 @@ export class PublicFeedComponent implements OnInit, OnDestroy {
     this.loading.set(true);
     this.error.set(null);
 
-    this.publicFeedService.getPublicFeed(1, 30).subscribe({
+    this.customFeedService.getCustomFeed(1, 30).subscribe({
       next: (response: any) => {
-        console.log('Chargement initial - API Response:', response);
+        console.log('Chargement initial custom feed - API Response:', response);
 
         if (!response.success) {
           console.error(
@@ -95,7 +95,7 @@ export class PublicFeedComponent implements OnInit, OnDestroy {
           this.totalPages.set(pagination.totalPages || 1);
           this.totalCount.set(pagination.total || newEvents.length);
 
-          const cachedEvents = this.publicFeedService.getPublicCachedEvents();
+          const cachedEvents = this.customFeedService.getCustomCachedEvents();
           this.hasAllEventsLoaded.set(!!cachedEvents);
         } else {
           this.events.set([]);
@@ -106,7 +106,7 @@ export class PublicFeedComponent implements OnInit, OnDestroy {
         this.loading.set(false);
       },
       error: (err: any) => {
-        console.error('Erreur lors du chargement initial:', err);
+        console.error('Erreur lors du chargement initial custom feed:', err);
         this.events.set([]);
 
         let errorMessage =
@@ -138,23 +138,14 @@ export class PublicFeedComponent implements OnInit, OnDestroy {
     this.isLoadingMore.set(true);
     const nextPage = this.currentPage() + 1;
 
-    this.publicFeedService.getPublicFeed(nextPage, 30).subscribe({
+    this.customFeedService.getCustomFeed(nextPage, 30).subscribe({
       next: (response: any) => {
-        console.log(
-          `Chargement page ${nextPage} - Cache hit:`,
-          response.data ? 'Oui' : 'Non'
-        );
-
         if (response.success && response.data && response.data.events) {
           const newEvents = response.data.events;
           const currentEvents = this.events();
 
           this.events.set([...currentEvents, ...newEvents]);
           this.currentPage.set(nextPage);
-
-          console.log(
-            `Page ${nextPage} chargée, ${newEvents.length} nouveaux événements`
-          );
         }
 
         this.isLoadingMore.set(false);
@@ -167,7 +158,7 @@ export class PublicFeedComponent implements OnInit, OnDestroy {
   }
 
   refresh() {
-    this.publicFeedService.clearPublicEventsCache();
+    this.customFeedService.clearCustomEventsCache();
     this.currentPage.set(1);
     this.hasAllEventsLoaded.set(false);
     this.loadInitialEvents();

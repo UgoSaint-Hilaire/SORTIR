@@ -2,6 +2,20 @@
 
 ---
 
+## [0.5.0] - 19.08.2025
+
+### Ajouté
+
+- Implémentation du feed basé sur les préférences de l'utilisateur nécessitant que l'utilisateur soit connecté pour y avoir accès
+- Mise en place d'un cache pour optimiser la vitesse et limiter le nombre d'appel
+- Ajout des badges de genre sur les cartes événements
+
+### Modifié
+
+- Nouvelle navigation
+
+---
+
 ## [0.4.0] - 18.08.2025
 
 ### Ajouté

@@ -5,24 +5,20 @@ import { of, throwError } from 'rxjs';
 
 import { PublicFeedComponent } from './public-feed.component';
 import { PublicFeedService } from './public-feed.service';
-import { CacheService } from '../../core/services/cache.service';
 import { Event } from '../../models/event.model';
 
 describe('PublicFeedComponent', () => {
   let component: PublicFeedComponent;
   let fixture: ComponentFixture<PublicFeedComponent>;
   let publicFeedService: jasmine.SpyObj<PublicFeedService>;
-  let cacheService: jasmine.SpyObj<CacheService>;
   let mockEvents: Event[];
   let mockResponse: any;
 
   beforeEach(async () => {
     const publicFeedSpy = jasmine.createSpyObj('PublicFeedService', [
       'getPublicFeed',
-    ]);
-    const cacheSpy = jasmine.createSpyObj('CacheService', [
-      'getCachedEvents',
-      'clearEventsCache',
+      'getPublicCachedEvents',
+      'clearPublicEventsCache',
     ]);
 
     mockEvents = [
@@ -71,18 +67,16 @@ describe('PublicFeedComponent', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: PublicFeedService, useValue: publicFeedSpy },
-        { provide: CacheService, useValue: cacheSpy },
       ],
     }).compileComponents();
 
     publicFeedService = TestBed.inject(
       PublicFeedService
     ) as jasmine.SpyObj<PublicFeedService>;
-    cacheService = TestBed.inject(CacheService) as jasmine.SpyObj<CacheService>;
 
     // Setup default behavior
     publicFeedService.getPublicFeed.and.returnValue(of(mockResponse));
-    cacheService.getCachedEvents.and.returnValue(mockEvents);
+    publicFeedService.getPublicCachedEvents.and.returnValue(mockEvents);
 
     fixture = TestBed.createComponent(PublicFeedComponent);
     component = fixture.componentInstance;
@@ -250,7 +244,7 @@ describe('PublicFeedComponent', () => {
 
       component.refresh();
 
-      expect(cacheService.clearEventsCache).toHaveBeenCalled();
+      expect(publicFeedService.clearPublicEventsCache).toHaveBeenCalled();
       expect(component.currentPage()).toBe(1);
       expect(component.hasAllEventsLoaded()).toBe(false);
       expect(component['loadInitialEvents']).toHaveBeenCalled();

@@ -3,25 +3,26 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ConfigService, CacheService } from '../../core/services';
+import { AuthService } from '../../core/auth/auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class PublicFeedService {
+export class CustomFeedService {
+  private readonly CUSTOM_EVENTS_KEY = 'custom_events';
+
   constructor(
     private http: HttpClient,
     private configService: ConfigService,
-    private cacheService: CacheService
+    private cacheService: CacheService,
+    private authService: AuthService
   ) {}
 
-  private readonly PUBLIC_EVENTS_KEY = 'public_events';
-
-  getPublicFeed(page: number = 1, limit: number = 30): Observable<any> {
-    // Vérifie si on a déjà les événements en cache
-    const cachedPage = this.getPublicEventPage(page, limit);
+  getCustomFeed(page: number = 1, limit: number = 30): Observable<any> {
+    const cachedPage = this.getCustomEventPage(page, limit);
 
     if (cachedPage) {
-      console.log('Cache hit ! page actuelle :', page);
+      console.log('Cache hit custom feed ! page actuelle :', page);
 
       return of({
         success: true,
@@ -30,23 +31,25 @@ export class PublicFeedService {
     }
 
     console.log(
-      'Cache miss :( Récupération de tous les événements depuis le back'
+      'Cache miss custom feed :( Récupération de tous les événements depuis le back'
     );
 
+    const headers = this.authService.getAuthHeaders();
+
     return this.http
-      .get<any>(this.configService.getApiEndpoint('/feed/public'))
+      .get<any>(this.configService.getApiEndpoint('/feed'), { headers })
       .pipe(
         tap((response) => {
           if (response.success && response.data && response.data.events) {
-            this.cachePublicEvents(response.data.events);
+            this.cacheCustomEvents(response.data.events);
             console.log(
-              `Mis en cache ${response.data.events.length} événements`
+              `Mis en cache ${response.data.events.length} événements custom`
             );
           }
         }),
         map((response) => {
           if (response.success) {
-            const cachedPage = this.getPublicEventPage(page, limit);
+            const cachedPage = this.getCustomEventPage(page, limit);
 
             if (cachedPage) {
               return {
@@ -61,12 +64,12 @@ export class PublicFeedService {
       );
   }
 
-  private cachePublicEvents(events: any[]): void {
-    this.cacheService.set(this.PUBLIC_EVENTS_KEY, events, 15);
+  private cacheCustomEvents(events: any[]): void {
+    this.cacheService.set(this.CUSTOM_EVENTS_KEY, events, 15);
   }
 
-  private getPublicEventPage(page: number, limit: number): any | null {
-    const allEvents = this.cacheService.get<any[]>(this.PUBLIC_EVENTS_KEY);
+  private getCustomEventPage(page: number, limit: number): any | null {
+    const allEvents = this.cacheService.get<any[]>(this.CUSTOM_EVENTS_KEY);
 
     if (!allEvents) {
       return null;
@@ -92,11 +95,11 @@ export class PublicFeedService {
     };
   }
 
-  getPublicCachedEvents(): any[] | null {
-    return this.cacheService.get<any[]>(this.PUBLIC_EVENTS_KEY);
+  getCustomCachedEvents(): any[] | null {
+    return this.cacheService.get<any[]>(this.CUSTOM_EVENTS_KEY);
   }
 
-  clearPublicEventsCache(): void {
-    this.cacheService.clear(this.PUBLIC_EVENTS_KEY);
+  clearCustomEventsCache(): void {
+    this.cacheService.clear(this.CUSTOM_EVENTS_KEY);
   }
 }

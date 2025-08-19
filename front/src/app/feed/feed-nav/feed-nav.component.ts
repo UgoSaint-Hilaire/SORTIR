@@ -1,12 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PublicFeedComponent } from '../public-feed/public-feed.component';
+import { CustomFeedComponent } from '../custom-feed/custom-feed.component';
+import { AuthService } from '../../core/auth/auth.service';
 
 @Component({
   selector: 'app-feed-nav',
   standalone: true,
-  imports: [CommonModule, PublicFeedComponent],
+  imports: [CommonModule, PublicFeedComponent, CustomFeedComponent],
   templateUrl: './feed-nav.component.html',
   styleUrl: './feed-nav.component.css',
 })
-export class FeedNavComponent {}
+export class FeedNavComponent implements OnInit {
+  private authService = inject(AuthService);
+  
+  isAuthenticated = signal(false);
+  activeTab = signal<'personal' | 'public'>('public');
+
+  ngOnInit() {
+    this.authService.isAuthenticated$.subscribe(isAuth => {
+      this.isAuthenticated.set(isAuth);
+      if (isAuth) {
+        this.activeTab.set('personal');
+      } else {
+        this.activeTab.set('public');
+      }
+    });
+  }
+
+  setActiveTab(tab: 'personal' | 'public') {
+    this.activeTab.set(tab);
+  }
+}

@@ -16,7 +16,7 @@ describe('PublicFeedService', () => {
 
   beforeEach(() => {
     const configSpy = jasmine.createSpyObj('ConfigService', ['getApiEndpoint']);
-    const cacheSpy = jasmine.createSpyObj('CacheService', ['getEventPage', 'cacheEvents']);
+    const cacheSpy = jasmine.createSpyObj('CacheService', ['get', 'set', 'clear']);
 
     TestBed.configureTestingModule({
       providers: [
@@ -95,19 +95,18 @@ describe('PublicFeedService', () => {
         }
       };
 
-      cacheService.getEventPage.and.returnValue(cachedPage);
+      cacheService.get.and.returnValue(mockEvents);
 
       service.getPublicFeed(1, 30).subscribe(response => {
         expect(response.success).toBe(true);
         expect(response.data).toEqual(cachedPage);
       });
 
-      expect(cacheService.getEventPage).toHaveBeenCalledWith(1, 30);
+      expect(cacheService.get).toHaveBeenCalledWith('public_events');
       expect(configService.getApiEndpoint).not.toHaveBeenCalled();
     });
 
     it('should fetch from API when cache miss and cache the result', () => {
-      cacheService.getEventPage.and.returnValue(null);
       const cachedPageAfterFetch = {
         events: mockEvents,
         pagination: {
@@ -121,7 +120,7 @@ describe('PublicFeedService', () => {
       };
 
       // First call returns null (cache miss), second call returns cached data
-      cacheService.getEventPage.and.returnValues(null, cachedPageAfterFetch);
+      cacheService.get.and.returnValues(null, mockEvents);
 
       service.getPublicFeed(1, 30).subscribe(response => {
         expect(response.success).toBe(true);
@@ -133,29 +132,17 @@ describe('PublicFeedService', () => {
       req.flush(mockResponse);
 
       expect(configService.getApiEndpoint).toHaveBeenCalledWith('/feed/public');
-      expect(cacheService.cacheEvents).toHaveBeenCalledWith(mockEvents);
+      expect(cacheService.set).toHaveBeenCalledWith('public_events', mockEvents, 15);
     });
 
     it('should use default page and limit values', () => {
-      const cachedPage = {
-        events: mockEvents,
-        pagination: {
-          total: 2,
-          page: 1,
-          limit: 30,
-          totalPages: 1,
-          hasNext: false,
-          hasPrev: false
-        }
-      };
-
-      cacheService.getEventPage.and.returnValue(cachedPage);
+      cacheService.get.and.returnValue(mockEvents);
 
       service.getPublicFeed().subscribe(response => {
         expect(response.success).toBe(true);
       });
 
-      expect(cacheService.getEventPage).toHaveBeenCalledWith(1, 30);
+      expect(cacheService.get).toHaveBeenCalledWith('public_events');
     });
 
 
@@ -167,7 +154,7 @@ describe('PublicFeedService', () => {
         data: null
       };
 
-      cacheService.getEventPage.and.returnValue(null);
+      cacheService.get.and.returnValue(null);
 
       service.getPublicFeed(1, 30).subscribe(response => {
         expect(response).toEqual(errorResponse);
@@ -176,7 +163,7 @@ describe('PublicFeedService', () => {
       const req = httpMock.expectOne('http://localhost:3001/feed/public');
       req.flush(errorResponse);
 
-      expect(cacheService.cacheEvents).not.toHaveBeenCalled();
+      expect(cacheService.set).not.toHaveBeenCalled();
     });
 
 
@@ -194,7 +181,7 @@ describe('PublicFeedService', () => {
         }
       };
 
-      cacheService.getEventPage.and.returnValue(null);
+      cacheService.get.and.returnValue(null);
 
       service.getPublicFeed(1, 30).subscribe(response => {
         expect(response).toEqual(responseWithEmptyEvents);
@@ -203,7 +190,7 @@ describe('PublicFeedService', () => {
       const req = httpMock.expectOne('http://localhost:3001/feed/public');
       req.flush(responseWithEmptyEvents);
 
-      expect(cacheService.cacheEvents).toHaveBeenCalledWith([]);
+      expect(cacheService.set).toHaveBeenCalledWith('public_events', [], 15);
     });
 
 
