@@ -5,7 +5,22 @@
 Pour avoir un apperçu plus spécifiques des changements, consulter les docs de chaque composant :
 
 - Voir [Backend CHANGELOG](./back/CHANGELOG.md)
-- Voir [Frontend CHANGELOG](./front/CHANGELOG.md)\*
+- Voir [Frontend CHANGELOG](./front/CHANGELOG.md)
+
+---
+
+## [0.9.0] - [back 0.10.1 | front 0.5.0] - 19.08.2025
+
+### Ajouté
+
+- Interface profil utilisateur
+- Implémentation du feed customisé, basé sur les préférences de l'utilisateur
+- Selecteur de gestion des préférences
+- Mise en place d'un guard d'authentification
+
+### Modifié
+
+- Fix du comportement des modifications des préférences
 
 ---
 
