@@ -8,6 +8,8 @@ import {
   HttpStatus,
   BadRequestException,
   InternalServerErrorException,
+  Param,
+  NotFoundException,
 } from "@nestjs/common";
 import { JwtAuthGuard } from "../../auth/guards/jwt-auth.guard";
 import { RolesGuard } from "../../auth/guards/roles.guard";
@@ -17,10 +19,8 @@ import { EventsService } from "../services/events.service";
 
 /**
  * Contrôleur pour récupérer les événements depuis l'api de Ticketmaster
- * Toutes les routes nécessitent une authentification JWT
  */
 @Controller("events")
-@UseGuards(JwtAuthGuard, RolesGuard)
 export class EventsController {
   constructor(
     private readonly ticketmasterService: TicketmasterService,
@@ -28,8 +28,9 @@ export class EventsController {
   ) {}
 
   @Post("sync")
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
-  @Roles('admin')
+  @Roles("admin")
   async syncAllEvents(@Body() body: { days?: number }) {
     try {
       const days = body.days || 30;
@@ -74,6 +75,7 @@ export class EventsController {
   }
 
   @Get("stats")
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   async getEventsNumber() {
     try {
@@ -92,6 +94,42 @@ export class EventsController {
         message: "Failed to retrieve events number",
         error: error.message,
         stats: null,
+      });
+    }
+  }
+
+  @Get(":id")
+  @HttpCode(HttpStatus.OK)
+  async getEventById(@Param("id") id: string) {
+    try {
+      const event = await this.eventsService.findById(id);
+
+      if (!event) {
+        throw new NotFoundException({
+          success: false,
+          code: 404,
+          message: `Event with ID ${id} not found`,
+          data: null,
+        });
+      }
+
+      return {
+        success: true,
+        code: 200,
+        message: "Event retrieved successfully",
+        data: event,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+
+      throw new InternalServerErrorException({
+        success: false,
+        code: 500,
+        message: "Failed to retrieve event",
+        error: error.message,
+        data: null,
       });
     }
   }

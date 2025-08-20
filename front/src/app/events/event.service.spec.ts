@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
-import { EventCardService } from './event-card.service';
-import { Event } from '../../models/event.model';
+import { EventService } from './event.service';
+import { Event } from '../models/event.model';
 
-describe('EventCardService', () => {
-  let service: EventCardService;
+describe('EventService', () => {
+  let service: EventService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(EventCardService);
+    service = TestBed.inject(EventService);
   });
 
   it('should be created', () => {
@@ -23,7 +23,7 @@ describe('EventCardService', () => {
     it('should format MongoDB date with localDate and localTime', () => {
       const mongoDate = {
         localDate: '2025-08-20',
-        localTime: '20:00:00'
+        localTime: '20:00:00',
       };
       const result = service.formatDate(mongoDate);
       expect(result).toContain('mercredi');
@@ -33,56 +33,53 @@ describe('EventCardService', () => {
 
     it('should format MongoDB date with localDate only', () => {
       const mongoDate = {
-        localDate: '2025-08-20'
+        localDate: '2025-08-20',
       };
       const result = service.formatDate(mongoDate);
       expect(result).toContain('mercredi');
       expect(result).toContain('20 août 2025');
     });
-
-
-
   });
 
   describe('getEventTitle', () => {
     it('should return event name when available', () => {
-      const event = { 
-        ticketmasterId: 'test', 
-        name: 'Test Concert', 
-        url: 'test', 
-        date: { localDate: '2025-01-01' }, 
+      const event = {
+        ticketmasterId: 'test',
+        name: 'Test Concert',
+        url: 'test',
+        date: { localDate: '2025-01-01' },
         segment: 'test',
         syncedAt: '2025-01-01',
         createdAt: '2025-01-01',
-        updatedAt: '2025-01-01'
+        updatedAt: '2025-01-01',
       } as Event;
       expect(service.getEventTitle(event)).toBe('Test Concert');
     });
 
     it('should return default title when name is empty', () => {
-      const event = { 
-        ticketmasterId: 'test', 
-        name: '', 
-        url: 'test', 
-        date: { localDate: '2025-01-01' }, 
+      const event = {
+        ticketmasterId: 'test',
+        name: '',
+        url: 'test',
+        date: { localDate: '2025-01-01' },
         segment: 'test',
         syncedAt: '2025-01-01',
         createdAt: '2025-01-01',
-        updatedAt: '2025-01-01'
+        updatedAt: '2025-01-01',
       } as Event;
       expect(service.getEventTitle(event)).toBe('Événement sans titre');
     });
 
     it('should return default title when name is null', () => {
-      const event = { 
-        ticketmasterId: 'test', 
-        name: null, 
-        url: 'test', 
-        date: { localDate: '2025-01-01' }, 
+      const event = {
+        ticketmasterId: 'test',
+        name: null,
+        url: 'test',
+        date: { localDate: '2025-01-01' },
         segment: 'test',
         syncedAt: '2025-01-01',
         createdAt: '2025-01-01',
-        updatedAt: '2025-01-01'
+        updatedAt: '2025-01-01',
       } as any;
       expect(service.getEventTitle(event)).toBe('Événement sans titre');
     });
@@ -93,52 +90,52 @@ describe('EventCardService', () => {
       const event = {
         images: [
           { url: 'https://test.com/image1.jpg', width: 640, height: 480 },
-          { url: 'https://test.com/image2.jpg', width: 320, height: 240 }
-        ]
+          { url: 'https://test.com/image2.jpg', width: 320, height: 240 },
+        ],
       } as Event;
       expect(service.getEventImage(event)).toBe('https://test.com/image1.jpg');
     });
 
     it('should return null when no images', () => {
-      const event = { 
-        ticketmasterId: 'test', 
-        name: 'test', 
-        url: 'test', 
-        date: { localDate: '2025-01-01' }, 
+      const event = {
+        ticketmasterId: 'test',
+        name: 'test',
+        url: 'test',
+        date: { localDate: '2025-01-01' },
         segment: 'test',
         syncedAt: '2025-01-01',
         createdAt: '2025-01-01',
         updatedAt: '2025-01-01',
-        images: [] 
+        images: [],
       } as Event;
       expect(service.getEventImage(event)).toBeNull();
     });
 
     it('should return null when images is undefined', () => {
-      const event = { 
-        ticketmasterId: 'test', 
-        name: 'test', 
-        url: 'test', 
-        date: { localDate: '2025-01-01' }, 
+      const event = {
+        ticketmasterId: 'test',
+        name: 'test',
+        url: 'test',
+        date: { localDate: '2025-01-01' },
         segment: 'test',
         syncedAt: '2025-01-01',
         createdAt: '2025-01-01',
-        updatedAt: '2025-01-01'
+        updatedAt: '2025-01-01',
       } as Event;
       expect(service.getEventImage(event)).toBeNull();
     });
 
     it('should return null when first image has no URL', () => {
       const event = {
-        ticketmasterId: 'test', 
-        name: 'test', 
-        url: 'test', 
-        date: { localDate: '2025-01-01' }, 
+        ticketmasterId: 'test',
+        name: 'test',
+        url: 'test',
+        date: { localDate: '2025-01-01' },
         segment: 'test',
         syncedAt: '2025-01-01',
         createdAt: '2025-01-01',
         updatedAt: '2025-01-01',
-        images: [{ url: '', width: 640, height: 480 }]
+        images: [{ url: '', width: 640, height: 480 }],
       } as Event;
       expect(service.getEventImage(event)).toBeNull();
     });
@@ -147,97 +144,95 @@ describe('EventCardService', () => {
   describe('getEventLocation', () => {
     it('should return venue name and city when both available', () => {
       const event = {
-        ticketmasterId: 'test', 
-        name: 'test', 
-        url: 'test', 
-        date: { localDate: '2025-01-01' }, 
+        ticketmasterId: 'test',
+        name: 'test',
+        url: 'test',
+        date: { localDate: '2025-01-01' },
         segment: 'test',
         syncedAt: '2025-01-01',
         createdAt: '2025-01-01',
         updatedAt: '2025-01-01',
         venue: {
           name: 'Stade de France',
-          city: 'Paris'
-        }
+          city: 'Paris',
+        },
       } as Event;
       expect(service.getEventLocation(event)).toBe('Stade de France, Paris');
     });
 
     it('should return only venue name when city is not available', () => {
       const event = {
-        ticketmasterId: 'test', 
-        name: 'test', 
-        url: 'test', 
-        date: { localDate: '2025-01-01' }, 
+        ticketmasterId: 'test',
+        name: 'test',
+        url: 'test',
+        date: { localDate: '2025-01-01' },
         segment: 'test',
         syncedAt: '2025-01-01',
         createdAt: '2025-01-01',
         updatedAt: '2025-01-01',
         venue: {
-          name: 'Stade de France'
-        }
+          name: 'Stade de France',
+        },
       } as Event;
       expect(service.getEventLocation(event)).toBe('Stade de France');
     });
 
-
     it('should return default message when venue is undefined', () => {
       const event = {
-        ticketmasterId: 'test', 
-        name: 'test', 
-        url: 'test', 
-        date: { localDate: '2025-01-01' }, 
+        ticketmasterId: 'test',
+        name: 'test',
+        url: 'test',
+        date: { localDate: '2025-01-01' },
         segment: 'test',
         syncedAt: '2025-01-01',
         createdAt: '2025-01-01',
-        updatedAt: '2025-01-01'
+        updatedAt: '2025-01-01',
       } as Event;
       expect(service.getEventLocation(event)).toBe('Lieu non défini');
     });
-
   });
 
   describe('getEventCategory', () => {
     it('should return segment when available', () => {
       const event = {
-        ticketmasterId: 'test', 
-        name: 'test', 
-        url: 'test', 
-        date: { localDate: '2025-01-01' }, 
+        ticketmasterId: 'test',
+        name: 'test',
+        url: 'test',
+        date: { localDate: '2025-01-01' },
         segment: 'Music',
         genre: 'Rock',
         syncedAt: '2025-01-01',
         createdAt: '2025-01-01',
-        updatedAt: '2025-01-01'
+        updatedAt: '2025-01-01',
       } as Event;
       expect(service.getEventCategory(event)).toBe('Music');
     });
 
     it('should return genre when segment is not available', () => {
       const event = {
-        ticketmasterId: 'test', 
-        name: 'test', 
-        url: 'test', 
-        date: { localDate: '2025-01-01' }, 
+        ticketmasterId: 'test',
+        name: 'test',
+        url: 'test',
+        date: { localDate: '2025-01-01' },
         segment: '',
         genre: 'Rock',
         syncedAt: '2025-01-01',
         createdAt: '2025-01-01',
-        updatedAt: '2025-01-01'
+        updatedAt: '2025-01-01',
       } as Event;
       expect(service.getEventCategory(event)).toBe('Rock');
     });
 
     it('should return default when neither segment nor genre available', () => {
       const event = {
-        ticketmasterId: 'test', 
-        name: 'test', 
-        url: 'test', 
-        date: { localDate: '2025-01-01' }, 
+        ticketmasterId: 'test',
+        name: 'test',
+        url: 'test',
+        date: { localDate: '2025-01-01' },
         segment: '',
         syncedAt: '2025-01-01',
         createdAt: '2025-01-01',
-        updatedAt: '2025-01-01'
+        updatedAt: '2025-01-01',
       } as Event;
       expect(service.getEventCategory(event)).toBe('Événement');
     });
@@ -246,10 +241,10 @@ describe('EventCardService', () => {
   describe('getEventPrice', () => {
     it('should return price when available', () => {
       const event = {
-        ticketmasterId: 'test', 
-        name: 'test', 
-        url: 'test', 
-        date: { localDate: '2025-01-01' }, 
+        ticketmasterId: 'test',
+        name: 'test',
+        url: 'test',
+        date: { localDate: '2025-01-01' },
         segment: 'test',
         syncedAt: '2025-01-01',
         createdAt: '2025-01-01',
@@ -257,8 +252,8 @@ describe('EventCardService', () => {
         priceRange: {
           min: 25,
           max: 100,
-          currency: 'EUR'
-        }
+          currency: 'EUR',
+        },
       } as Event;
       const result = service.getEventPrice(event);
       expect(result.hasPrice).toBe(true);
@@ -268,17 +263,17 @@ describe('EventCardService', () => {
 
     it('should use default currency when not specified', () => {
       const event = {
-        ticketmasterId: 'test', 
-        name: 'test', 
-        url: 'test', 
-        date: { localDate: '2025-01-01' }, 
+        ticketmasterId: 'test',
+        name: 'test',
+        url: 'test',
+        date: { localDate: '2025-01-01' },
         segment: 'test',
         syncedAt: '2025-01-01',
         createdAt: '2025-01-01',
         updatedAt: '2025-01-01',
         priceRange: {
-          min: 25
-        }
+          min: 25,
+        },
       } as Event;
       const result = service.getEventPrice(event);
       expect(result.hasPrice).toBe(true);
@@ -288,17 +283,17 @@ describe('EventCardService', () => {
 
     it('should return no price when min is undefined', () => {
       const event = {
-        ticketmasterId: 'test', 
-        name: 'test', 
-        url: 'test', 
-        date: { localDate: '2025-01-01' }, 
+        ticketmasterId: 'test',
+        name: 'test',
+        url: 'test',
+        date: { localDate: '2025-01-01' },
         segment: 'test',
         syncedAt: '2025-01-01',
         createdAt: '2025-01-01',
         updatedAt: '2025-01-01',
         priceRange: {
-          currency: 'EUR'
-        }
+          currency: 'EUR',
+        },
       } as Event;
       const result = service.getEventPrice(event);
       expect(result.hasPrice).toBe(false);
@@ -306,78 +301,76 @@ describe('EventCardService', () => {
 
     it('should return no price when priceRange is undefined', () => {
       const event = {
-        ticketmasterId: 'test', 
-        name: 'test', 
-        url: 'test', 
-        date: { localDate: '2025-01-01' }, 
+        ticketmasterId: 'test',
+        name: 'test',
+        url: 'test',
+        date: { localDate: '2025-01-01' },
         segment: 'test',
         syncedAt: '2025-01-01',
         createdAt: '2025-01-01',
-        updatedAt: '2025-01-01'
+        updatedAt: '2025-01-01',
       } as Event;
       const result = service.getEventPrice(event);
       expect(result.hasPrice).toBe(false);
     });
-
   });
 
   describe('getEventStatus', () => {
     it('should return "En vente" for onsale status', () => {
       const event = {
-        ticketmasterId: 'test', 
-        name: 'test', 
-        url: 'test', 
-        date: { localDate: '2025-01-01' }, 
+        ticketmasterId: 'test',
+        name: 'test',
+        url: 'test',
+        date: { localDate: '2025-01-01' },
         segment: 'test',
         syncedAt: '2025-01-01',
         createdAt: '2025-01-01',
         updatedAt: '2025-01-01',
-        status: 'onsale'
+        status: 'onsale',
       } as Event;
       expect(service.getEventStatus(event)).toBe('En vente');
     });
 
     it('should return "Vente fermée" for offsale status', () => {
       const event = {
-        ticketmasterId: 'test', 
-        name: 'test', 
-        url: 'test', 
-        date: { localDate: '2025-01-01' }, 
+        ticketmasterId: 'test',
+        name: 'test',
+        url: 'test',
+        date: { localDate: '2025-01-01' },
         segment: 'test',
         syncedAt: '2025-01-01',
         createdAt: '2025-01-01',
         updatedAt: '2025-01-01',
-        status: 'offsale'
+        status: 'offsale',
       } as Event;
       expect(service.getEventStatus(event)).toBe('Vente fermée');
     });
 
     it('should return "Annulé" for cancelled status', () => {
       const event = {
-        ticketmasterId: 'test', 
-        name: 'test', 
-        url: 'test', 
-        date: { localDate: '2025-01-01' }, 
+        ticketmasterId: 'test',
+        name: 'test',
+        url: 'test',
+        date: { localDate: '2025-01-01' },
         segment: 'test',
         syncedAt: '2025-01-01',
         createdAt: '2025-01-01',
         updatedAt: '2025-01-01',
-        status: 'cancelled'
+        status: 'cancelled',
       } as Event;
       expect(service.getEventStatus(event)).toBe('Annulé');
     });
 
-
     it('should return "Statut inconnu" when status is undefined', () => {
       const event = {
-        ticketmasterId: 'test', 
-        name: 'test', 
-        url: 'test', 
-        date: { localDate: '2025-01-01' }, 
+        ticketmasterId: 'test',
+        name: 'test',
+        url: 'test',
+        date: { localDate: '2025-01-01' },
         segment: 'test',
         syncedAt: '2025-01-01',
         createdAt: '2025-01-01',
-        updatedAt: '2025-01-01'
+        updatedAt: '2025-01-01',
       } as Event;
       expect(service.getEventStatus(event)).toBe('Statut inconnu');
     });

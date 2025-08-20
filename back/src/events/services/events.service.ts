@@ -203,4 +203,14 @@ export class EventsService {
       lastSync,
     };
   }
+
+  async findById(id: string): Promise<EventDocument | null> {
+    try {
+      const event = await this.eventModel.findById(id);
+      if (event) return event;
+    } catch (error) {
+      this.logger.error(`Erreur lors de la récupération de l'événement ${id}: ${error.message}`);
+      return null;
+    }
+  }
 }

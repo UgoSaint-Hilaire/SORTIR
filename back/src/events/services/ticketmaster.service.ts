@@ -175,7 +175,10 @@ export class TicketmasterService {
    * Récupère et sauvegarde TOUS les événements français (Musique, Sports, Arts & Théâtre)
    * Fait la recherche jour par jour pour éviter les limites de l'API
    */
-  async fetchAllFrenchEvents(totalDays: number = 60, startDate?: Date): Promise<{
+  async fetchAllFrenchEvents(
+    totalDays: number = 60,
+    startDate?: Date
+  ): Promise<{
     events: any[];
     saveStats: { saved: number; updated: number; errors: number };
   }> {
@@ -211,7 +214,6 @@ export class TicketmasterService {
     }
 
     // Rapport détaillé par catégorie
-    // @TODO: Créer un fichier de log
     this.logger.log(`!!! Synchronisation terminée: ${allEvents.length} événements au total (${totalDays} jours)`);
     this.logger.log(`!!! Détail par catégorie:`);
     this.logger.log(

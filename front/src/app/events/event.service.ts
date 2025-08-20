@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Event } from '../../models/event.model';
+import { Event } from '../models/event.model';
 
 @Injectable({
   providedIn: 'root',
 })
-export class EventCardService {
+export class EventService {
   formatDate(date: any): string {
     if (!date) return 'Date non disponible';
 
@@ -25,13 +25,10 @@ export class EventCardService {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
       };
       return eventDate.toLocaleDateString('fr-FR', options);
     }
 
-    // Fallback pour les autres formats
     const eventDate = new Date(date);
     if (isNaN(eventDate.getTime())) {
       return 'Date non disponible';
@@ -42,8 +39,6 @@ export class EventCardService {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
     };
     return eventDate.toLocaleDateString('fr-FR', options);
   }
@@ -61,12 +56,16 @@ export class EventCardService {
 
   getEventLocation(event: Event): string {
     if (event.venue) {
-      const parts = [];
-      if (event.venue.name) parts.push(event.venue.name);
-      if (event.venue.city) parts.push(event.venue.city);
-      return parts.join(', ') || 'Lieu non défini';
+      return event.venue.name || 'Lieu non défini';
     }
     return 'Lieu non défini';
+  }
+
+  getEventCity(event: Event): string {
+    if (event.venue?.city) {
+      return event.venue.city;
+    }
+    return '';
   }
 
   getEventCategory(event: Event): string {

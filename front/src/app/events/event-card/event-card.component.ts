@@ -1,7 +1,8 @@
 import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { Event } from '../../models/event.model';
-import { EventCardService } from './event-card.service';
+import { EventService } from '../event.service';
 
 @Component({
   selector: 'app-event-card',
@@ -12,29 +13,37 @@ import { EventCardService } from './event-card.service';
 })
 export class EventCardComponent {
   @Input({ required: true }) event!: Event;
-  private eventCardService = inject(EventCardService);
+  private EventService = inject(EventService);
+  private router = inject(Router);
 
   formatDate(date: any): string {
-    return this.eventCardService.formatDate(date);
+    return this.EventService.formatDate(date);
   }
 
   getEventTitle(): string {
-    return this.eventCardService.getEventTitle(this.event);
+    return this.EventService.getEventTitle(this.event);
   }
 
   getEventImage(): string | null {
-    return this.eventCardService.getEventImage(this.event);
+    return this.EventService.getEventImage(this.event);
   }
 
   getEventLocation(): string {
-    return this.eventCardService.getEventLocation(this.event);
+    return this.EventService.getEventLocation(this.event);
   }
 
   getEventCategory(): string {
-    return this.eventCardService.getEventCategory(this.event);
+    return this.EventService.getEventCategory(this.event);
+  }
+
+  navigateToDetail(): void {
+    this.router.navigate([
+      '/event',
+      this.event._id || this.event.ticketmasterId,
+    ]);
   }
 
   // getEventStatus(): string {
-  //   return this.eventCardService.getEventStatus(this.event);
+  //   return this.EventService.getEventStatus(this.event);
   // }
 }

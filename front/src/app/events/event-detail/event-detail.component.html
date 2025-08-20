@@ -1,0 +1,246 @@
+<main class="max-w-4xl mx-auto py-8" role="main">
+  @if (loading()) {
+  <section
+    class="flex justify-center items-center min-h-[600px]"
+    aria-live="polite"
+  >
+    <div class="text-center">
+      <span class="loading loading-spinner loading-lg text-primary"></span>
+      <p class="mt-4 text-base-content/70">Chargement de l'événement...</p>
+    </div>
+  </section>
+  } @else if (error()) {
+  <section class="alert alert-error mb-6" role="alert" aria-live="assertive">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="stroke-current shrink-0 h-6 w-6"
+      fill="none"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
+    <span>{{ error() }}</span>
+    <button
+      (click)="goBack()"
+      class="btn btn-sm"
+      aria-label="Retourner à la liste des événements"
+    >
+      Retour
+    </button>
+  </section>
+  } @else if (event()) {
+  <nav class="mb-6" aria-label="Navigation">
+    <button
+      (click)="goBack()"
+      class="btn btn-ghost btn-sm gap-2"
+      aria-label="Retourner à la liste des événements"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-5 h-5"
+        aria-hidden="true"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+        />
+      </svg>
+      Retour au feed
+    </button>
+  </nav>
+
+  <article class="card bg-base-100 shadow-xl">
+    @if (getEventImage()) {
+    <figure class="relative h-96 overflow-hidden">
+      <img
+        [src]="getEventImage()"
+        [alt]="getEventTitle()"
+        class="w-full h-full object-cover"
+      />
+    </figure>
+    }
+
+
+    <section class="card-body lg:p-12">
+      <div class="mb-8">
+        <div class="flex justify-between items-start mb-10">
+          <h1 class="text-4xl font-bold">{{ getEventTitle() }}</h1>
+          @if (event()!.url) {
+          <a 
+            [href]="event()!.url" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="hover:opacity-80 transition-opacity"
+            [title]="'Réserver sur Ticketmaster - ' + getEventTitle()"
+            aria-label="Réserver cet événement sur Ticketmaster (ouvre dans un nouvel onglet)">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 239.7 64 64" class="w-8 h-8 text-[#009cde] fill-current" aria-hidden="true">
+              <path d="M1.078 261.7h5.345l1.293-5.776 7.715-2.586-1.94 8.32h6.38l-1.078 5.345h-6.38l-2.586 11.982c-.216.647-.43 1.724-.43 2.76 0 1.724 1.078 2.76 2.76 2.76 1.293 0 2.586-.215 3.405-.647l-1.293 5.56c-1.293.215-2.586.647-3.836.647-4.914 0-8.32-1.94-8.32-7.284 0-2.155.43-4.267.862-6.422l2.155-9.396H0zm23.14 3.75l.647-2.974H31.5l-.647 3.62c1.94-2.76 5.13-4.267 8.534-4.267 3.2 0 6.638 1.94 7.07 5.345h.215c1.94-3.62 5.776-5.345 9.612-5.345 4.052 0 7.715 3.405 7.715 7.5 0 2.586-.647 5.345-1.293 7.5l-2.974 13.232H52.45l2.974-13.448c.43-1.724.862-4.267.862-6 0-2.155-1.5-3.405-3.405-3.405-4.914 0-6.207 5.776-7.07 9.612l-2.76 13.017h-7.284L38.74 276.4c.43-1.724.862-4.267.862-6 0-2.155-1.5-3.405-3.405-3.405-4.914 0-6.207 5.776-7.07 9.612l-2.76 13.017h-7.284z"/>
+            </svg>
+          </a>
+          }
+        </div>
+
+        <section class="space-y-4 mb-8" aria-label="Informations pratiques">
+          <div class="flex items-center gap-4">
+            <div class="bg-primary/10 p-3 rounded-xl" aria-hidden="true">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-8 h-8 text-primary"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 715.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
+                />
+              </svg>
+            </div>
+            <div>
+              <p
+                class="text-lg font-semibold text-base-content"
+                aria-label="Date de l'événement"
+              >
+                {{ formatDate(event()!.date) }}
+              </p>
+              <p
+                class="text-base-content/80 text-base"
+                aria-label="Heure de début"
+              >
+                {{ getEventStartTime() }}
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <div class="bg-primary/10 p-3 rounded-xl" aria-hidden="true">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-8 h-8 text-primary"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.158.69-.158 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z"
+                />
+              </svg>
+            </div>
+            <div>
+              <p
+                class="text-lg font-semibold text-base-content"
+                aria-label="Lieu de l'événement"
+              >
+                {{ getEventLocation() }}
+              </p>
+              @if (getEventCity()) {
+              <p class="text-base-content/80 text-base" aria-label="Ville">
+                {{ getEventCity() }}
+              </p>
+              }
+            </div>
+          </div>
+        </section>
+
+        @if (event()!.description) {
+        <section aria-labelledby="about-heading">
+          <h2
+            id="about-heading"
+            class="text-xl font-semibold text-base-content mb-4"
+          >
+            À propos
+          </h2>
+          <div class="text-lg text-base-content/80 mb-8">
+            <p class="inline">{{ getDisplayedDescription() }}</p>
+            @if (shouldTruncateDescription() && !isDescriptionExpanded()) {
+            <span
+              class="inline bg-gradient-to-r from-base-content/80 to-base-content/20 bg-clip-text text-transparent"
+              >{{ getGradientText() }}</span
+            >
+            } @if (shouldTruncateDescription()) {
+            <button
+              (click)="toggleDescription()"
+              class="text-lg text-primary hover:text-primary-focus italic cursor-pointer bg-transparent border-none p-0 ml-3"
+              [attr.aria-expanded]="isDescriptionExpanded()"
+              aria-label="Afficher plus ou moins de description"
+            >
+              {{ isDescriptionExpanded() ? "Voir moins" : "Voir plus" }}
+            </button>
+            }
+          </div>
+        </section>
+        } @if (event()!.venue?.latitude && event()!.venue?.longitude) {
+        <section class="mb-8" aria-labelledby="map-heading">
+          <h2 id="map-heading" class="sr-only">Localisation sur la carte</h2>
+          <div
+            #mapContainer
+            class="w-full h-80 rounded-lg"
+            role="application"
+            aria-label="Carte interactive montrant l'emplacement de l'événement"
+            tabindex="0"
+          ></div>
+        </section>
+        }
+
+        <section
+          class="flex items-center gap-4 mb-6"
+          aria-label="Catégories de l'événement"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6 text-primary"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
+            />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 6h.008v.008H6V6z"
+            />
+          </svg>
+          <div class="flex gap-3">
+            <span
+              class="badge badge-secondary badge-lg"
+              aria-label="Catégorie principale"
+              >{{ getEventCategory() }}</span
+            >
+            @if (event()!.genre && event()!.genre !== getEventCategory()) {
+            <span
+              class="badge badge-outline badge-lg"
+              aria-label="Genre musical"
+              >{{ event()!.genre }}</span
+            >
+            }
+          </div>
+        </section>
+      </div>
+    </section>
+  </article>
+  }
+</main>
