@@ -2,6 +2,25 @@
 
 ---
 
+## [0.6.0] - 20.08.2025
+
+### Ajouté
+
+- Mise en place des détails de l'événement
+- Intégration des informations et ajouts de la carte
+- Nouvelle sidebar qui gère depuis le cache de session les événements consultés
+- Gestion automatique du rafraichissement et de la suppresion de l'historique
+
+### Modifié
+
+- Correction de certains tests bloquant
+
+### Techniques
+
+- Remanie du layout de l'application permettant une meilleure responsivité(?)
+
+---
+
 ## [0.5.0] - 19.08.2025
 
 ### Ajouté
