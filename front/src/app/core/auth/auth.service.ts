@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject, tap } from 'rxjs';
 import { ConfigService } from '../services/config.service';
+import { CacheService } from '../services/cache.service';
 
 export interface User {
   id: number;
@@ -52,7 +53,11 @@ export class AuthService {
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
   public userPreferences$ = this.userPreferencesSubject.asObservable();
 
-  constructor(private http: HttpClient, private configService: ConfigService) {
+  constructor(
+    private http: HttpClient,
+    private configService: ConfigService,
+    private cacheService: CacheService
+  ) {
     this.checkStoredAuth();
   }
 
@@ -85,7 +90,11 @@ export class AuthService {
           console.log('Login response:', response);
           if (response.success && response.access_token && response.user) {
             console.log('Setting auth with user:', response.user);
-            this.setAuth(response.user, response.access_token, response.preferences || []);
+            this.setAuth(
+              response.user,
+              response.access_token,
+              response.preferences || []
+            );
           } else {
             console.log('Login response missing required fields:', {
               success: response.success,
@@ -106,7 +115,11 @@ export class AuthService {
       .pipe(
         tap((response) => {
           if (response.success && response.access_token && response.user) {
-            this.setAuth(response.user, response.access_token, response.preferences || []);
+            this.setAuth(
+              response.user,
+              response.access_token,
+              response.preferences || []
+            );
           }
         })
       );
@@ -131,12 +144,19 @@ export class AuthService {
       );
   }
 
-  private setAuth(user: User, token: string, preferences: UserPreference[] = []): void {
+  private setAuth(
+    user: User,
+    token: string,
+    preferences: UserPreference[] = []
+  ): void {
     console.log('setAuth called with:', {
       user,
       token: token ? 'present' : 'missing',
-      preferencesCount: preferences.length
+      preferencesCount: preferences.length,
     });
+
+    this.cacheService.clearViewHistory();
+
     localStorage.setItem('auth_token', token);
     localStorage.setItem('current_user', JSON.stringify(user));
     localStorage.setItem('user_preferences', JSON.stringify(preferences));
@@ -150,6 +170,8 @@ export class AuthService {
   }
 
   private clearAuth(): void {
+    this.cacheService.clearViewHistory();
+
     localStorage.removeItem('auth_token');
     localStorage.removeItem('current_user');
     localStorage.removeItem('user_preferences');

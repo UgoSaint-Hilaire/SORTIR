@@ -108,4 +108,47 @@ export class CacheService {
       },
     };
   }
+
+  addToViewHistory(event: Event): void {
+    const HISTORY_KEY = 'viewed_events_history';
+    const MAX_HISTORY_SIZE = 10;
+
+    let history = this.getViewHistory();
+
+    history = history.filter((e) => e.ticketmasterId !== event.ticketmasterId);
+
+    history.unshift(event);
+
+    if (history.length > MAX_HISTORY_SIZE) {
+      history = history.slice(0, MAX_HISTORY_SIZE);
+    }
+
+    try {
+      sessionStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    } catch (error) {
+      console.warn('Could not save to sessionStorage:', error);
+    }
+  }
+
+  getViewHistory(): Event[] {
+    const HISTORY_KEY = 'viewed_events_history';
+
+    try {
+      const stored = sessionStorage.getItem(HISTORY_KEY);
+      return stored ? JSON.parse(stored) : [];
+    } catch (error) {
+      console.warn('Could not read from sessionStorage:', error);
+      return [];
+    }
+  }
+
+  clearViewHistory(): void {
+    const HISTORY_KEY = 'viewed_events_history';
+
+    try {
+      sessionStorage.removeItem(HISTORY_KEY);
+    } catch (error) {
+      console.warn('Could not clear sessionStorage:', error);
+    }
+  }
 }

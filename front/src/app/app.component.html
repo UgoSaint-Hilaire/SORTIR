@@ -1,3 +1,25 @@
 
 <app-navbar></app-navbar>
-<router-outlet></router-outlet>
+
+@if (hasHistory()) {
+<!-- Layout avec historique -->
+<div class="container mx-auto py-8 max-w-7xl">
+  <div class="flex gap-6 xl:justify-start justify-center">
+    <div class="max-w-4xl xl:flex-1">
+      <router-outlet></router-outlet>
+    </div>
+    <div class="w-80 hidden xl:block">
+      <app-history></app-history>
+    </div>
+  </div>
+</div>
+} @else {
+<!-- Layout sans historique -->
+<div class="container mx-auto py-8 max-w-4xl">
+  <div class="flex justify-center">
+    <div class="w-full">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+}

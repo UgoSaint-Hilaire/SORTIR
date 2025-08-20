@@ -65,7 +65,7 @@ describe('EventCardComponent', () => {
 
   describe('formatDate', () => {
     it('should call eventCardService.formatDate', () => {
-      const spy = spyOn(component['eventCardService'], 'formatDate').and.returnValue('Formatted Date');
+      const spy = spyOn(component['EventService'], 'formatDate').and.returnValue('Formatted Date');
       const result = component.formatDate(mockEvent.date);
       expect(spy).toHaveBeenCalledWith(mockEvent.date);
       expect(result).toBe('Formatted Date');
@@ -74,7 +74,7 @@ describe('EventCardComponent', () => {
 
   describe('getEventTitle', () => {
     it('should call eventCardService.getEventTitle with current event', () => {
-      const spy = spyOn(component['eventCardService'], 'getEventTitle').and.returnValue('Service Title');
+      const spy = spyOn(component['EventService'], 'getEventTitle').and.returnValue('Service Title');
       const result = component.getEventTitle();
       expect(spy).toHaveBeenCalledWith(component.event);
       expect(result).toBe('Service Title');
@@ -83,7 +83,7 @@ describe('EventCardComponent', () => {
 
   describe('getEventImage', () => {
     it('should call eventCardService.getEventImage with current event', () => {
-      const spy = spyOn(component['eventCardService'], 'getEventImage').and.returnValue('test-image.jpg');
+      const spy = spyOn(component['EventService'], 'getEventImage').and.returnValue('test-image.jpg');
       const result = component.getEventImage();
       expect(spy).toHaveBeenCalledWith(component.event);
       expect(result).toBe('test-image.jpg');
@@ -92,7 +92,7 @@ describe('EventCardComponent', () => {
 
   describe('getEventLocation', () => {
     it('should call eventCardService.getEventLocation with current event', () => {
-      const spy = spyOn(component['eventCardService'], 'getEventLocation').and.returnValue('Service Location');
+      const spy = spyOn(component['EventService'], 'getEventLocation').and.returnValue('Service Location');
       const result = component.getEventLocation();
       expect(spy).toHaveBeenCalledWith(component.event);
       expect(result).toBe('Service Location');
@@ -101,7 +101,7 @@ describe('EventCardComponent', () => {
 
   describe('getEventCategory', () => {
     it('should call eventCardService.getEventCategory with current event', () => {
-      const spy = spyOn(component['eventCardService'], 'getEventCategory').and.returnValue('Service Category');
+      const spy = spyOn(component['EventService'], 'getEventCategory').and.returnValue('Service Category');
       const result = component.getEventCategory();
       expect(spy).toHaveBeenCalledWith(component.event);
       expect(result).toBe('Service Category');
