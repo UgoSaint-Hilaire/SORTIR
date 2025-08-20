@@ -13,7 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Event } from '../../models/event.model';
 import { EventService } from '../event.service';
-import { ConfigService } from '../../core/services';
+import { ConfigService, CacheService } from '../../core/services';
 import maplibregl from 'maplibre-gl';
 
 @Component({
@@ -30,6 +30,7 @@ export class EventDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   private http = inject(HttpClient);
   private EventService = inject(EventService);
   private configService = inject(ConfigService);
+  private cacheService = inject(CacheService);
 
   @ViewChild('mapContainer', { static: false }) mapContainer!: ElementRef;
 
@@ -41,15 +42,23 @@ export class EventDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   private map?: maplibregl.Map;
 
   ngOnInit(): void {
-    const eventId = this.route.snapshot.paramMap.get('id');
-    if (eventId) {
-      this.loadEvent(eventId);
-    }
+    this.route.paramMap.subscribe((params) => {
+      const eventId = params.get('id');
+      if (eventId) {
+        window.scrollTo(0, 0);
+        this.loadEvent(eventId);
+      }
+    });
   }
 
   loadEvent(id: string): void {
     this.loading.set(true);
     this.error.set(null);
+
+    if (this.map) {
+      this.map.remove();
+      this.map = undefined;
+    }
 
     const url = this.configService.getApiEndpoint(`/events/${id}`);
     console.log('Loading event from URL:', url);
@@ -59,7 +68,6 @@ export class EventDetailComponent implements OnInit, AfterViewInit, OnDestroy {
         console.log('Event response:', response);
         if (response.success && response.data) {
           this.event.set(response.data);
-          // Initialiser la carte après le chargement de l'événement
           setTimeout(() => this.initializeMap(), 100);
         } else {
           this.error.set('Événement non trouvé');
@@ -116,7 +124,7 @@ export class EventDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!description) return '';
 
     if (this.shouldTruncateDescription() && !this.isDescriptionExpanded()) {
-      return description.substring(0, 392); // 400 - 8 caractères pour le dégradé
+      return description.substring(0, 392);
     }
     return description;
   }
@@ -142,7 +150,6 @@ export class EventDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!event?.date) return '';
 
     try {
-      // Utiliser dateTime s'il existe, sinon combiner localDate et localTime
       const dateString =
         event.date.dateTime ||
         event.date.localDate +
@@ -166,6 +173,11 @@ export class EventDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.map) {
       this.map.remove();
+    }
+
+    const currentEvent = this.event();
+    if (currentEvent) {
+      this.cacheService.addToViewHistory(currentEvent);
     }
   }
 
