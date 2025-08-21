@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://sortir-api-pt-development.up.railway.app',
+  apiUrl: 'https://sortir-api-pt.up.railway.app',
 };
