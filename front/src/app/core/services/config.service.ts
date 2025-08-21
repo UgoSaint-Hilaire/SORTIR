@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ConfigService {
   private config = environment;
@@ -17,9 +17,5 @@ export class ConfigService {
 
   getApiEndpoint(endpoint: string): string {
     return `${this.apiUrl}${endpoint}`;
-  }
-
-  getEnvironmentInfo(): string {
-    return this.production ? 'production' : 'development';
   }
 }

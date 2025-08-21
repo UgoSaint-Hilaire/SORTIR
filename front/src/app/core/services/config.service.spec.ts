@@ -54,18 +54,4 @@ describe('ConfigService', () => {
       expect(result).toBe('http://localhost:3001/events?page=1&limit=10');
     });
   });
-
-  describe('getEnvironmentInfo', () => {
-    it('should return "development" when production is false', () => {
-      const result = service.getEnvironmentInfo();
-      expect(result).toBe('development');
-    });
-
-    it('should return "production" when production is true', () => {
-      // Mock the private config property to simulate production environment
-      (service as any).config = { production: true, apiUrl: 'https://api.example.com' };
-      const result = service.getEnvironmentInfo();
-      expect(result).toBe('production');
-    });
-  });
 });
