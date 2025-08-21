@@ -9,7 +9,6 @@ import { AuthService } from '../../core/auth/auth.service';
   standalone: true,
   imports: [CommonModule, PublicFeedComponent, CustomFeedComponent],
   templateUrl: './feed-nav.component.html',
-  styleUrl: './feed-nav.component.css',
 })
 export class FeedNavComponent implements OnInit {
   private authService = inject(AuthService);

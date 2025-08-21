@@ -15,7 +15,6 @@ interface CategoryGroup {
   selector: 'app-preferences-selector',
   imports: [CommonModule, FormsModule],
   templateUrl: './preferences-selector.component.html',
-  styleUrl: './preferences-selector.component.css',
 })
 export class PreferencesSelectorComponent implements OnInit {
   categoryGroups: CategoryGroup[] = [];

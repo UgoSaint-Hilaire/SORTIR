@@ -12,7 +12,6 @@ import { EventService } from '../events/event.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './history.component.html',
-  styleUrl: './history.component.css',
   providers: [EventService],
 })
 export class HistoryComponent implements OnInit, OnDestroy {

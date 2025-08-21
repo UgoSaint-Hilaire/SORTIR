@@ -7,8 +7,7 @@ import { AuthService, LoginRequest, RegisterRequest } from './auth.service';
 @Component({
   selector: 'app-auth',
   imports: [CommonModule, FormsModule],
-  templateUrl: './auth.component.html',
-  styleUrl: './auth.component.css'
+  templateUrl: './auth.component.html'
 })
 export class AuthComponent {
   @Input() isOpen = false;

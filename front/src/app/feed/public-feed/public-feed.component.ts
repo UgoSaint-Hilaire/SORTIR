@@ -10,7 +10,6 @@ import { ConfigService } from '../../core/services';
   standalone: true,
   imports: [CommonModule, EventCardComponent],
   templateUrl: './public-feed.component.html',
-  styleUrl: './public-feed.component.css',
 })
 export class PublicFeedComponent implements OnInit, OnDestroy {
   private publicFeedService = inject(PublicFeedService);

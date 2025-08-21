@@ -9,7 +9,6 @@ import { EventService } from '../event.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './event-card.component.html',
-  styleUrl: './event-card.component.css',
 })
 export class EventCardComponent {
   @Input({ required: true }) event!: Event;

@@ -9,7 +9,6 @@ import { PreferencesSelectorComponent } from './preferences-selector/preferences
   selector: 'app-profile',
   imports: [CommonModule, DatePipe, PreferencesSelectorComponent],
   templateUrl: './profil.component.html',
-  styleUrl: './profil.component.css',
 })
 export class ProfileComponent implements OnInit {
   user: User | null = null;

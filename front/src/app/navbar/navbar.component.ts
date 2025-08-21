@@ -18,7 +18,6 @@ import { EventService } from '../events/event.service';
   selector: 'app-navbar',
   imports: [CommonModule, RouterModule, AuthComponent],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css',
   providers: [EventService],
 })
 export class NavbarComponent implements OnInit, OnDestroy {

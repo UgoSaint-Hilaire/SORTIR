@@ -21,7 +21,6 @@ import maplibregl from 'maplibre-gl';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './event-detail.component.html',
-  styleUrl: './event-detail.component.css',
   providers: [EventService],
 })
 export class EventDetailComponent implements OnInit, AfterViewInit, OnDestroy {
