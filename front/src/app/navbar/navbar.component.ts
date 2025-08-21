@@ -1,30 +1,51 @@
-import { Component } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  inject,
+  OnInit,
+  OnDestroy,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { AuthService, User } from '../core/services';
+import { RouterModule, Router, NavigationEnd } from '@angular/router';
+import { AuthService, User, CacheService } from '../core/services';
 import { AuthComponent } from '../core/auth/auth.component';
-import { Observable } from 'rxjs';
+import { Observable, Subscription, filter } from 'rxjs';
+import { Event } from '../models/event.model';
+import { EventService } from '../events/event.service';
 
 @Component({
   selector: 'app-navbar',
   imports: [CommonModule, RouterModule, AuthComponent],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
+  providers: [EventService],
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit, OnDestroy {
   isAuthModalOpen = false;
-  isMobileSidebarOpen = false;
   currentUser$: Observable<User | null>;
   isAuthenticated$: Observable<boolean>;
+  isScrolled = false;
+  showHistoryDropdown = false;
+
+  private cacheService = inject(CacheService);
+  private router = inject(Router);
+  private eventService = inject(EventService);
+
+  historyEvents = signal<Event[]>([]);
+  private routerSubscription?: Subscription;
+  private authSubscription?: Subscription;
 
   constructor(private authService: AuthService) {
     this.currentUser$ = this.authService.currentUser$;
     this.isAuthenticated$ = this.authService.isAuthenticated$;
   }
 
-  toggleMobileSidebar(): void {
-    this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    this.isScrolled = window.scrollY > 0;
   }
+
 
   openAuthModal(): void {
     this.isAuthModalOpen = true;
@@ -40,8 +61,57 @@ export class NavbarComponent {
         console.log('Déconnexion réussie');
       },
       error: (error) => {
-        console.error('Erreur lors de la déconnexion:', error);
+        console.log('Déconnexion effectuée (avec erreur serveur):', error);
       },
     });
   }
+
+  ngOnInit(): void {
+    this.loadHistory();
+
+    this.routerSubscription = this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        setTimeout(() => this.loadHistory(), 100);
+      });
+
+    this.authSubscription = this.authService.isAuthenticated$.subscribe(() => {
+      this.loadHistory();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.routerSubscription?.unsubscribe();
+    this.authSubscription?.unsubscribe();
+  }
+
+  loadHistory(): void {
+    const historyEvents = this.cacheService.getViewHistory();
+    this.historyEvents.set(historyEvents);
+  }
+
+  navigateToEvent(event: Event): void {
+    this.router.navigate(['/event', event._id || event.ticketmasterId]);
+  }
+
+  getEventTitle(event: Event): string {
+    return this.eventService.getEventTitle(event);
+  }
+
+  getEventImage(event: Event): string | null {
+    return this.eventService.getEventImage(event);
+  }
+
+  getEventLocation(event: Event): string {
+    return this.eventService.getEventLocation(event);
+  }
+
+  formatDate(event: Event): string {
+    return this.eventService.formatDate(event.date);
+  }
+
+  toggleHistoryDropdown(): void {
+    this.showHistoryDropdown = !this.showHistoryDropdown;
+  }
+
 }
