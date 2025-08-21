@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, BehaviorSubject, tap } from 'rxjs';
+import { Observable, BehaviorSubject, tap, catchError, of } from 'rxjs';
 import { ConfigService } from '../services/config.service';
 import { CacheService } from '../services/cache.service';
 
@@ -140,6 +140,15 @@ export class AuthService {
       .pipe(
         tap(() => {
           this.clearAuth();
+        }),
+        catchError((error) => {
+          console.log('Logout request failed, clearing auth anyway:', error);
+          this.clearAuth();
+          return of({
+            success: true,
+            code: 200,
+            message: 'Logged out successfully',
+          } as AuthResponse);
         })
       );
   }
