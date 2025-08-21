@@ -1,7 +1,7 @@
 @if (history().length > 0) {
 <nav
   aria-label="Historique de navigation"
-  class="rounded-lg p-4 h-fit sticky top-4"
+  class="rounded-lg p-4 h-fit sticky top-20"
 >
   <div class="mb-4">
     <h2 class="text-lg font-semibold text-base-content flex items-center gap-2">
@@ -30,14 +30,7 @@
       <button
         (click)="navigateToEvent(event)"
         class="btn btn-ghost w-full justify-start p-3 h-auto min-h-0 border-0 focus:border-0 hover:border-0 text-left"
-        [attr.title]="
-          'Retourner sur l\'événement ' +
-          getEventTitle(event) +
-          ' du ' +
-          formatDate(event) +
-          ' à ' +
-          getEventLocation(event)
-        "
+        [attr.title]="'Retourner sur l\'événement ' + getEventTitle(event)"
         type="button"
       >
         <div class="flex gap-3 w-full">
@@ -64,7 +57,6 @@
           <div class="flex-1 min-w-0">
             <span
               class="font-semibold text-sm text-base-content truncate block"
-              [title]="getEventTitle(event)"
             >
               {{ truncateText(getEventTitle(event), 25) }}
             </span>

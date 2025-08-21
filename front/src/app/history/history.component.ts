@@ -9,12 +9,14 @@ import { EventService } from '../events/event.service';
 
 @Component({
   selector: 'app-history',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './history.component.html',
   styleUrl: './history.component.css',
   providers: [EventService],
 })
 export class HistoryComponent implements OnInit, OnDestroy {
+  
   private cacheService = inject(CacheService);
   private router = inject(Router);
   private eventService = inject(EventService);
