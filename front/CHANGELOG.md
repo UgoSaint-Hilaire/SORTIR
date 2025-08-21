@@ -17,6 +17,7 @@
 
 ### Techniques
 
+- Ajout de la dépendance maplibre-gl v5.6.2
 - Remanie du layout de l'application permettant une meilleure responsivité(?)
 
 ---

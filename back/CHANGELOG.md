@@ -2,6 +2,17 @@
 
 ---
 
+## [0.11.0] - 20.08.2025
+
+### Ajouté
+
+- Nouvelle route permettant la récupération des détails d'un évènement
+
+### Modifié
+
+- Service AuthService mis à jour pour inclure les préférences utilisateur lors de la connexion et l'inscription
+- Tests unitaires mis à jour pour valider l'intégration des préférences
+
 ## [0.10.1] - 19.08.2025
 
 ### Modifié

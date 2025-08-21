@@ -9,6 +9,15 @@ Pour avoir un apperçu plus spécifiques des changements, consulter les docs de 
 
 ---
 
+## [0.10.0] - [back 0.11.0 | front 0.6.0] - 19.08.2025
+
+- Mise en place des détails de l'événement via nouvel endpoint
+- Intégration des informations et ajouts de la carte
+- Nouvelle sidebar qui gère depuis le cache de session les événements consultés
+- Gestion automatique du rafraichissement et de la suppresion de l'historique
+
+---
+
 ## [0.9.0] - [back 0.10.1 | front 0.5.0] - 19.08.2025
 
 ### Ajouté
