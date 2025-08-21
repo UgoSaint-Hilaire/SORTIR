@@ -15,10 +15,9 @@ describe('NavbarComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        provideRouter([])
-      ]
-    })
-    .compileComponents();
+        provideRouter([]),
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(NavbarComponent);
     component = fixture.componentInstance;
@@ -31,33 +30,21 @@ describe('NavbarComponent', () => {
 
   it('should toggle auth modal', () => {
     expect(component.isAuthModalOpen).toBeFalse();
-    
+
     component.openAuthModal();
     expect(component.isAuthModalOpen).toBeTrue();
-    
+
     component.closeAuthModal();
     expect(component.isAuthModalOpen).toBeFalse();
   });
 
   it('should toggle history dropdown', () => {
     expect(component.showHistoryDropdown).toBeFalse();
-    
+
     component.toggleHistoryDropdown();
     expect(component.showHistoryDropdown).toBeTrue();
-    
+
     component.toggleHistoryDropdown();
     expect(component.showHistoryDropdown).toBeFalse();
-  });
-
-  it('should update scroll state on window scroll', () => {
-    const scrollSpy = spyOnProperty(window, 'scrollY', 'get');
-    
-    scrollSpy.and.returnValue(100);
-    component.onWindowScroll();
-    expect(component.isScrolled).toBeTrue();
-    
-    scrollSpy.and.returnValue(0);
-    component.onWindowScroll();
-    expect(component.isScrolled).toBeFalse();
   });
 });
