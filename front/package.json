@@ -5,6 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:preview-tests": "ng build --configuration preview-tests",
+    "serve:preview-tests": "ng serve --configuration preview-tests",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:cov": "ng test --browsers=ChromeHeadless --watch=false --code-coverage",
