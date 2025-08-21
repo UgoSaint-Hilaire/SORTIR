@@ -113,4 +113,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.showHistoryDropdown = !this.showHistoryDropdown;
   }
 
+  truncateText(text: string, maxLength: number): string {
+    if (text.length <= maxLength) {
+      return text;
+    }
+    return text.substring(0, maxLength) + '...';
+  }
+
 }

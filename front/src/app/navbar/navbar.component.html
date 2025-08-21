@@ -305,10 +305,10 @@
                     <span
                       class="font-semibold text-sm text-base-content truncate block"
                     >
-                      {{ getEventTitle(event) }}
+                      {{ truncateText(getEventTitle(event), 25) }}
                     </span>
                     <span class="text-xs text-base-content/80 truncate block">
-                      {{ getEventLocation(event) }}
+                      {{ truncateText(getEventLocation(event), 30) }}
                     </span>
                     <span class="text-xs text-base-content/80 block">
                       {{ formatDate(event) }}
