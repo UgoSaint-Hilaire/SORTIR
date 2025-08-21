@@ -2,6 +2,18 @@
 
 ---
 
+## [0.7.0] - 21.08.2025
+
+### Ajouté
+
+- Possibilité d'avoir accès à l'historique des événements au format tablette/smartphone
+
+### Modifié
+
+- Reorganisation totale de l'ancien menu vertical vers un menu horizontal
+
+---
+
 ## [0.6.0] - 20.08.2025
 
 ### Ajouté
