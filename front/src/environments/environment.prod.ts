@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api.sortir.com/api'
+  apiUrl: 'https://sortir-back-development.up.railway.app/',
 };
