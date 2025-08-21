@@ -9,7 +9,18 @@ Pour avoir un apperçu plus spécifiques des changements, consulter les docs de 
 
 ---
 
+## [0.11.0] - [back 0.11.0 | front 0.7.0] - 21.08.2025
+
+### Ajouté
+
+- Reorganisation totale du menu
+- Possibilité d'accéder à l'historique des événements au format tablette smartphone
+
+---
+
 ## [0.10.0] - [back 0.11.0 | front 0.6.0] - 19.08.2025
+
+### Ajouté
 
 - Mise en place des détails de l'événement via nouvel endpoint
 - Intégration des informations et ajouts de la carte
