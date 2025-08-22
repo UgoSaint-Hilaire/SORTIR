@@ -168,6 +168,102 @@
                 Se connecter
               </button>
             </li>
+
+            <div class="divider my-2"></div>
+
+            <li>
+              <button
+                type="button"
+                class="flex items-center gap-2 justify-between w-full text-left"
+                (click)="toggleHistoryDropdown()"
+                aria-label="Afficher/masquer l'historique"
+                [attr.aria-expanded]="showHistoryDropdown"
+              >
+                <div class="flex items-center gap-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span>Historique</span>
+                </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 transition-transform"
+                  [class.rotate-180]="showHistoryDropdown"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+            </li>
+            @if (showHistoryDropdown) { @for (event of historyEvents(); track
+            event.ticketmasterId) {
+            <li>
+              <button
+                (click)="navigateToEvent(event)"
+                class="btn btn-ghost w-full justify-start p-3 h-auto min-h-0 border-0 focus:border-0 hover:border-0 text-left"
+                [attr.title]="
+                  'Retourner sur l\'événement ' + getEventTitle(event)
+                "
+                type="button"
+              >
+                <div class="flex items-start gap-3 w-full">
+                  @if (getEventImage(event)) {
+                  <div class="avatar flex-shrink-0">
+                    <div class="w-10 h-10 rounded">
+                      <img
+                        [src]="getEventImage(event)"
+                        [alt]="'Image de l\'événement ' + getEventTitle(event)"
+                        class="object-cover"
+                      />
+                    </div>
+                  </div>
+                  } @else {
+                  <div class="avatar placeholder flex-shrink-0">
+                    <div
+                      class="bg-neutral text-neutral-content rounded w-10 h-10"
+                    >
+                      <span class="text-xs">
+                        {{ getEventTitle(event).charAt(0).toUpperCase() }}
+                      </span>
+                    </div>
+                  </div>
+                  }
+
+                  <div class="flex-1 min-w-0 space-y-1">
+                    <span
+                      class="font-semibold text-sm text-base-content truncate block"
+                    >
+                      {{ truncateText(getEventTitle(event), 25) }}
+                    </span>
+                    <span class="text-xs text-base-content/80 truncate block">
+                      {{ truncateText(getEventLocation(event), 30) }}
+                    </span>
+                    <span class="text-xs text-base-content/80 block">
+                      {{ formatDate(event) }}
+                    </span>
+                  </div>
+                </div>
+              </button>
+            </li>
+            } }
             } @if (isAuthenticated$ | async) {
             <div class="flex justify-center py-4 pointer-events-none">
               <div class="avatar placeholder">
