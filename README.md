@@ -1,5 +1,10 @@
 # SORTIR
 
+## Liens vers les environnements:
+
+- ⭐ preview & test : https://sortir-pt.up.railway.app/
+- production : https://sortir.up.railway.app/
+
 ## Table des Matières
 
 1. [Technologies](#technologies)
@@ -103,9 +108,17 @@ npm run start:prod
 
 ## Fonctionnalités
 
-- **Découverte d'événements** via API Ticketmaster
+- **Alimentation de la base MongoDB** sécurisé grâce au rôle 'admin'
+  - enpoint pour faire un premier batch de récupération
+  - scheduler automatique venant alimenter la bdd chaques jours à 6h pétante
+- **Découverte d'événements et flux personnalisés**
+  - plusieurs feed mis en place
+  - mise en place d'un loader 'infini'
+  - page de chaque événément
+  - gestion d'état complexe
+- **Historique**
 - **Authentification utilisateur** sécurisée
-- **Flux personnalisés** selon préférences
+- **Gestion des préférences**
 - **Géolocalisation** et cartes interactives
 - **Interface responsive** mobile/desktop
 
@@ -202,7 +215,7 @@ npm run test:cov
 
 ## Documentation
 
+- [Protocole CI/CD et environnements](./doc/CI-CD-environnements.md)
 - [Manuel déploiement](./doc/manuel-deploiement-maj.md)
-- [Documentation technique](./doc/documentation-technique-exploitation.md)
 - [Sécurité OWASP](./doc/securite-owasp.md)
 - [Accessibilité](./doc/accessibilite.md)
