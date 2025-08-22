@@ -6,19 +6,19 @@ import {
 } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
 
 import { AuthComponent } from './auth.component';
 import { AuthService } from './auth.service';
-import { ConfigService } from '../services/config.service';
 
 describe('AuthComponent', () => {
   let component: AuthComponent;
   let fixture: ComponentFixture<AuthComponent>;
   let authService: jasmine.SpyObj<AuthService>;
-  let configService: jasmine.SpyObj<ConfigService>;
+  let router: jasmine.SpyObj<Router>;
 
   const mockAuthResponse = {
     success: true,
@@ -37,48 +37,29 @@ describe('AuthComponent', () => {
   beforeEach(async () => {
     const authSpy = jasmine.createSpyObj(
       'AuthService',
-      [
-        'login',
-        'register',
-        'logout',
-        'getCurrentUser',
-        'isAuthenticated',
-        'getToken',
-        'clearAuth',
-      ],
+      ['login', 'register'],
       {
         currentUser$: of(null),
         isAuthenticated$: of(false),
       }
     );
-    const configSpy = jasmine.createSpyObj('ConfigService', ['getApiEndpoint']);
+    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
-      imports: [AuthComponent, FormsModule],
+      imports: [AuthComponent, ReactiveFormsModule],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        FormBuilder,
         { provide: AuthService, useValue: authSpy },
-        { provide: ConfigService, useValue: configSpy },
+        { provide: Router, useValue: routerSpy },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AuthComponent);
     component = fixture.componentInstance;
     authService = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
-    configService = TestBed.inject(
-      ConfigService
-    ) as jasmine.SpyObj<ConfigService>;
-
-    // Mock the actual endpoint concatenation behavior
-    configService.getApiEndpoint.and.callFake(
-      (endpoint: string) => `http://localhost:3000${endpoint}`
-    );
-
-    // Setup default returns for AuthService methods
-    authService.getCurrentUser.and.returnValue(null);
-    authService.isAuthenticated.and.returnValue(false);
-    authService.getToken.and.returnValue(null);
+    router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
 
     fixture.detectChanges();
   });
@@ -96,13 +77,87 @@ describe('AuthComponent', () => {
       expect(component.isOpen).toBe(false);
     });
 
-    it('should initialize forms with empty values', () => {
-      expect(component.loginForm).toEqual({ email: '', password: '' });
-      expect(component.registerForm).toEqual({
-        username: '',
-        email: '',
-        password: '',
-      });
+    it('should initialize reactive forms', () => {
+      expect(component.loginFormGroup).toBeDefined();
+      expect(component.registerFormGroup).toBeDefined();
+      
+      // Check initial form values
+      expect(component.loginFormGroup.get('email')?.value).toBe('');
+      expect(component.loginFormGroup.get('password')?.value).toBe('');
+      expect(component.registerFormGroup.get('username')?.value).toBe('');
+      expect(component.registerFormGroup.get('email')?.value).toBe('');
+      expect(component.registerFormGroup.get('password')?.value).toBe('');
+    });
+
+    it('should have proper form validation setup', () => {
+      const loginEmail = component.loginFormGroup.get('email');
+      const loginPassword = component.loginFormGroup.get('password');
+      const registerUsername = component.registerFormGroup.get('username');
+      const registerEmail = component.registerFormGroup.get('email');
+      const registerPassword = component.registerFormGroup.get('password');
+
+      expect(loginEmail?.hasError('required')).toBe(true);
+      expect(loginPassword?.hasError('required')).toBe(true);
+      expect(registerUsername?.hasError('required')).toBe(true);
+      expect(registerEmail?.hasError('required')).toBe(true);
+      expect(registerPassword?.hasError('required')).toBe(true);
+    });
+  });
+
+  describe('form getters', () => {
+    it('should return correct form controls', () => {
+      expect(component.loginEmail).toBe(component.loginFormGroup.get('email'));
+      expect(component.loginPassword).toBe(component.loginFormGroup.get('password'));
+      expect(component.registerUsername).toBe(component.registerFormGroup.get('username'));
+      expect(component.registerEmail).toBe(component.registerFormGroup.get('email'));
+      expect(component.registerPassword).toBe(component.registerFormGroup.get('password'));
+    });
+  });
+
+  describe('validation methods', () => {
+    it('should correctly identify invalid fields', () => {
+      const emailControl = component.loginFormGroup.get('email');
+      emailControl?.markAsTouched();
+      emailControl?.setErrors({ required: true });
+
+      expect(component.isFieldInvalid(emailControl)).toBe(true);
+
+      emailControl?.setErrors(null);
+      expect(component.isFieldInvalid(emailControl)).toBe(false);
+    });
+
+    it('should return correct error messages', () => {
+      const emailControl = component.loginFormGroup.get('email');
+      emailControl?.setErrors({ required: true });
+
+      const errorMessage = component.getErrorMessage('email', emailControl);
+      expect(errorMessage).toBe("L'email est requis");
+
+      emailControl?.setErrors({ email: true });
+      const emailErrorMessage = component.getErrorMessage('email', emailControl);
+      expect(emailErrorMessage).toBe("Format d'email invalide");
+    });
+  });
+
+  describe('password strength validators', () => {
+    it('should validate uppercase letters', () => {
+      expect(component.hasUpperCase('Password')).toBe(true);
+      expect(component.hasUpperCase('password')).toBe(false);
+    });
+
+    it('should validate lowercase letters', () => {
+      expect(component.hasLowerCase('Password')).toBe(true);
+      expect(component.hasLowerCase('PASSWORD')).toBe(false);
+    });
+
+    it('should validate numbers', () => {
+      expect(component.hasNumber('Pass123')).toBe(true);
+      expect(component.hasNumber('Password')).toBe(false);
+    });
+
+    it('should validate special characters', () => {
+      expect(component.hasSpecialChar('Pass@123')).toBe(true);
+      expect(component.hasSpecialChar('Pass123')).toBe(false);
     });
   });
 
@@ -121,17 +176,6 @@ describe('AuthComponent', () => {
       expect(component.isLoginMode).toBe(true);
     });
 
-    it('should clear messages and reset forms when switching modes', () => {
-      component.errorMessage = 'Test error';
-      component.successMessage = 'Test success';
-      component.loginForm.email = 'test@email.com';
-
-      component.toggleMode();
-
-      expect(component.errorMessage).toBe('');
-      expect(component.successMessage).toBe('');
-      expect(component.loginForm.email).toBe('');
-    });
   });
 
   describe('modal functionality', () => {
@@ -143,93 +187,39 @@ describe('AuthComponent', () => {
       expect(component.close.emit).toHaveBeenCalled();
     });
 
-    it('should reset forms and clear messages when closing modal', () => {
-      component.errorMessage = 'Test error';
-      component.loginForm.email = 'test@email.com';
-
-      component.closeModal();
-
-      expect(component.errorMessage).toBe('');
-      expect(component.loginForm.email).toBe('');
-    });
-  });
-
-  describe('form validation', () => {
-    it('should show error for empty login form', () => {
-      component.isLoginMode = true;
-      component.loginForm = { email: '', password: '' };
-
-      component.onSubmit();
-
-      expect(component.errorMessage).toBe('Veuillez remplir tous les champs');
-    });
-
-    it('should show error for incomplete login form', () => {
-      component.isLoginMode = true;
-      component.loginForm = { email: 'test@email.com', password: '' };
-
-      component.onSubmit();
-
-      expect(component.errorMessage).toBe('Veuillez remplir tous les champs');
-    });
-
-    it('should show error for empty registration form', () => {
-      component.isLoginMode = false;
-      component.registerForm = { username: '', email: '', password: '' };
-
-      component.onSubmit();
-
-      expect(component.errorMessage).toBe('Veuillez remplir tous les champs');
-    });
-
-    it('should show error for short username', () => {
-      component.isLoginMode = false;
-      component.registerForm = {
-        username: 'ab',
-        email: 'test@email.com',
-        password: 'password123',
-      };
-
-      component.onSubmit();
-
-      expect(component.errorMessage).toBe(
-        "Le nom d'utilisateur doit contenir au moins 3 caractères"
-      );
-    });
-
-    it('should show error for short password', () => {
-      component.isLoginMode = false;
-      component.registerForm = {
-        username: 'testuser',
-        email: 'test@email.com',
-        password: '12345',
-      };
-
-      component.onSubmit();
-
-      expect(component.errorMessage).toBe(
-        'Le mot de passe doit contenir au moins 6 caractères'
-      );
-    });
   });
 
   describe('login functionality', () => {
     beforeEach(() => {
       component.isLoginMode = true;
-      component.loginForm = {
+      component.loginFormGroup.patchValue({
         email: 'test@example.com',
         password: 'password123',
-      };
+      });
     });
 
-    it('should login successfully', fakeAsync(() => {
+    it('should not submit invalid login form', () => {
+      component.loginFormGroup.get('email')?.setValue('');
+      component.loginFormGroup.get('password')?.setValue('');
+
+      component.onSubmit();
+
+      expect(authService.login).not.toHaveBeenCalled();
+      expect(component.loginFormGroup.get('email')?.touched).toBe(true);
+      expect(component.loginFormGroup.get('password')?.touched).toBe(true);
+    });
+
+    it('should login successfully with valid form', fakeAsync(() => {
       authService.login.and.returnValue(of(mockAuthResponse));
       spyOn(component, 'closeModal');
 
       component.onSubmit();
       tick();
 
-      expect(authService.login).toHaveBeenCalledWith(component.loginForm);
+      expect(authService.login).toHaveBeenCalledWith({
+        email: 'test@example.com',
+        password: 'password123',
+      });
       expect(component.isLoading).toBe(false);
       expect(component.successMessage).toBe('Connexion réussie !');
 
@@ -255,14 +245,132 @@ describe('AuthComponent', () => {
       expect(component.isLoading).toBe(false);
       expect(component.errorMessage).toBe('Network error');
     });
+  });
 
-    it('should set loading state during login', () => {
-      authService.login.and.returnValue(of(mockAuthResponse));
+  describe('registration functionality', () => {
+    beforeEach(() => {
+      component.isLoginMode = false;
+      component.registerFormGroup.patchValue({
+        username: 'testuser',
+        email: 'test@example.com',
+        password: 'Password123!',
+      });
+    });
+
+    it('should not submit invalid registration form', () => {
+      component.registerFormGroup.get('username')?.setValue('ab'); // Too short
 
       component.onSubmit();
 
-      expect(component.isLoading).toBe(false); // After completion
-      expect(authService.login).toHaveBeenCalled();
+      expect(authService.register).not.toHaveBeenCalled();
+      expect(component.registerFormGroup.get('username')?.touched).toBe(true);
     });
+
+    it('should register successfully with valid form', fakeAsync(() => {
+      authService.register.and.returnValue(of(mockAuthResponse));
+      spyOn(component, 'closeModal');
+
+      component.onSubmit();
+      tick();
+
+      expect(authService.register).toHaveBeenCalledWith({
+        username: 'testuser',
+        email: 'test@example.com',
+        password: 'Password123!',
+      });
+      expect(component.isLoading).toBe(false);
+      expect(component.successMessage).toBe('Inscription réussie ! Redirection vers vos préférences...');
+
+      tick(1000);
+      expect(component.closeModal).toHaveBeenCalled();
+      expect(router.navigate).toHaveBeenCalledWith(['/profile']);
+    }));
+
+    it('should handle registration error', () => {
+      const errorResponse = {
+        success: false,
+        code: 409,
+        message: 'Email already exists',
+      };
+      authService.register.and.returnValue(of(errorResponse));
+
+      component.onSubmit();
+
+      expect(component.isLoading).toBe(false);
+      expect(component.errorMessage).toBe('Email already exists');
+    });
+
+    it('should handle HTTP error during registration', () => {
+      const httpError = { error: { message: 'Validation error' } };
+      authService.register.and.returnValue(throwError(() => httpError));
+
+      component.onSubmit();
+
+      expect(component.isLoading).toBe(false);
+      expect(component.errorMessage).toBe('Validation error');
+    });
+  });
+
+  describe('form validation edge cases', () => {
+    it('should validate username pattern', () => {
+      const usernameControl = component.registerFormGroup.get('username');
+      usernameControl?.setValue('user@name'); // Invalid characters
+
+      expect(usernameControl?.hasError('pattern')).toBe(true);
+
+      usernameControl?.setValue('username123'); // Valid
+      expect(usernameControl?.hasError('pattern')).toBe(false);
+    });
+
+    it('should validate email format', () => {
+      const emailControl = component.registerFormGroup.get('email');
+      emailControl?.setValue('invalid-email');
+
+      expect(emailControl?.hasError('email')).toBe(true);
+
+      emailControl?.setValue('valid@email.com');
+      expect(emailControl?.hasError('email')).toBe(false);
+    });
+
+    it('should validate password complexity', () => {
+      const passwordControl = component.registerFormGroup.get('password');
+      
+      // Too short
+      passwordControl?.setValue('Pass1!');
+      expect(passwordControl?.hasError('minlength')).toBe(true);
+
+      // Missing uppercase
+      passwordControl?.setValue('password1!');
+      expect(passwordControl?.hasError('pattern')).toBe(true);
+
+      // Missing lowercase
+      passwordControl?.setValue('PASSWORD1!');
+      expect(passwordControl?.hasError('pattern')).toBe(true);
+
+      // Missing number
+      passwordControl?.setValue('Password!');
+      expect(passwordControl?.hasError('pattern')).toBe(true);
+
+      // Missing special character
+      passwordControl?.setValue('Password123');
+      expect(passwordControl?.hasError('pattern')).toBe(true);
+
+      // Valid password
+      passwordControl?.setValue('Password123!');
+      expect(passwordControl?.valid).toBe(true);
+    });
+  });
+
+  describe('utility methods', () => {
+    it('should clear messages', () => {
+      component.errorMessage = 'Error';
+      component.successMessage = 'Success';
+
+      component.clearMessages();
+
+      expect(component.errorMessage).toBe('');
+      expect(component.successMessage).toBe('');
+    });
+
   });
 });

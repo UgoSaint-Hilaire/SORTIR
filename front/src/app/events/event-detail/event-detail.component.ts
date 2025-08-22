@@ -157,11 +157,15 @@ export class EventDetailComponent implements OnInit, AfterViewInit, OnDestroy {
       if (!dateString) return '';
 
       const date = new Date(dateString);
-      return date.toLocaleTimeString('fr-FR', {
+      if (isNaN(date.getTime())) return '';
+      
+      const timeString = date.toLocaleTimeString('fr-FR', {
         hour: '2-digit',
         minute: '2-digit',
         timeZone: 'Europe/Paris',
       });
+      
+      return timeString === 'Invalid Date' ? '' : timeString;
     } catch (error) {
       return '';
     }
