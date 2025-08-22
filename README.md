@@ -1,4 +1,4 @@
-# SORTIR
+# SORTIR - Agrégateur d'événements
 
 > [!NOTE]  
 > Ce projet est un PROTOTYPE réalisé dans le cadre de la validation du bloc 2 de la certification RNCP39583 - Expert en Développement Logiciel.
