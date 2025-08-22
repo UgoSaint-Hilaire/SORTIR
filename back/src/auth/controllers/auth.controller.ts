@@ -29,7 +29,6 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post("login")
   @HttpCode(HttpStatus.OK)
-  @Throttle({ "auth-short": { limit: 5, ttl: 60000 }, "auth-long": { limit: 20, ttl: 900000 } })
   async login(@Request() req) {
     try {
       const recentFailedAttempts = await this.authLogger.getRecentFailedAttempts(req.body.email, 15);
@@ -72,7 +71,6 @@ export class AuthController {
 
   @Post("register")
   @HttpCode(HttpStatus.CREATED)
-  @Throttle({ "auth-short": { limit: 3, ttl: 60000 }, "auth-long": { limit: 10, ttl: 900000 } })
   async register(@Request() req, @Body() registerDto: RegisterDto) {
     try {
       const result = await this.authService.register(registerDto.username, registerDto.email, registerDto.password);

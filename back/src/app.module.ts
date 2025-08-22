@@ -15,13 +15,11 @@ import { HealthModule } from "./health/health.module";
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    // Configuration du rate limiter - 100 requêtes MAX toutes les secondes
-    // augmentation car problème lorsqu'on clique sur trop d'événements
-    // revenir à 10 lorsque la logique de rapatriation des événements sera en place dans le cache
+    // Configuration du rate limiter - 10 requêtes MAX toutes les secondes
     ThrottlerModule.forRoot([
       {
         ttl: 1000,
-        limit: 100,
+        limit: 10,
       },
     ]),
     // Configuration PostgreSQL (pour auth, users, etc.)
