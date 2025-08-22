@@ -41,20 +41,33 @@ export class CustomFeedService {
       .pipe(
         tap((response) => {
           if (response.success && response.data && response.data.events) {
-            this.cacheCustomEvents(response.data.events);
-            console.log(
-              `Mis en cache ${response.data.events.length} événements custom`
-            );
+            // Ne pas mettre en cache si l'utilisateur n'a pas de préférences
+            if (response.data.noResultsReason !== 'no_preferences') {
+              this.cacheCustomEvents(response.data.events);
+              console.log(
+                `Mis en cache ${response.data.events.length} événements custom`
+              );
+            }
           }
         }),
         map((response) => {
+          if (
+            response.success &&
+            response.data.noResultsReason === 'no_preferences'
+          ) {
+            return response;
+          }
+
           if (response.success) {
             const cachedPage = this.getCustomEventPage(page, limit);
 
             if (cachedPage) {
               return {
                 success: true,
-                data: cachedPage,
+                data: {
+                  ...cachedPage,
+                  noResultsReason: response.data.noResultsReason,
+                },
               };
             }
           }

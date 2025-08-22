@@ -23,7 +23,39 @@
     <span>{{ error() }}</span>
     <button (click)="refresh()" class="btn btn-sm">Réessayer</button>
   </div>
-  } @if (!loading() && events().length === 0 && !error()) {
+  } @if (noPreferences()) {
+  <div class="card bg-warning shadow-xl">
+    <div class="card-body text-center py-16">
+      <div class="flex justify-center mb-4">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-24 h-24 text-warning-content"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+          />
+        </svg>
+      </div>
+      <h2 class="card-title justify-center text-2xl mb-2 text-warning-content">
+        Aucune préférence configurée
+      </h2>
+      <p class="text-warning-content mb-6">
+        Pour avoir un feed personnalisé, vous devez d'abord choisir vos préférences d'événements.
+      </p>
+      <div class="card-actions justify-center">
+        <button class="btn btn-primary" (click)="goToPreferences()">
+          Configurer mes préférences
+        </button>
+      </div>
+    </div>
+  </div>
+  } @else if (!loading() && events().length === 0 && !error()) {
   <div class="card bg-base-200 shadow-xl">
     <div class="card-body text-center py-16">
       <div class="flex justify-center mb-4">

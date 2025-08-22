@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { EventCardComponent } from '../../events/event-card/event-card.component';
 import { CustomFeedService } from './custom-feed.service';
 import { Event } from '../../models/event.model';
@@ -13,11 +14,13 @@ import { ConfigService } from '../../core/services';
 })
 export class CustomFeedComponent implements OnInit, OnDestroy {
   private customFeedService = inject(CustomFeedService);
+  private router = inject(Router);
   public configService = inject(ConfigService);
 
   events = signal<Event[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
+  noPreferences = signal(false);
   currentPage = signal(1);
   totalPages = signal(1);
   totalCount = signal(0);
@@ -86,6 +89,16 @@ export class CustomFeedComponent implements OnInit, OnDestroy {
         }
 
         if (response.data && response.data.events) {
+          console.log('Custom feed response data:', response.data);
+          console.log('noResultsReason:', response.data.noResultsReason);
+
+          if (response.data.noResultsReason === 'no_preferences') {
+            console.log('Détection: utilisateur sans préférences');
+            this.noPreferences.set(true);
+            this.events.set([]);
+            this.loading.set(false);
+            return;
+          }
           const newEvents = response.data.events;
           const pagination = response.data.pagination;
 
@@ -160,6 +173,11 @@ export class CustomFeedComponent implements OnInit, OnDestroy {
     this.customFeedService.clearCustomEventsCache();
     this.currentPage.set(1);
     this.hasAllEventsLoaded.set(false);
+    this.noPreferences.set(false);
     this.loadInitialEvents();
+  }
+
+  goToPreferences() {
+    this.router.navigate(['/profile']);
   }
 }
