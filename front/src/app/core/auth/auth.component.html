@@ -1,38 +1,22 @@
-<div class="modal" [class.modal-open]="isOpen">
+<div class="modal" [class.modal-open]="isOpen" role="dialog" aria-modal="true" [attr.aria-labelledby]="isOpen ? 'modal-title' : null">
   <div class="modal-box max-w-md">
     <div class="flex justify-between items-center mb-6">
-      <h3 class="text-2xl font-bold">
+      <h3 class="text-2xl font-bold" id="modal-title">
         {{ isLoginMode ? "Connexion" : "Inscription" }}
       </h3>
-      <button class="btn btn-sm btn-circle btn-ghost" (click)="closeModal()">
+      <button class="btn btn-sm btn-circle btn-ghost" (click)="closeModal()" aria-label="Fermer la boîte de dialogue">
         ✕
       </button>
     </div>
 
-    <div class="tabs tabs-boxed mb-6">
-      <button
-        class="tab"
-        [class.tab-active]="isLoginMode"
-        (click)="isLoginMode = true; clearMessages(); resetForms()"
-      >
-        Connexion
-      </button>
-      <button
-        class="tab"
-        [class.tab-active]="!isLoginMode"
-        (click)="isLoginMode = false; clearMessages(); resetForms()"
-      >
-        Inscription
-      </button>
-    </div>
-
     @if (errorMessage) {
-    <div class="alert alert-error mb-4">
+    <div class="alert alert-error mb-4" role="alert" id="form-error">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         class="stroke-current shrink-0 h-6 w-6"
         fill="none"
         viewBox="0 0 24 24"
+        aria-hidden="true"
       >
         <path
           stroke-linecap="round"
@@ -44,12 +28,13 @@
       <span>{{ errorMessage }}</span>
     </div>
     } @if (successMessage) {
-    <div class="alert alert-success mb-4">
+    <div class="alert alert-success mb-4" role="alert" id="form-success">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         class="stroke-current shrink-0 h-6 w-6"
         fill="none"
         viewBox="0 0 24 24"
+        aria-hidden="true"
       >
         <path
           stroke-linecap="round"
@@ -63,10 +48,11 @@
     } @if (isLoginMode) {
     <form (ngSubmit)="onSubmit()" class="space-y-4">
       <div class="form-control w-full">
-        <label class="label">
+        <label class="label" for="login-email">
           <span class="label-text">Email</span>
         </label>
         <input
+          id="login-email"
           type="email"
           placeholder="Votre email"
           class="input input-bordered w-full"
@@ -74,14 +60,16 @@
           name="email"
           required
           [disabled]="isLoading"
+          [attr.aria-describedby]="errorMessage ? 'form-error' : null"
         />
       </div>
 
       <div class="form-control w-full">
-        <label class="label">
+        <label class="label" for="login-password">
           <span class="label-text">Mot de passe</span>
         </label>
         <input
+          id="login-password"
           type="password"
           placeholder="Votre mot de passe"
           class="input input-bordered w-full"
@@ -89,6 +77,7 @@
           name="password"
           required
           [disabled]="isLoading"
+          [attr.aria-describedby]="errorMessage ? 'form-error' : null"
         />
       </div>
 
@@ -108,10 +97,11 @@
     } @if (!isLoginMode) {
     <form (ngSubmit)="onSubmit()" class="space-y-4">
       <div class="form-control w-full">
-        <label class="label">
+        <label class="label" for="register-username">
           <span class="label-text">Nom d'utilisateur</span>
         </label>
         <input
+          id="register-username"
           type="text"
           placeholder="Votre nom d'utilisateur"
           class="input input-bordered w-full"
@@ -119,14 +109,16 @@
           name="username"
           required
           [disabled]="isLoading"
+          [attr.aria-describedby]="errorMessage ? 'form-error' : null"
         />
       </div>
 
       <div class="form-control w-full">
-        <label class="label">
+        <label class="label" for="register-email">
           <span class="label-text">Email</span>
         </label>
         <input
+          id="register-email"
           type="email"
           placeholder="Votre email"
           class="input input-bordered w-full"
@@ -134,14 +126,16 @@
           name="email"
           required
           [disabled]="isLoading"
+          [attr.aria-describedby]="errorMessage ? 'form-error' : null"
         />
       </div>
 
       <div class="form-control w-full">
-        <label class="label">
+        <label class="label" for="register-password">
           <span class="label-text">Mot de passe</span>
         </label>
         <input
+          id="register-password"
           type="password"
           placeholder="Votre mot de passe (min. 6 caractères)"
           class="input input-bordered w-full"
@@ -149,7 +143,11 @@
           name="password"
           required
           [disabled]="isLoading"
+          [attr.aria-describedby]="errorMessage ? 'form-error password-hint' : 'password-hint'"
         />
+        <div class="label">
+          <span class="label-text-alt" id="password-hint">Minimum 6 caractères requis</span>
+        </div>
       </div>
 
       <div class="form-control mt-6">
@@ -172,6 +170,7 @@
         class="link link-primary"
         (click)="toggleMode()"
         [disabled]="isLoading"
+        [attr.aria-label]="isLoginMode ? 'Basculer vers l\'inscription' : 'Basculer vers la connexion'"
       >
         {{
           isLoginMode

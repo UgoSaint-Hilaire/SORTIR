@@ -2,7 +2,7 @@
   <div class="flex justify-center items-center min-h-[400px]">
     <div class="text-center">
       <span class="loading loading-spinner loading-lg text-primary"></span>
-      <p class="mt-4 text-base-content/70">Chargement de votre feed personnalisé...</p>
+      <p class="mt-4 text-base-content/80">Chargement de votre feed personnalisé...</p>
     </div>
   </div>
   } @if (error()) {
@@ -33,7 +33,7 @@
           viewBox="0 0 24 24"
           stroke-width="1.5"
           stroke="currentColor"
-          class="w-24 h-24 text-base-content/30"
+          class="w-24 h-24 text-base-content/80"
         >
           <path
             stroke-linecap="round"
@@ -45,7 +45,7 @@
       <h2 class="card-title justify-center text-2xl mb-2">
         Aucun événement personnalisé disponible
       </h2>
-      <p class="text-base-content/70">
+      <p class="text-base-content/80">
         Aucun événement ne correspond à vos préférences pour le moment.
       </p>
       <div class="card-actions justify-center mt-6">
@@ -65,13 +65,13 @@
   @if (isLoadingMore()) {
   <div class="flex justify-center mt-8 py-4">
     <span class="loading loading-spinner loading-lg text-primary"></span>
-    <span class="ml-3 text-base-content/70"
+    <span class="ml-3 text-base-content/80"
       >Chargement d'autres événements...</span
     >
   </div>
   } @if (events().length > 0 && currentPage() === totalPages() && totalPages() >
   1) {
-  <div class="text-center mt-8 text-base-content/70">
+  <div class="text-center mt-8 text-base-content/80">
     <p>Vous avez vu tous les événements disponibles</p>
   </div>
   }

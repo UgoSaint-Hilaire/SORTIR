@@ -1,6 +1,5 @@
 @if (user) {
 <div class="container mx-auto pt-25 py-8 max-w-5xl px-4">
-  <!-- Version Desktop -->
   <div class="hidden lg:flex gap-20">
     <div class="flex flex-1/4 rounded-t-lg">
       <div class="w-full">
@@ -29,6 +28,7 @@
               [class.font-bold]="activeTab === 'profil'"
               [class.text-base-content]="activeTab !== 'profil'"
               (click)="setActiveTab('profil')"
+              aria-label="Afficher l'onglet Profil"
             >
               Profil
             </button>
@@ -36,7 +36,7 @@
               class="text-left p-0 m-0 bg-transparent border-none mt-2"
               disabled
             >
-              <span class="text-base-content/50"
+              <span class="text-base-content/80"
                 >Historique (bientôt disponible)</span
               >
             </button>
@@ -53,23 +53,23 @@
             <h3 class="card-title">Informations personnelles</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label class="font-semibold text-base-content/70"
+                <label class="font-semibold text-base-content/80"
                   >Nom d'utilisateur</label
                 >
                 <p>{{ user.username }}</p>
               </div>
               <div>
-                <label class="font-semibold text-base-content/70">Rôle</label>
+                <label class="font-semibold text-base-content/80">Rôle</label>
                 <p>{{ user.role || "Membre" }}</p>
               </div>
               <div>
-                <label class="font-semibold text-base-content/70"
+                <label class="font-semibold text-base-content/80"
                   >Membre depuis</label
                 >
                 <p>{{ user.createdAt | date : "dd/MM/yyyy" }}</p>
               </div>
               <div>
-                <label class="font-semibold text-base-content/70"
+                <label class="font-semibold text-base-content/80"
                   >Préférences</label
                 >
                 <p>{{ preferenceCount }} catégorie(s) configurée(s)</p>
@@ -85,6 +85,11 @@
               <button
                 class="btn btn-primary btn-sm"
                 (click)="togglePreferences()"
+                [attr.aria-label]="
+                  showPreferences
+                    ? 'Masquer les préférences'
+                    : 'Gérer les préférences'
+                "
               >
                 @if (showPreferences) { Masquer préférences } @else { Gérer
                 préférences }
@@ -135,16 +140,19 @@
       </div>
     </div>
 
-    <!-- Navigation mobile -->
-    <div class="tabs tabs-boxed mb-6 w-full">
+    <div class="tabs tabs-boxed mb-6 w-full" role="tablist" aria-label="Navigation du profil">
       <button
         class="tab flex-1"
+        role="tab"
         [class.tab-active]="activeTab === 'profil'"
+        [attr.aria-selected]="activeTab === 'profil'"
         (click)="setActiveTab('profil')"
+        aria-label="Afficher l'onglet Profil"
+        [attr.tabindex]="activeTab === 'profil' ? '0' : '-1'"
       >
         Profil
       </button>
-      <button class="tab flex-1 opacity-50" disabled>Historique</button>
+      <button class="tab flex-1 opacity-50" role="tab" aria-selected="false" disabled tabindex="-1">Historique</button>
     </div>
 
     @if (activeTab === 'profil') {
@@ -154,25 +162,25 @@
           <h3 class="card-title text-lg">Informations personnelles</h3>
           <div class="space-y-3">
             <div>
-              <label class="font-semibold text-base-content/70 text-sm"
+              <label class="font-semibold text-base-content/80 text-sm"
                 >Nom d'utilisateur</label
               >
               <p>{{ user.username }}</p>
             </div>
             <div>
-              <label class="font-semibold text-base-content/70 text-sm"
+              <label class="font-semibold text-base-content/80 text-sm"
                 >Rôle</label
               >
               <p>{{ user.role || "Membre" }}</p>
             </div>
             <div>
-              <label class="font-semibold text-base-content/70 text-sm"
+              <label class="font-semibold text-base-content/80 text-sm"
                 >Membre depuis</label
               >
               <p>{{ user.createdAt | date : "dd/MM/yyyy" }}</p>
             </div>
             <div>
-              <label class="font-semibold text-base-content/70 text-sm"
+              <label class="font-semibold text-base-content/80 text-sm"
                 >Préférences</label
               >
               <p>{{ preferenceCount }} catégorie(s) configurée(s)</p>
@@ -187,6 +195,11 @@
           <button
             class="btn btn-primary btn-sm w-full"
             (click)="togglePreferences()"
+            [attr.aria-label]="
+              showPreferences
+                ? 'Masquer les préférences'
+                : 'Gérer les préférences'
+            "
           >
             @if (showPreferences) { Masquer préférences } @else { Gérer
             préférences }

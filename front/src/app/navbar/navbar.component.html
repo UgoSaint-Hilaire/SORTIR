@@ -9,7 +9,7 @@
         <a routerLink="/" class="cursor-pointer" title="Accueil - Sortir">
           <img
             src="assets/logos/sortir_logo.webp"
-            alt="Sortir Logo"
+            alt="Logo Sortir - Retour à l'accueil"
             class="h-8 w-auto hover:opacity-80 transition-opacity"
           />
         </a>
@@ -61,10 +61,12 @@
             </div>
             <ul
               tabindex="0"
+              role="menu"
+              aria-label="Menu utilisateur"
               class="menu dropdown-content mt-3 z-[1] p-4 shadow bg-base-100 rounded-box w-52 border border-base-200"
             >
-              <li>
-                <a class="flex items-center gap-2" routerLink="/profile">
+              <li role="none">
+                <a class="flex items-center gap-2" role="menuitem" routerLink="/profile">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-4 w-4"
@@ -83,9 +85,10 @@
                 </a>
               </li>
               <div class="divider my-1"></div>
-              <li>
+              <li role="none">
                 <button
                   type="button"
+                  role="menuitem"
                   class="flex items-center gap-2 text-error w-full text-left"
                   (click)="logout()"
                 >
@@ -136,6 +139,8 @@
           </div>
           <ul
             tabindex="0"
+            role="menu"
+            aria-label="Menu de navigation mobile"
             class="menu dropdown-content mt-3 z-[1] p-4 shadow bg-base-100 rounded-box w-80 border border-base-200"
           >
             @if (!(isAuthenticated$ | async)) {
@@ -284,7 +289,7 @@
                     <div class="w-10 h-10 rounded">
                       <img
                         [src]="getEventImage(event)"
-                        [alt]="getEventTitle(event)"
+                        [alt]="'Image de l\'événement ' + getEventTitle(event)"
                         class="object-cover"
                       />
                     </div>

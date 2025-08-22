@@ -6,7 +6,7 @@
   >
     <div class="text-center">
       <span class="loading loading-spinner loading-lg text-primary"></span>
-      <p class="mt-4 text-base-content/70">Chargement de l'événement...</p>
+      <p class="mt-4 text-base-content/80">Chargement de l'événement...</p>
     </div>
   </section>
   } @else if (error()) {
@@ -65,7 +65,7 @@
     <figure class="relative h-96 overflow-hidden">
       <img
         [src]="getEventImage()"
-        [alt]="getEventTitle()"
+        [alt]="'Image de l\'événement ' + getEventTitle() + ' à ' + getEventLocation()"
         class="w-full h-full object-cover"
       />
     </figure>

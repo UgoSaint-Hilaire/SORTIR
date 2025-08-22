@@ -1,10 +1,10 @@
 <div class="max-w-4xl mx-auto">
   @if (error) {
-  <div class="alert alert-error mb-4">
+  <div class="alert alert-error mb-4" role="alert" id="preferences-error">
     <span>{{ error }}</span>
   </div>
   } @if (success) {
-  <div class="alert alert-success mb-4">
+  <div class="alert alert-success mb-4" role="alert" id="preferences-success">
     <span>{{ success }}</span>
   </div>
   }
@@ -21,12 +21,15 @@
           class="cursor-pointer flex items-center space-x-2 px-3 py-2 border rounded-lg hover:bg-base-200 transition-colors"
           [class.border-primary]="isSelected(category.name)"
           [class.border-base-300]="!isSelected(category.name)"
+          [for]="'pref-' + category.id"
         >
           <input
             type="checkbox"
+            [id]="'pref-' + category.id"
             class="checkbox checkbox-primary checkbox-sm"
             [checked]="isSelected(category.name)"
             (change)="togglePreference(category.name)"
+            [attr.aria-describedby]="error ? 'preferences-error' : null"
           />
           <span class="text-sm font-medium">{{ category.name }}</span>
         </label>
@@ -37,7 +40,7 @@
   </div>
 
   <div class="flex justify-center gap-4 mt-8">
-    <button class="btn btn-outline" (click)="clearSelection()">
+    <button class="btn btn-outline" (click)="clearSelection()" aria-label="Réinitialiser toutes les préférences">
       Réinitialiser
     </button>
     <button
@@ -45,6 +48,7 @@
       (click)="savePreferences()"
       [disabled]="loading || selectedPreferences.size === 0"
       [class.loading]="loading"
+      [attr.aria-label]="'Enregistrer ' + selectedCount + ' préférences sélectionnées'"
     >
       @if (loading) {
       <span>Enregistrement...</span>

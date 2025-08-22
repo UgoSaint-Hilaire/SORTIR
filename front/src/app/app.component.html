@@ -1,10 +1,15 @@
+<!-- Skip links pour la navigation clavier -->
+<a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
 <app-navbar></app-navbar>
 
 @if (hasHistory()) {
 <div class="w-full px-4 md:px-8 lg:px-24 xl:px-48 2xl:px-64 py-8">
   <div class="flex gap-6 justify-center max-w-[1500px] mx-auto">
     <div class="max-w-4xl flex-1">
-      <router-outlet></router-outlet>
+      <main id="main-content" tabindex="-1">
+        <router-outlet></router-outlet>
+      </main>
     </div>
     <div class="w-80 hidden xl:block flex-shrink-0">
       <app-history></app-history>
@@ -15,7 +20,9 @@
 <div class="w-full px-4 md:px-8 lg:px-24 xl:px-48 2xl:px-64 py-8">
   <div class="flex justify-center max-w-[1500px] mx-auto">
     <div class="w-full max-w-4xl">
-      <router-outlet></router-outlet>
+      <main id="main-content" tabindex="-1">
+        <router-outlet></router-outlet>
+      </main>
     </div>
   </div>
 </div>

@@ -31,6 +31,7 @@
         (click)="navigateToEvent(event)"
         class="btn btn-ghost w-full justify-start p-3 h-auto min-h-0 border-0 focus:border-0 hover:border-0 text-left"
         [attr.title]="'Retourner sur l\'événement ' + getEventTitle(event)"
+        [attr.aria-label]="'Retourner sur l\'événement ' + getEventTitle(event)"
         type="button"
       >
         <div class="flex gap-3 w-full">
@@ -39,7 +40,7 @@
             <div class="w-12 h-12 rounded-lg">
               <img
                 [src]="getEventImage(event)"
-                [alt]="getEventTitle(event)"
+                [alt]="'Image de l\'événement ' + getEventTitle(event)"
                 class="object-cover"
               />
             </div>
@@ -72,7 +73,7 @@
             <svg
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4 text-base-content/60"
+              class="h-4 w-4 text-base-content/80"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
