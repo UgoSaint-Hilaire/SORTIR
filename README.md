@@ -2,7 +2,7 @@
 
 > [!NOTE]  
 > Ce projet est un PROTOTYPE réalisé dans le cadre de la validation du bloc 2 de la certification RNCP39583 - Expert en Développement Logiciel.
-> Ce projet est voué ç évoluer jusqu'à la présentation devant le jury qui se déroulera le 17 septembre.
+> Ce projet est voué à évoluer jusqu'à la présentation devant le jury qui se déroulera le 17 septembre.
 
 ## Liens vers les environnements:
 
