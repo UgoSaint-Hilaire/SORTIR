@@ -32,7 +32,7 @@ import { FeedModule } from "./feed/feed.module";
         password: configService.get("DB_PASSWORD"),
         database: configService.get("DB_DATABASE"),
         autoLoadEntities: true,
-        synchronize: true,
+        synchronize: configService.get("NODE_ENV") === "development",
       }),
       inject: [ConfigService],
     }),

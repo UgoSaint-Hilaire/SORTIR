@@ -1,10 +1,20 @@
-<div class="modal" [class.modal-open]="isOpen" role="dialog" aria-modal="true" [attr.aria-labelledby]="isOpen ? 'modal-title' : null">
+<div
+  class="modal"
+  [class.modal-open]="isOpen"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-labelledby]="isOpen ? 'modal-title' : null"
+>
   <div class="modal-box max-w-md">
     <div class="flex justify-between items-center mb-6">
       <h3 class="text-2xl font-bold" id="modal-title">
         {{ isLoginMode ? "Connexion" : "Inscription" }}
       </h3>
-      <button class="btn btn-sm btn-circle btn-ghost" (click)="closeModal()" aria-label="Fermer la boîte de dialogue">
+      <button
+        class="btn btn-sm btn-circle btn-ghost"
+        (click)="closeModal()"
+        aria-label="Fermer la boîte de dialogue"
+      >
         ✕
       </button>
     </div>
@@ -46,39 +56,61 @@
       <span>{{ successMessage }}</span>
     </div>
     } @if (isLoginMode) {
-    <form (ngSubmit)="onSubmit()" class="space-y-4">
+    <form
+      [formGroup]="loginFormGroup"
+      (ngSubmit)="onSubmit()"
+      class="space-y-4"
+    >
+      <!-- Email -->
       <div class="form-control w-full">
         <label class="label" for="login-email">
-          <span class="label-text">Email</span>
+          <span class="label-text text-black">Email</span>
         </label>
         <input
           id="login-email"
           type="email"
-          placeholder="Votre email"
+          placeholder="votre.email@exemple.com"
           class="input input-bordered w-full"
-          [(ngModel)]="loginForm.email"
-          name="email"
-          required
+          [class.input-error]="isFieldInvalid(loginEmail)"
+          [class.input-success]="loginEmail?.valid && loginEmail?.touched"
+          formControlName="email"
           [disabled]="isLoading"
-          [attr.aria-describedby]="errorMessage ? 'form-error' : null"
+          aria-describedby="login-email-error"
         />
+        @if (isFieldInvalid(loginEmail)) {
+        <label class="label" id="login-email-error">
+          <span
+            class="label-text-alt text-red-700 dark:text-red-400 break-words max-w-full font-medium"
+            >{{ getErrorMessage("email", loginEmail) }}</span
+          >
+        </label>
+        }
       </div>
 
+      <!-- Mot de passe -->
       <div class="form-control w-full">
         <label class="label" for="login-password">
-          <span class="label-text">Mot de passe</span>
+          <span class="label-text text-black">Mot de passe</span>
         </label>
         <input
           id="login-password"
           type="password"
           placeholder="Votre mot de passe"
           class="input input-bordered w-full"
-          [(ngModel)]="loginForm.password"
-          name="password"
-          required
+          [class.input-error]="isFieldInvalid(loginPassword)"
+          [class.input-success]="loginPassword?.valid && loginPassword?.touched"
+          formControlName="password"
           [disabled]="isLoading"
-          [attr.aria-describedby]="errorMessage ? 'form-error' : null"
+          aria-describedby="login-password-error"
         />
+        @if (isFieldInvalid(loginPassword)) {
+        <label class="label" id="login-password-error">
+          <span
+            class="label-text-alt text-red-700 dark:text-red-400 break-words max-w-full font-medium"
+            >{{ getErrorMessage("password", loginPassword) }}</span
+          >
+        </label>
+        }
       </div>
 
       <div class="form-control mt-6">
@@ -95,66 +127,185 @@
       </div>
     </form>
     } @if (!isLoginMode) {
-    <form (ngSubmit)="onSubmit()" class="space-y-4">
+    <form
+      [formGroup]="registerFormGroup"
+      (ngSubmit)="onSubmit()"
+      class="space-y-4"
+    >
+      <!-- Nom d'utilisateur -->
       <div class="form-control w-full">
         <label class="label" for="register-username">
-          <span class="label-text">Nom d'utilisateur</span>
+          <span class="label-text text-black">Nom d'utilisateur</span>
+          <span class="label-text-alt text-black">3-20 caractères</span>
         </label>
         <input
           id="register-username"
           type="text"
-          placeholder="Votre nom d'utilisateur"
+          placeholder="johndoe123"
           class="input input-bordered w-full"
-          [(ngModel)]="registerForm.username"
-          name="username"
-          required
+          [class.input-error]="isFieldInvalid(registerUsername)"
+          [class.input-success]="
+            registerUsername?.valid && registerUsername?.touched
+          "
+          formControlName="username"
           [disabled]="isLoading"
-          [attr.aria-describedby]="errorMessage ? 'form-error' : null"
+          aria-describedby="register-username-error register-username-hint"
         />
+        @if (isFieldInvalid(registerUsername)) {
+        <label class="label" id="register-username-error">
+          <span
+            class="label-text-alt text-red-700 dark:text-red-400 break-words max-w-full font-medium"
+            >{{ getErrorMessage("username", registerUsername) }}</span
+          >
+        </label>
+        } @else if (registerUsername?.touched) {
+        <label class="label" id="register-username-hint">
+          <span class="label-text-alt font-medium text-black/90">
+            <span class="text-green-600 dark:text-green-400">✓</span> Nom
+            d'utilisateur valide
+          </span>
+        </label>
+        }
       </div>
 
+      <!-- Email -->
       <div class="form-control w-full">
         <label class="label" for="register-email">
-          <span class="label-text">Email</span>
+          <span class="label-text text-black">Email</span>
         </label>
         <input
           id="register-email"
           type="email"
-          placeholder="Votre email"
+          placeholder="votre.email@exemple.com"
           class="input input-bordered w-full"
-          [(ngModel)]="registerForm.email"
-          name="email"
-          required
+          [class.input-error]="isFieldInvalid(registerEmail)"
+          [class.input-success]="registerEmail?.valid && registerEmail?.touched"
+          formControlName="email"
           [disabled]="isLoading"
-          [attr.aria-describedby]="errorMessage ? 'form-error' : null"
+          aria-describedby="register-email-error"
         />
+        @if (isFieldInvalid(registerEmail)) {
+        <label class="label" id="register-email-error">
+          <span
+            class="label-text-alt text-red-700 dark:text-red-400 break-words max-w-full font-medium"
+            >{{ getErrorMessage("email", registerEmail) }}</span
+          >
+        </label>
+        } @else if (registerEmail?.valid && registerEmail?.touched) {
+        <label class="label">
+          <span class="label-text-alt font-medium text-black/90">
+            <span class="text-green-600 dark:text-green-400">✓</span> Email
+            valide
+          </span>
+        </label>
+        }
       </div>
 
       <div class="form-control w-full">
         <label class="label" for="register-password">
-          <span class="label-text">Mot de passe</span>
+          <span class="label-text text-black">Mot de passe</span>
+          <span class="label-text-alt text-black">Min. 8 caractères</span>
         </label>
         <input
           id="register-password"
           type="password"
-          placeholder="Votre mot de passe (min. 6 caractères)"
+          placeholder="Mot de passe sécurisé"
           class="input input-bordered w-full"
-          [(ngModel)]="registerForm.password"
-          name="password"
-          required
+          [class.input-error]="isFieldInvalid(registerPassword)"
+          [class.input-success]="
+            registerPassword?.valid && registerPassword?.touched
+          "
+          formControlName="password"
           [disabled]="isLoading"
-          [attr.aria-describedby]="errorMessage ? 'form-error password-hint' : 'password-hint'"
+          aria-describedby="register-password-error register-password-requirements"
         />
-        <div class="label">
-          <span class="label-text-alt" id="password-hint">Minimum 6 caractères requis</span>
+
+        <!-- Indicateur de force du mot de passe -->
+        @if (registerPassword?.value) {
+        <div class="mt-2 space-y-1" id="register-password-requirements">
+          <div class="flex items-center gap-2">
+            <span
+              class="badge badge-sm font-medium border-2"
+              [class]="
+                registerPassword?.value?.length >= 8
+                  ? 'bg-green-100 border-green-600 text-green-800 dark:bg-green-900 dark:border-green-400 dark:text-green-200'
+                  : 'bg-red-100 border-red-600 text-red-800 dark:bg-red-900 dark:border-red-400 dark:text-red-200'
+              "
+            >
+              {{ registerPassword?.value?.length >= 8 ? "✓" : "✗" }} 8+
+              caractères
+            </span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span
+              class="badge badge-sm font-medium border-2"
+              [class]="
+                hasUpperCase(registerPassword?.value || '')
+                  ? 'bg-green-100 border-green-600 text-green-800 dark:bg-green-900 dark:border-green-400 dark:text-green-200'
+                  : 'bg-red-100 border-red-600 text-red-800 dark:bg-red-900 dark:border-red-400 dark:text-red-200'
+              "
+            >
+              {{ hasUpperCase(registerPassword?.value || "") ? "✓" : "✗" }}
+              Majuscule
+            </span>
+            <span
+              class="badge badge-sm font-medium border-2"
+              [class]="
+                hasLowerCase(registerPassword?.value || '')
+                  ? 'bg-green-100 border-green-600 text-green-800 dark:bg-green-900 dark:border-green-400 dark:text-green-200'
+                  : 'bg-red-100 border-red-600 text-red-800 dark:bg-red-900 dark:border-red-400 dark:text-red-200'
+              "
+            >
+              {{ hasLowerCase(registerPassword?.value || "") ? "✓" : "✗" }}
+              Minuscule
+            </span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span
+              class="badge badge-sm font-medium border-2"
+              [class]="
+                hasNumber(registerPassword?.value || '')
+                  ? 'bg-green-100 border-green-600 text-green-800 dark:bg-green-900 dark:border-green-400 dark:text-green-200'
+                  : 'bg-red-100 border-red-600 text-red-800 dark:bg-red-900 dark:border-red-400 dark:text-red-200'
+              "
+            >
+              {{ hasNumber(registerPassword?.value || "") ? "✓" : "✗" }} Chiffre
+            </span>
+            <span
+              class="badge badge-sm font-medium border-2"
+              [class]="
+                hasSpecialChar(registerPassword?.value || '')
+                  ? 'bg-green-100 border-green-600 text-green-800 dark:bg-green-900 dark:border-green-400 dark:text-green-200'
+                  : 'bg-red-100 border-red-600 text-red-800 dark:bg-red-900 dark:border-red-400 dark:text-red-200'
+              "
+            >
+              {{ hasSpecialChar(registerPassword?.value || "") ? "✓" : "✗" }}
+              Caractère spécial
+            </span>
+          </div>
         </div>
+        } @if (isFieldInvalid(registerPassword)) {
+        <label class="label" id="register-password-error">
+          <span
+            class="label-text-alt text-red-700 dark:text-red-400 break-words max-w-full font-medium"
+            >{{ getErrorMessage("password", registerPassword) }}</span
+          >
+        </label>
+        } @else if (registerPassword?.valid && registerPassword?.touched) {
+        <label class="label">
+          <span class="label-text-alt font-medium text-black/90">
+            <span class="text-green-600 dark:text-green-400">✓</span> Mot de
+            passe fort
+          </span>
+        </label>
+        }
       </div>
 
       <div class="form-control mt-6">
         <button
           type="submit"
           class="btn btn-primary w-full"
-          [disabled]="isLoading"
+          [disabled]="isLoading || registerFormGroup.invalid"
         >
           @if (isLoading) {
           <span class="loading loading-spinner"></span>
@@ -170,7 +321,11 @@
         class="link link-primary"
         (click)="toggleMode()"
         [disabled]="isLoading"
-        [attr.aria-label]="isLoginMode ? 'Basculer vers l\'inscription' : 'Basculer vers la connexion'"
+        [attr.aria-label]="
+          isLoginMode
+            ? 'Basculer vers l\'inscription'
+            : 'Basculer vers la connexion'
+        "
       >
         {{
           isLoginMode
