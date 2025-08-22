@@ -1,5 +1,9 @@
 # SORTIR
 
+> [!NOTE]  
+> Ce projet est un PROTOTYPE réalisé dans le cadre de la validation du bloc 2 de la certification RNCP39583 - Expert en Développement Logiciel.
+> Ce projet est voué à évolué jusqu'à la présentation devant le jury qui se déroulera le 17 septembre.
+
 ## Liens vers les environnements:
 
 - ⭐ preview & test : https://sortir-pt.up.railway.app/
@@ -36,7 +40,7 @@
 
 ### Prérequis
 
-- Node.js 18+
+- Node.js 20+
 - PostgreSQL 13+
 - MongoDB 5.0+
 
@@ -49,15 +53,18 @@ cd SORTIR
 
 # Backend
 cd back/
-cp .env.example .env
 npm install
-npm run start:dev
+nest start -w || npm run start:dev
 
 # Frontend
 cd front/
 npm install
-npm start
+ng serve || npm start
 ```
+
+> [!IMPORTANT]  
+> Il vous faudra une base de donnée PSQL et MongoDB correctement configurées avec les variables
+> se trouvant dans back/.env, sinon le serveur ne démarrera pas👇👇👇
 
 ### Variables d'environnement
 
