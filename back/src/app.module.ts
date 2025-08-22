@@ -2,6 +2,8 @@ import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { MongooseModule } from "@nestjs/mongoose";
+import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
+import { APP_GUARD } from "@nestjs/core";
 import { AuthModule } from "./auth/auth.module";
 import { UsersModule } from "./users/users.module";
 import { EventsModule } from "./events/events.module";
@@ -12,6 +14,13 @@ import { FeedModule } from "./feed/feed.module";
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    // Configuration du rate limiter - 10 requêtes MAX toutes les  secondes
+    ThrottlerModule.forRoot([
+      {
+        ttl: 1000,
+        limit: 10,
+      },
+    ]),
     // Configuration PostgreSQL (pour auth, users, etc.)
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -31,7 +40,7 @@ import { FeedModule } from "./feed/feed.module";
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
-        uri: configService.get("MONGODB_URI") || "mongodb://localhost:27017/sortir-events",
+        uri: configService.get("MONGODB_URI"),
       }),
       inject: [ConfigService],
     }),
@@ -39,6 +48,12 @@ import { FeedModule } from "./feed/feed.module";
     UsersModule,
     EventsModule,
     FeedModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class AppModule {}
