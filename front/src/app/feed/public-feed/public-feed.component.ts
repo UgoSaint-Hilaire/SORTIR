@@ -68,13 +68,13 @@ export class PublicFeedComponent implements OnInit, OnDestroy {
 
     this.publicFeedService.getPublicFeed(1, 30).subscribe({
       next: (response: any) => {
-        console.log('Chargement initial - API Response:', response);
+        // console.log('Chargement initial - API Response:', response);
 
         if (!response.success) {
-          console.error(
-            'API returned error:',
-            response.message || 'Unknown error'
-          );
+          // console.error(
+          //   'API returned error:',
+          //   response.message || 'Unknown error'
+          // );
           this.events.set([]);
           this.totalCount.set(0);
           this.error.set(
@@ -105,7 +105,7 @@ export class PublicFeedComponent implements OnInit, OnDestroy {
         this.loading.set(false);
       },
       error: (err: any) => {
-        console.error('Erreur lors du chargement initial:', err);
+        // console.error('Erreur lors du chargement initial:', err);
         this.events.set([]);
 
         let errorMessage =
@@ -139,10 +139,10 @@ export class PublicFeedComponent implements OnInit, OnDestroy {
 
     this.publicFeedService.getPublicFeed(nextPage, 30).subscribe({
       next: (response: any) => {
-        console.log(
-          `Chargement page ${nextPage} - Cache hit:`,
-          response.data ? 'Oui' : 'Non'
-        );
+        // console.log(
+        //   `Chargement page ${nextPage} - Cache hit:`,
+        //   response.data ? 'Oui' : 'Non'
+        // );
 
         if (response.success && response.data && response.data.events) {
           const newEvents = response.data.events;
@@ -151,15 +151,15 @@ export class PublicFeedComponent implements OnInit, OnDestroy {
           this.events.set([...currentEvents, ...newEvents]);
           this.currentPage.set(nextPage);
 
-          console.log(
-            `Page ${nextPage} chargée, ${newEvents.length} nouveaux événements`
-          );
+          // console.log(
+          //   `Page ${nextPage} chargée, ${newEvents.length} nouveaux événements`
+          // );
         }
 
         this.isLoadingMore.set(false);
       },
       error: (err: any) => {
-        console.error(`Erreur chargement page ${nextPage}:`, err);
+        // console.error(`Erreur chargement page ${nextPage}:`, err);
         this.isLoadingMore.set(false);
       },
     });

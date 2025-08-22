@@ -22,7 +22,7 @@ export class CustomFeedService {
     const cachedPage = this.getCustomEventPage(page, limit);
 
     if (cachedPage) {
-      console.log('Cache hit custom feed ! page actuelle :', page);
+      // console.log('Cache hit custom feed ! page actuelle :', page);
 
       return of({
         success: true,
@@ -30,9 +30,9 @@ export class CustomFeedService {
       });
     }
 
-    console.log(
-      'Cache miss custom feed :( Récupération de tous les événements depuis le back'
-    );
+    // console.log(
+    //   'Cache miss custom feed :( Récupération de tous les événements depuis le back'
+    // );
 
     const headers = this.authService.getAuthHeaders();
 
@@ -44,9 +44,9 @@ export class CustomFeedService {
             // Ne pas mettre en cache si l'utilisateur n'a pas de préférences
             if (response.data.noResultsReason !== 'no_preferences') {
               this.cacheCustomEvents(response.data.events);
-              console.log(
-                `Mis en cache ${response.data.events.length} événements custom`
-              );
+              // console.log(
+              //   `Mis en cache ${response.data.events.length} événements custom`
+              // );
             }
           }
         }),

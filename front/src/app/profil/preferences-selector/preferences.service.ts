@@ -95,11 +95,11 @@ export class PreferencesService {
     private configService: ConfigService,
     private authService: AuthService
   ) {
-    console.log(
-      'PreferencesService initialized with',
-      this.availableCategories.length,
-      'categories'
-    );
+    // console.log(
+    //   'PreferencesService initialized with',
+    //   this.availableCategories.length,
+    //   'categories'
+    // );
   }
 
   getCategoriesBySegment(
@@ -108,7 +108,7 @@ export class PreferencesService {
     const filtered = this.availableCategories.filter(
       (cat) => cat.segment === segment
     );
-    console.log(`Getting categories for segment ${segment}:`, filtered.length);
+    // console.log(`Getting categories for segment ${segment}:`, filtered.length);
     return filtered;
   }
 

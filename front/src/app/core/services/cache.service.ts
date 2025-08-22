@@ -126,7 +126,7 @@ export class CacheService {
     try {
       sessionStorage.setItem(HISTORY_KEY, JSON.stringify(history));
     } catch (error) {
-      console.warn('Could not save to sessionStorage:', error);
+      // console.warn('Could not save to sessionStorage:', error);
     }
   }
 
@@ -137,7 +137,7 @@ export class CacheService {
       const stored = sessionStorage.getItem(HISTORY_KEY);
       return stored ? JSON.parse(stored) : [];
     } catch (error) {
-      console.warn('Could not read from sessionStorage:', error);
+      // console.warn('Could not read from sessionStorage:', error);
       return [];
     }
   }
@@ -148,7 +148,7 @@ export class CacheService {
     try {
       sessionStorage.removeItem(HISTORY_KEY);
     } catch (error) {
-      console.warn('Could not clear sessionStorage:', error);
+      // console.warn('Could not clear sessionStorage:', error);
     }
   }
 }

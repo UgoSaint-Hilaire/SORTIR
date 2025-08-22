@@ -60,11 +60,11 @@ export class EventDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     const url = this.configService.getApiEndpoint(`/events/${id}`);
-    console.log('Loading event from URL:', url);
+    // console.log('Loading event from URL:', url);
 
     this.http.get<any>(url).subscribe({
       next: (response) => {
-        console.log('Event response:', response);
+        // console.log('Event response:', response);
         if (response.success && response.data) {
           this.event.set(response.data);
           setTimeout(() => this.initializeMap(), 100);
@@ -74,7 +74,7 @@ export class EventDetailComponent implements OnInit, AfterViewInit, OnDestroy {
         this.loading.set(false);
       },
       error: (err) => {
-        console.error('Error loading event:', err);
+        // console.error('Error loading event:', err);
         this.error.set("Impossible de charger l'événement");
         this.loading.set(false);
       },
@@ -213,7 +213,7 @@ export class EventDetailComponent implements OnInit, AfterViewInit, OnDestroy {
         .setLngLat([event.venue.longitude, event.venue.latitude])
         .addTo(this.map);
     } catch (error) {
-      console.error("Erreur lors de l'initialisation de la carte:", error);
+      // console.error("Erreur lors de l'initialisation de la carte:", error);
     }
   }
 }

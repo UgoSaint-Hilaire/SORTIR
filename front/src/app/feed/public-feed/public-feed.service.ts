@@ -21,7 +21,7 @@ export class PublicFeedService {
     const cachedPage = this.getPublicEventPage(page, limit);
 
     if (cachedPage) {
-      console.log('Cache hit ! page actuelle :', page);
+      // console.log('Cache hit ! page actuelle :', page);
 
       return of({
         success: true,
@@ -29,9 +29,9 @@ export class PublicFeedService {
       });
     }
 
-    console.log(
-      'Cache miss :( Récupération de tous les événements depuis le back'
-    );
+    // console.log(
+    //   'Cache miss :( Récupération de tous les événements depuis le back'
+    // );
 
     return this.http
       .get<any>(this.configService.getApiEndpoint('/feed/public'))
@@ -39,9 +39,9 @@ export class PublicFeedService {
         tap((response) => {
           if (response.success && response.data && response.data.events) {
             this.cachePublicEvents(response.data.events);
-            console.log(
-              `Mis en cache ${response.data.events.length} événements`
-            );
+            // console.log(
+            //   `Mis en cache ${response.data.events.length} événements`
+            // );
           }
         }),
         map((response) => {

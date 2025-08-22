@@ -71,13 +71,13 @@ export class CustomFeedComponent implements OnInit, OnDestroy {
 
     this.customFeedService.getCustomFeed(1, 30).subscribe({
       next: (response: any) => {
-        console.log('Chargement initial custom feed - API Response:', response);
+        // console.log('Chargement initial custom feed - API Response:', response);
 
         if (!response.success) {
-          console.error(
-            'API returned error:',
-            response.message || 'Unknown error'
-          );
+          // console.error(
+          //   'API returned error:',
+          //   response.message || 'Unknown error'
+          // );
           this.events.set([]);
           this.totalCount.set(0);
           this.error.set(
@@ -89,11 +89,11 @@ export class CustomFeedComponent implements OnInit, OnDestroy {
         }
 
         if (response.data && response.data.events) {
-          console.log('Custom feed response data:', response.data);
-          console.log('noResultsReason:', response.data.noResultsReason);
+          // console.log('Custom feed response data:', response.data);
+          // console.log('noResultsReason:', response.data.noResultsReason);
 
           if (response.data.noResultsReason === 'no_preferences') {
-            console.log('Détection: utilisateur sans préférences');
+            // console.log('Détection: utilisateur sans préférences');
             this.noPreferences.set(true);
             this.events.set([]);
             this.loading.set(false);
@@ -118,7 +118,7 @@ export class CustomFeedComponent implements OnInit, OnDestroy {
         this.loading.set(false);
       },
       error: (err: any) => {
-        console.error('Erreur lors du chargement initial custom feed:', err);
+        // console.error('Erreur lors du chargement initial custom feed:', err);
         this.events.set([]);
 
         let errorMessage =
@@ -163,7 +163,7 @@ export class CustomFeedComponent implements OnInit, OnDestroy {
         this.isLoadingMore.set(false);
       },
       error: (err: any) => {
-        console.error(`Erreur chargement page ${nextPage}:`, err);
+        // console.error(`Erreur chargement page ${nextPage}:`, err);
         this.isLoadingMore.set(false);
       },
     });

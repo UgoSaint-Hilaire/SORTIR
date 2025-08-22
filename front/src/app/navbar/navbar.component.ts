@@ -57,10 +57,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
   logout(): void {
     this.authService.logout().subscribe({
       next: () => {
-        console.log('Déconnexion réussie');
+        // console.log('Déconnexion réussie');
       },
       error: (error) => {
-        console.log('Déconnexion effectuée (avec erreur serveur):', error);
+        // console.log('Déconnexion effectuée (avec erreur serveur):', error);
       },
     });
   }

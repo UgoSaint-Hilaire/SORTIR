@@ -68,12 +68,12 @@ export class AuthService {
 
     if (token && user) {
       if (this.isTokenValid(token)) {
-        console.log('Token valid, user authenticated');
+        // console.log('Token valid, user authenticated');
         this.currentUserSubject.next(user);
         this.isAuthenticatedSubject.next(true);
         this.userPreferencesSubject.next(preferences || []);
       } else {
-        console.log('Token expired, clearing auth data');
+        // console.log('Token expired, clearing auth data');
         this.clearAuth();
       }
     }
@@ -87,20 +87,20 @@ export class AuthService {
       )
       .pipe(
         tap((response) => {
-          console.log('Login response:', response);
+          // console.log('Login response:', response);
           if (response.success && response.access_token && response.user) {
-            console.log('Setting auth with user:', response.user);
+            // console.log('Setting auth with user:', response.user);
             this.setAuth(
               response.user,
               response.access_token,
               response.preferences || []
             );
           } else {
-            console.log('Login response missing required fields:', {
-              success: response.success,
-              hasToken: !!response.access_token,
-              hasUser: !!response.user,
-            });
+            // console.log('Login response missing required fields:', {
+            //   success: response.success,
+            //   hasToken: !!response.access_token,
+            //   hasUser: !!response.user,
+            // });
           }
         })
       );
@@ -142,7 +142,7 @@ export class AuthService {
           this.clearAuth();
         }),
         catchError((error) => {
-          console.log('Logout request failed, clearing auth anyway:', error);
+          // console.log('Logout request failed, clearing auth anyway:', error);
           this.clearAuth();
           return of({
             success: true,
@@ -158,11 +158,11 @@ export class AuthService {
     token: string,
     preferences: UserPreference[] = []
   ): void {
-    console.log('setAuth called with:', {
-      user,
-      token: token ? 'present' : 'missing',
-      preferencesCount: preferences.length,
-    });
+    // console.log('setAuth called with:', {
+    //   user,
+    //   token: token ? 'present' : 'missing',
+    //   preferencesCount: preferences.length,
+    // });
 
     this.cacheService.clearViewHistory();
 
@@ -172,10 +172,10 @@ export class AuthService {
     this.currentUserSubject.next(user);
     this.isAuthenticatedSubject.next(true);
     this.userPreferencesSubject.next(preferences);
-    console.log(
-      'Auth state updated. isAuthenticated:',
-      this.isAuthenticatedSubject.value
-    );
+    // console.log(
+    //   'Auth state updated. isAuthenticated:',
+    //   this.isAuthenticatedSubject.value
+    // );
   }
 
   private clearAuth(): void {
@@ -198,14 +198,14 @@ export class AuthService {
       const payload = JSON.parse(atob(token.split('.')[1]));
       const expiry = payload.exp;
       const now = Math.floor(Date.now() / 1000);
-      console.log('Token expiry check:', {
-        expiry,
-        now,
-        isValid: now < expiry,
-      });
+      // console.log('Token expiry check:', {
+      //   expiry,
+      //   now,
+      //   isValid: now < expiry,
+      // });
       return now < expiry;
     } catch (error) {
-      console.log('Token validation error:', error);
+      // console.log('Token validation error:', error);
       return false;
     }
   }
@@ -236,7 +236,7 @@ export class AuthService {
   isAuthenticated(): boolean {
     const token = this.getToken();
     if (token && !this.isTokenValid(token)) {
-      console.log('Token expired during check, clearing auth');
+      // console.log('Token expired during check, clearing auth');
       this.clearAuth();
       return false;
     }
@@ -249,7 +249,7 @@ export class AuthService {
       return new HttpHeaders().set('Authorization', `Bearer ${token}`);
     } else {
       if (token) {
-        console.log('Token expired in getAuthHeaders, clearing auth');
+        // console.log('Token expired in getAuthHeaders, clearing auth');
         this.clearAuth();
       }
       return new HttpHeaders();

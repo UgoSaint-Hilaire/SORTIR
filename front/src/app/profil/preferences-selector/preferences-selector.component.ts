@@ -61,7 +61,7 @@ export class PreferencesSelectorComponent implements OnInit {
       },
     ];
 
-    console.log('Category groups loaded:', this.categoryGroups);
+    // console.log('Category groups loaded:', this.categoryGroups);
   }
 
   loadExistingPreferences(): void {
