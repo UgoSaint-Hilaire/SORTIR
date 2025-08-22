@@ -2,6 +2,21 @@
 
 ---
 
+## [1.0.0] - 22.08.2025
+
+### Ajouté
+
+- Ajout d'un ValidationPipe global permettant la validation automatique des données d'entrées
+- Ajout d'un rate limiter général et un spécialisé sur les routes d'authentification
+- Système de logging des événements d'authentification
+- Configuration CORS dynamique pour les environnemnts de dev, prod et test/preview
+
+### Modifié
+
+- Plus grosse contraintes de mots de passe permettant une meilleure robustesse
+
+---
+
 ## [0.11.0] - 20.08.2025
 
 ### Ajouté

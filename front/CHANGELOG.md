@@ -2,6 +2,17 @@
 
 ---
 
+## [1.0.0] - 22.08.2025
+
+### Modifié
+
+- Revue et amélioration de l'accessibilité selon les critères RGAA
+- Modification de la mire d'authentification afin d'améliorer l'ux, cohérence des messages d'erreur avec l'api
+- Correction de l'affiche de l'historique dans le menu hamburger
+- Correction diverses de de configurations d'environnements
+
+---
+
 ## [0.7.0] - 21.08.2025
 
 ### Ajouté

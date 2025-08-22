@@ -9,6 +9,15 @@ Pour avoir un apperçu plus spécifiques des changements, consulter les docs de 
 
 ---
 
+## [1.0.0] - [back 1.0.0 | front 1.0.0] - 22.08.2025
+
+- Correctifs permettant de valider les critères RGAA
+- Correctifs et ajouts permettant de couvrir les 10 failles owasp les plus courantes
+- Couverture de tests > 80%
+- D'autres correctifs divers
+
+---
+
 ## [0.11.0] - [back 0.11.0 | front 0.7.0] - 21.08.2025
 
 ### Ajouté
