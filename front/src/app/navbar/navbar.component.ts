@@ -26,6 +26,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isAuthenticated$: Observable<boolean>;
   isScrolled = false;
   showHistoryDropdown = false;
+  avatarUrl: string | null = null;
 
   private cacheService = inject(CacheService);
   private router = inject(Router);
@@ -34,6 +35,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   historyEvents = signal<Event[]>([]);
   private routerSubscription?: Subscription;
   private authSubscription?: Subscription;
+  private userSubscription?: Subscription;
 
   constructor(private authService: AuthService) {
     this.currentUser$ = this.authService.currentUser$;
@@ -67,6 +69,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadHistory();
+    this.updateAvatar();
 
     this.routerSubscription = this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
@@ -77,11 +80,20 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.authSubscription = this.authService.isAuthenticated$.subscribe(() => {
       this.loadHistory();
     });
+
+    this.userSubscription = this.authService.currentUser$.subscribe(() => {
+      this.updateAvatar();
+    });
   }
 
   ngOnDestroy(): void {
     this.routerSubscription?.unsubscribe();
     this.authSubscription?.unsubscribe();
+    this.userSubscription?.unsubscribe();
+  }
+
+  private updateAvatar(): void {
+    this.avatarUrl = this.authService.getCurrentUserAvatar({ size: 48, mood: 'happy' });
   }
 
   loadHistory(): void {

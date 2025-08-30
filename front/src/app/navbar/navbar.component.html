@@ -4,7 +4,7 @@
   aria-label="Navigation principale"
 >
   <div class="w-full px-4 md:px-8 lg:px-24 xl:px-48 2xl:px-64">
-    <div class="navbar px-0 max-w-[1500px] mx-auto">
+    <div class="navbar min-h-16 px-0 max-w-[1500px] mx-auto">
       <div class="navbar-start">
         <a routerLink="/" class="cursor-pointer" title="Accueil - Sortir">
           <img
@@ -49,13 +49,17 @@
               class="cursor-pointer"
               aria-label="Menu utilisateur"
             >
-              <div class="avatar placeholder">
-                <div
-                  class="w-10 rounded-xl bg-white flex items-center justify-center hover:bg-base-200 transition-colors"
-                >
-                  <span class="text-sm font-bold text-primary">{{
-                    (currentUser$ | async)?.username?.charAt(0)?.toUpperCase()
-                  }}</span>
+              <div class="avatar">
+                <div class="w-12 rounded-lg hover:opacity-80 transition-opacity">
+                  @if (avatarUrl) {
+                  <img [src]="avatarUrl" [alt]="(currentUser$ | async)?.username + ' avatar'" />
+                  } @else {
+                  <div class="bg-neutral text-neutral-content">
+                    <span class="text-sm">{{
+                      (currentUser$ | async)?.username?.charAt(0)?.toUpperCase()
+                    }}</span>
+                  </div>
+                  }
                 </div>
               </div>
             </div>
@@ -266,15 +270,19 @@
             } }
             } @if (isAuthenticated$ | async) {
             <div class="flex justify-center py-4 pointer-events-none">
-              <div class="avatar placeholder">
-                <div
-                  class="w-16 rounded-xl bg-white flex items-center justify-center"
-                >
-                  <span class="text-2xl font-bold text-primary">
-                    {{
-                      (currentUser$ | async)?.username?.charAt(0)?.toUpperCase()
-                    }}
-                  </span>
+              <div class="avatar">
+                <div class="w-16 rounded-lg">
+                  @if (avatarUrl) {
+                  <img [src]="avatarUrl" [alt]="(currentUser$ | async)?.username + ' avatar'" />
+                  } @else {
+                  <div class="bg-neutral text-neutral-content">
+                    <span class="text-xl">
+                      {{
+                        (currentUser$ | async)?.username?.charAt(0)?.toUpperCase()
+                      }}
+                    </span>
+                  </div>
+                  }
                 </div>
               </div>
             </div>

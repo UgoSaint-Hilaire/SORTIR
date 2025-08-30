@@ -15,6 +15,7 @@ export class ProfileComponent implements OnInit {
   showPreferences = false;
   preferenceCount = 0;
   activeTab: 'profil' | 'historique' = 'profil';
+  avatarUrl: string | null = null;
 
   constructor(
     private authService: AuthService,
@@ -33,6 +34,7 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
+    this.avatarUrl = this.authService.getCurrentUserAvatar({ size: 200, mood: 'happy' });
     this.preferenceCount = this.authService.getUserPreferences().length;
 
     if (this.preferenceCount === 0) {

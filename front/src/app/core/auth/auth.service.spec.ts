@@ -278,4 +278,97 @@ describe('AuthService', () => {
       expect(localStorage.getItem('auth_token')).toBeNull(); // Should be cleared
     });
   });
+
+  describe('generateAvatarUrl', () => {
+    it('should generate basic avatar URL with seed only', () => {
+      const seed = 'testuser';
+      const url = service.generateAvatarUrl(seed);
+      
+      expect(url).toBe('https://api.dicebear.com/9.x/dylan/svg?seed=testuser');
+    });
+
+    it('should generate avatar URL with mood option', () => {
+      const seed = 'testuser';
+      const url = service.generateAvatarUrl(seed, { mood: 'happy' });
+      
+      expect(url).toContain('https://api.dicebear.com/9.x/dylan/svg');
+      expect(url).toContain('seed=testuser');
+      expect(url).toContain('mood%5B%5D=happy');
+    });
+
+    it('should generate avatar URL with size option', () => {
+      const seed = 'testuser';
+      const url = service.generateAvatarUrl(seed, { size: 128 });
+      
+      expect(url).toContain('https://api.dicebear.com/9.x/dylan/svg');
+      expect(url).toContain('seed=testuser');
+      expect(url).toContain('size=128');
+    });
+
+    it('should generate avatar URL with different format', () => {
+      const seed = 'testuser';
+      const url = service.generateAvatarUrl(seed, { format: 'png' });
+      
+      expect(url).toContain('https://api.dicebear.com/9.x/dylan/png');
+      expect(url).toContain('seed=testuser');
+    });
+
+    it('should generate avatar URL with all options', () => {
+      const seed = 'testuser';
+      const url = service.generateAvatarUrl(seed, { 
+        mood: 'superHappy',
+        size: 200,
+        format: 'webp'
+      });
+      
+      expect(url).toContain('https://api.dicebear.com/9.x/dylan/webp');
+      expect(url).toContain('seed=testuser');
+      expect(url).toContain('mood%5B%5D=superHappy');
+      expect(url).toContain('size=200');
+    });
+  });
+
+  describe('getCurrentUserAvatar', () => {
+    it('should return null when no user is logged in', () => {
+      const avatarUrl = service.getCurrentUserAvatar();
+      expect(avatarUrl).toBeNull();
+    });
+
+    it('should generate avatar URL for current user with username', () => {
+      // Set auth state with user
+      service['setAuth'](mockUser, mockValidToken, []);
+      
+      const avatarUrl = service.getCurrentUserAvatar();
+      expect(avatarUrl).toBe('https://api.dicebear.com/9.x/dylan/svg?seed=testuser');
+    });
+
+    it('should generate avatar URL with options for current user', () => {
+      // Set auth state with user
+      service['setAuth'](mockUser, mockValidToken, []);
+      
+      const avatarUrl = service.getCurrentUserAvatar({ 
+        mood: 'happy',
+        size: 48,
+        format: 'png'
+      });
+      
+      expect(avatarUrl).toContain('https://api.dicebear.com/9.x/dylan/png');
+      expect(avatarUrl).toContain('seed=testuser');
+      expect(avatarUrl).toContain('mood%5B%5D=happy');
+      expect(avatarUrl).toContain('size=48');
+    });
+
+    it('should use username as seed for avatar generation', () => {
+      const userWithLongUsername: User = {
+        id: 2,
+        username: 'verylongusernameforthisaccount',
+        email: 'long@example.com',
+      };
+      
+      service['setAuth'](userWithLongUsername, mockValidToken, []);
+      
+      const avatarUrl = service.getCurrentUserAvatar();
+      expect(avatarUrl).toContain('seed=verylongusernameforthisaccount');
+    });
+  });
 });

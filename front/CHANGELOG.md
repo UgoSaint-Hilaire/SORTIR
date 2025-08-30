@@ -2,6 +2,12 @@
 
 ---
 
+## [1.1.0] - 30.08.2025
+
+### Ajout
+
+- Ajout de la génération d'une image de profil
+
 ## [1.0.0] - 22.08.2025
 
 ### Modifié

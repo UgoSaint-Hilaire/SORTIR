@@ -255,4 +255,55 @@ export class AuthService {
       return new HttpHeaders();
     }
   }
+
+  generateAvatarUrl(
+    seed: string,
+    options?: {
+      mood?:
+        | 'happy'
+        | 'sad'
+        | 'angry'
+        | 'neutral'
+        | 'superHappy'
+        | 'hopeful'
+        | 'confused';
+      size?: number;
+      format?: 'svg' | 'png' | 'jpg' | 'webp';
+    }
+  ): string {
+    const format = options?.format || 'svg';
+    const baseUrl = `https://api.dicebear.com/9.x/dylan/${format}`;
+    const params = new URLSearchParams({
+      seed: seed,
+    });
+
+    if (options?.mood) {
+      params.append('mood[]', options.mood);
+    }
+
+    if (options?.size) {
+      params.append('size', options.size.toString());
+    }
+
+    return `${baseUrl}?${params.toString()}`;
+  }
+
+  getCurrentUserAvatar(options?: {
+    mood?:
+      | 'happy'
+      | 'sad'
+      | 'angry'
+      | 'neutral'
+      | 'superHappy'
+      | 'hopeful'
+      | 'confused';
+    size?: number;
+    format?: 'svg' | 'png' | 'jpg' | 'webp';
+  }): string | null {
+    const user = this.getCurrentUser();
+    if (!user) return null;
+
+    const seed = user.username;
+    return this.generateAvatarUrl(seed, options);
+  }
 }
