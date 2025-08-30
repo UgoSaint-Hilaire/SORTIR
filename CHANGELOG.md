@@ -9,6 +9,12 @@ Pour avoir un apperçu plus spécifiques des changements, consulter les docs de 
 
 ---
 
+## [1.1.0] - [back 1.0.0 | front 1.1.0] - 30.08.2025
+
+### Ajouté
+
+- Gestion image de profil utilisateur
+
 ## [1.0.0] - [back 1.0.0 | front 1.0.0] - 22.08.2025
 
 - Correctifs permettant de valider les critères RGAA
