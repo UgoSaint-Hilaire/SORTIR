@@ -24,7 +24,21 @@ async function bootstrap() {
 
   // Configuration CORS
   app.enableCors({
-    origin: process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(",") : ["http://localhost:4200"],
+    origin: (origin, callback) => {
+      // Accepte toutes les requêtes Railway et localhost
+      if (!origin || 
+          origin.includes('railway.app') || 
+          origin.includes('localhost') ||
+          origin.includes('127.0.0.1')) {
+        callback(null, true);
+      } else if (process.env.FRONTEND_URL) {
+        // Vérifie si l'origine est dans la liste autorisée
+        const allowedOrigins = process.env.FRONTEND_URL.split(',');
+        callback(null, allowedOrigins.includes(origin));
+      } else {
+        callback(null, false);
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
