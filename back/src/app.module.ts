@@ -15,11 +15,11 @@ import { HealthModule } from "./health/health.module";
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    // Configuration du rate limiter - 10 requêtes MAX toutes les secondes
+    // Configuration du rate limiter - 500 requêtes par 60 secondes
     ThrottlerModule.forRoot([
       {
-        ttl: 1000,
-        limit: 10,
+        ttl: 60000,
+        limit: 500,
       },
     ]),
     // Configuration PostgreSQL (pour auth, users, etc.)

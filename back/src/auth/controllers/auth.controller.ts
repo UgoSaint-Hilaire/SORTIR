@@ -19,7 +19,6 @@ import { LoginDto } from "../dto/login.dto";
 import { RegisterDto } from "../dto/register.dto";
 
 @Controller("auth")
-@UseGuards(ThrottlerGuard)
 export class AuthController {
   constructor(
     private authService: AuthService,
@@ -27,17 +26,18 @@ export class AuthController {
   ) {}
 
   @UseGuards(LocalAuthGuard)
+  @Throttle({ default: { limit: 100, ttl: 60000 } })
   @Post("login")
   @HttpCode(HttpStatus.OK)
   async login(@Request() req) {
     try {
-      const recentFailedAttempts = await this.authLogger.getRecentFailedAttempts(req.body.email, 15);
-      if (recentFailedAttempts >= 5) {
+      const recentFailedAttempts = await this.authLogger.getRecentFailedAttempts(req.body.email, 5);
+      if (recentFailedAttempts >= 25) {
         await this.authLogger.logRateLimitExceeded("/auth/login", req);
         throw new TooManyRequestsException({
           success: false,
           code: 429,
-          message: "Too many failed login attempts. Please try again later.",
+          message: "Too many failed login attempts. Please try again in a few minutes.",
         });
       }
 
@@ -69,6 +69,7 @@ export class AuthController {
     }
   }
 
+  @Throttle({ default: { limit: 50, ttl: 60000 } })
   @Post("register")
   @HttpCode(HttpStatus.CREATED)
   async register(@Request() req, @Body() registerDto: RegisterDto) {
