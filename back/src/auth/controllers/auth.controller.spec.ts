@@ -85,7 +85,7 @@ describe("AuthController", () => {
       const req = { user: mockUser, body: { email: "test@test.com" } };
       const result = await controller.login(req);
 
-      expect(authLogger.getRecentFailedAttempts).toHaveBeenCalledWith("test@test.com", 15);
+      expect(authLogger.getRecentFailedAttempts).toHaveBeenCalledWith("test@test.com", 5);
       expect(authService.login).toHaveBeenCalledWith(mockUser);
       expect(authLogger.logLoginSuccess).toHaveBeenCalledWith("test@test.com", 1, req);
       expect(result).toEqual({
