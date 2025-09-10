@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EventCardComponent } from '../../events/event-card/event-card.component';
-import { PublicFeedService } from './public-feed.service';
+import { PublicFeedService, EventSegment } from './public-feed.service';
 import { Event } from '../../models/event.model';
 import { ConfigService } from '../../core/services';
+import { FeedCommunicationService } from '../feed-communication.service';
 
 @Component({
   selector: 'app-public-feed',
@@ -14,6 +15,7 @@ import { ConfigService } from '../../core/services';
 export class PublicFeedComponent implements OnInit, OnDestroy {
   private publicFeedService = inject(PublicFeedService);
   public configService = inject(ConfigService);
+  private feedCommService = inject(FeedCommunicationService);
 
   events = signal<Event[]>([]);
   loading = signal(false);
@@ -23,16 +25,56 @@ export class PublicFeedComponent implements OnInit, OnDestroy {
   totalCount = signal(0);
   isLoadingMore = signal(false);
   hasAllEventsLoaded = signal(false);
+  
+  segments = signal<EventSegment[]>([]);
+  selectedSegment = signal<string | null>(null);
+
+  constructor() {
+    // Écouter les changements du service de communication
+    effect(() => {
+      const newSegment = this.feedCommService.selectedSegment();
+      if (newSegment !== this.selectedSegment()) {
+        this.onSegmentSelected(newSegment);
+      }
+    });
+    
+    // Synchroniser l'état local avec le service
+    effect(() => {
+      this.feedCommService.updateFeedData({
+        selectedSegment: this.selectedSegment(),
+        totalCount: this.totalCount(),
+        loading: this.loading()
+      });
+    });
+  }
 
   private scrollHandler?: () => void;
 
   ngOnInit() {
+    this.segments.set(this.publicFeedService.getSegments());
     this.loadInitialEvents();
     this.initializeScrollListener();
   }
 
   ngOnDestroy() {
     this.removeScrollListener();
+  }
+
+  onSegmentSelected(segment: string | null) {
+    this.selectedSegment.set(segment);
+    this.currentPage.set(1);
+    this.events.set([]);
+    this.hasAllEventsLoaded.set(false);
+    // Clear cache when changing segment
+    if (segment) {
+      this.publicFeedService.clearPublicEventsCache();
+    }
+    this.loadInitialEvents();
+  }
+
+  getSelectedSegmentLabel(): string {
+    const segment = this.segments().find(s => s.name === this.selectedSegment());
+    return segment ? segment.label : '';
   }
 
   private initializeScrollListener() {
@@ -66,7 +108,7 @@ export class PublicFeedComponent implements OnInit, OnDestroy {
     this.loading.set(true);
     this.error.set(null);
 
-    this.publicFeedService.getPublicFeed(1, 30).subscribe({
+    this.publicFeedService.getPublicFeed(1, 30, this.selectedSegment()).subscribe({
       next: (response: any) => {
         // console.log('Chargement initial - API Response:', response);
 
@@ -94,8 +136,11 @@ export class PublicFeedComponent implements OnInit, OnDestroy {
           this.totalPages.set(pagination.totalPages || 1);
           this.totalCount.set(pagination.total || newEvents.length);
 
-          const cachedEvents = this.publicFeedService.getPublicCachedEvents();
-          this.hasAllEventsLoaded.set(!!cachedEvents);
+          // Only check cache for non-filtered feed
+          if (!this.selectedSegment()) {
+            const cachedEvents = this.publicFeedService.getPublicCachedEvents();
+            this.hasAllEventsLoaded.set(!!cachedEvents);
+          }
         } else {
           this.events.set([]);
           this.totalCount.set(0);
@@ -137,7 +182,7 @@ export class PublicFeedComponent implements OnInit, OnDestroy {
     this.isLoadingMore.set(true);
     const nextPage = this.currentPage() + 1;
 
-    this.publicFeedService.getPublicFeed(nextPage, 30).subscribe({
+    this.publicFeedService.getPublicFeed(nextPage, 30, this.selectedSegment()).subscribe({
       next: (response: any) => {
         // console.log(
         //   `Chargement page ${nextPage} - Cache hit:`,

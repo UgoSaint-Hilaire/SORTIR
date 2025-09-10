@@ -88,6 +88,18 @@ export class FeedPublicController {
   @Get("public")
   async getPublicFeed(@Query() query: GetFeedDto) {
     try {
+      // Si un segment est fourni, utiliser getAllEventsFeed avec filtres
+      if (query.segment || query.genre) {
+        const feed = await this.feedService.getAllEventsFeed(query);
+        return {
+          success: true,
+          code: HttpStatus.OK,
+          message: "Feed public filtré récupéré avec succès",
+          data: feed,
+        };
+      }
+      
+      // Sinon, utiliser le feed public aléatoire
       const feed = await this.feedService.getPublicFeed(query);
 
       return {

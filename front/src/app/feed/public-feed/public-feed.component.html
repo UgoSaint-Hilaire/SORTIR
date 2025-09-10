@@ -1,3 +1,4 @@
+
 @if (loading() && events().length === 0) {
 <div class="flex justify-center items-center min-h-[400px]">
   <div class="text-center">
@@ -44,17 +45,26 @@
     </div>
     <h2 class="card-title justify-center text-2xl mb-2">
       Aucun événement disponible
+      @if (selectedSegment()) {
+        dans cette catégorie
+      }
     </h2>
     <p class="text-base-content/80">
-      Il n'y a pas encore d'événements à afficher.
+      @if (selectedSegment()) {
+        Essayez une autre catégorie ou consultez tous les événements.
+      } @else {
+        Il n'y a pas encore d'événements à afficher.
+      }
     </p>
+    <button (click)="refresh()" class="btn btn-primary mt-4">
+      Actualiser
+    </button>
   </div>
 </div>
 }
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-  @for (event of events(); track event._id || event.ticketmasterId; let i =
-  $index) {
+  @for (event of events(); track event._id || event.ticketmasterId; let i = $index) {
   <app-event-card [event]="event"></app-event-card>
   }
 </div>
@@ -62,12 +72,9 @@
 @if (isLoadingMore()) {
 <div class="flex justify-center mt-8 py-4">
   <span class="loading loading-spinner loading-lg text-primary"></span>
-  <span class="ml-3 text-base-content/80"
-    >Chargement d'autres événements...</span
-  >
+  <span class="ml-3 text-base-content/80">Chargement d'autres événements...</span>
 </div>
-} @if (events().length > 0 && currentPage() === totalPages() && totalPages() >
-1) {
+} @if (events().length > 0 && currentPage() === totalPages() && totalPages() > 1) {
 <div class="text-center mt-8 text-base-content/80">
   <p>Vous avez vu tous les événements disponibles</p>
 </div>

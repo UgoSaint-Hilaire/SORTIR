@@ -1,13 +1,25 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ConfigService, CacheService } from '../../core/services';
+
+export interface EventSegment {
+  id: string;
+  name: string;
+  label: string;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class PublicFeedService {
+  public readonly SEGMENTS: EventSegment[] = [
+    { id: 'Music', name: 'Music', label: 'Musique' },
+    { id: 'Sports', name: 'Sports', label: 'Sports' },
+    { id: 'Arts & Theatre', name: 'Arts & Theatre', label: 'Arts & Théâtre' },
+  ];
+
   constructor(
     private http: HttpClient,
     private configService: ConfigService,
@@ -16,8 +28,21 @@ export class PublicFeedService {
 
   private readonly PUBLIC_EVENTS_KEY = 'public_events';
 
-  getPublicFeed(page: number = 1, limit: number = 30): Observable<any> {
-    // Vérifie si on a déjà les événements en cache
+  getPublicFeed(page: number = 1, limit: number = 30, segment?: string | null): Observable<any> {
+    // Si un segment est spécifié, on utilise le même endpoint avec les paramètres de filtre
+    if (segment) {
+      let params = new HttpParams()
+        .set('page', page.toString())
+        .set('limit', limit.toString())
+        .set('segment', segment);
+
+      return this.http.get<any>(
+        this.configService.getApiEndpoint('/feed/public'),
+        { params }
+      );
+    }
+
+    // Pour le feed sans filtre, on continue avec la logique de cache existante
     const cachedPage = this.getPublicEventPage(page, limit);
 
     if (cachedPage) {
@@ -98,5 +123,9 @@ export class PublicFeedService {
 
   clearPublicEventsCache(): void {
     this.cacheService.clear(this.PUBLIC_EVENTS_KEY);
+  }
+
+  getSegments(): EventSegment[] {
+    return this.SEGMENTS;
   }
 }

@@ -3,7 +3,6 @@
 
 <app-navbar></app-navbar>
 
-@if (hasHistory()) {
 <div class="w-full px-4 md:px-8 lg:px-24 xl:px-48 2xl:px-64 py-8">
   <div class="flex gap-6 justify-center max-w-[1500px] mx-auto">
     <div class="max-w-4xl flex-1">
@@ -11,19 +10,22 @@
         <router-outlet></router-outlet>
       </main>
     </div>
-    <div class="w-80 hidden xl:block flex-shrink-0">
-      <app-history></app-history>
+    <!-- Sidebar toujours visible sur écrans XL -->
+    <div class="w-80 hidden xl:block flex-shrink-0 sticky top-20 h-fit">
+      <!-- Historique (affiché seulement s'il y a des éléments) -->
+      @if (hasHistory()) {
+        <app-history></app-history>
+      }
+      <!-- Filters component visible uniquement sur la page d'accueil -->
+      @if (isOnHomePage()) {
+        <app-filters 
+          [segments]="segments()"
+          [selectedSegment]="selectedSegment()"
+          [totalCount]="totalCount()"
+          [loading]="loading()"
+          (segmentSelected)="onSegmentSelected($event)">
+        </app-filters>
+      }
     </div>
   </div>
 </div>
-} @else {
-<div class="w-full px-4 md:px-8 lg:px-24 xl:px-48 2xl:px-64 py-8">
-  <div class="flex justify-center max-w-[1500px] mx-auto">
-    <div class="w-full max-w-4xl">
-      <main id="main-content" tabindex="-1">
-        <router-outlet></router-outlet>
-      </main>
-    </div>
-  </div>
-</div>
-}

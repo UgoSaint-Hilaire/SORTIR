@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { PublicFeedComponent } from '../public-feed/public-feed.component';
 import { CustomFeedComponent } from '../custom-feed/custom-feed.component';
 import { AuthService } from '../../core/auth/auth.service';
+import { FeedCommunicationService } from '../feed-communication.service';
 
 @Component({
   selector: 'app-feed-nav',
@@ -12,6 +13,7 @@ import { AuthService } from '../../core/auth/auth.service';
 })
 export class FeedNavComponent implements OnInit {
   private authService = inject(AuthService);
+  private feedCommService = inject(FeedCommunicationService);
   
   isAuthenticated = signal(false);
   activeTab = signal<'personal' | 'public'>('public');
@@ -21,13 +23,16 @@ export class FeedNavComponent implements OnInit {
       this.isAuthenticated.set(isAuth);
       if (isAuth) {
         this.activeTab.set('personal');
+        this.feedCommService.setActiveTab('personal');
       } else {
         this.activeTab.set('public');
+        this.feedCommService.setActiveTab('public');
       }
     });
   }
 
   setActiveTab(tab: 'personal' | 'public') {
     this.activeTab.set(tab);
+    this.feedCommService.setActiveTab(tab);
   }
 }
