@@ -57,6 +57,32 @@
           </svg>
           Découvrir
         </button>
+
+        <button
+          class="tab gap-2"
+          role="tab"
+          [class.tab-active]="activeTab() === 'explorer'"
+          [attr.aria-selected]="activeTab() === 'explorer'"
+          (click)="setActiveTab('explorer')"
+          aria-label="Afficher l'explorateur d'événements"
+          [attr.tabindex]="activeTab() === 'explorer' ? '0' : '-1'"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+          Explorer
+        </button>
   </div>
 
   <div class="animate-fadeIn">
@@ -64,6 +90,8 @@
     <app-custom-feed></app-custom-feed>
     } @else if (activeTab() === 'public') {
     <app-public-feed></app-public-feed>
+    } @else if (activeTab() === 'explorer') {
+    <app-explorer-feed></app-explorer-feed>
     }
   </div>
 </div>

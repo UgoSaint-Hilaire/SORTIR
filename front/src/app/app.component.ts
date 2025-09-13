@@ -63,12 +63,12 @@ export class AppComponent implements OnInit, OnDestroy {
   }
   
   isOnHomePage(): boolean {
-    // Vérifier qu'on est sur la page d'accueil ET que l'onglet "Découvrir" est actif
+    // Vérifier qu'on est sur la page d'accueil ET que l'onglet "Explorer" est actif
     const url = this.currentUrl();
     const isHomePage = url === '' || url === '/';
-    const isPublicTabActive = this.feedCommService.activeTab() === 'public';
+    const isExplorerTabActive = this.feedCommService.activeTab() === 'explorer';
     
-    return isHomePage && isPublicTabActive;
+    return isHomePage && isExplorerTabActive;
   }
   
   onSegmentSelected(segment: string | null): void {

@@ -45,16 +45,9 @@
     </div>
     <h2 class="card-title justify-center text-2xl mb-2">
       Aucun événement disponible
-      @if (selectedSegment()) {
-        dans cette catégorie
-      }
     </h2>
     <p class="text-base-content/80">
-      @if (selectedSegment()) {
-        Essayez une autre catégorie ou consultez tous les événements.
-      } @else {
-        Il n'y a pas encore d'événements à afficher.
-      }
+      Il n'y a pas encore d'événements à afficher. Revenez bientôt !
     </p>
     <button (click)="refresh()" class="btn btn-primary mt-4">
       Actualiser

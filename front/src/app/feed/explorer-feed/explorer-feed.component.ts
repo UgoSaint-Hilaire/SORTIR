@@ -1,19 +1,21 @@
 import { Component, OnInit, OnDestroy, signal, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EventCardComponent } from '../../events/event-card/event-card.component';
-import { PublicFeedService, EventSegment } from './public-feed.service';
+import { PublicFeedService, EventSegment } from '../public-feed/public-feed.service';
+import { ExplorerFeedService } from './explorer-feed.service';
 import { Event } from '../../models/event.model';
 import { ConfigService } from '../../core/services';
 import { FeedCommunicationService } from '../feed-communication.service';
 
 @Component({
-  selector: 'app-public-feed',
+  selector: 'app-explorer-feed',
   standalone: true,
   imports: [CommonModule, EventCardComponent],
-  templateUrl: './public-feed.component.html',
+  templateUrl: './explorer-feed.component.html',
 })
-export class PublicFeedComponent implements OnInit, OnDestroy {
+export class ExplorerFeedComponent implements OnInit, OnDestroy {
   private publicFeedService = inject(PublicFeedService);
+  private explorerFeedService = inject(ExplorerFeedService);
   public configService = inject(ConfigService);
   private feedCommService = inject(FeedCommunicationService);
 
@@ -24,16 +26,38 @@ export class PublicFeedComponent implements OnInit, OnDestroy {
   totalPages = signal(1);
   totalCount = signal(0);
   isLoadingMore = signal(false);
-  hasAllEventsLoaded = signal(false);
   
+  segments = signal<EventSegment[]>([]);
+  selectedSegment = signal<string | null>(null);
 
   constructor() {
-    // Découvrir ne gère plus les filtres - c'est le rôle d'Explorer
+    // Écouter les changements du service de communication
+    effect(() => {
+      const newSegment = this.feedCommService.selectedSegment();
+      if (newSegment !== this.selectedSegment()) {
+        this.onSegmentSelected(newSegment);
+      }
+    });
+    
+    // Synchroniser l'état local avec le service
+    effect(() => {
+      this.feedCommService.updateFeedData({
+        selectedSegment: this.selectedSegment(),
+        totalCount: this.totalCount(),
+        loading: this.loading()
+      });
+    });
   }
 
   private scrollHandler?: () => void;
 
   ngOnInit() {
+    this.segments.set(this.publicFeedService.getSegments());
+    
+    // Récupérer l'état du filtre persisté depuis le service
+    const persistedSegment = this.feedCommService.selectedSegment();
+    this.selectedSegment.set(persistedSegment);
+    
     this.loadInitialEvents();
     this.initializeScrollListener();
   }
@@ -42,6 +66,19 @@ export class PublicFeedComponent implements OnInit, OnDestroy {
     this.removeScrollListener();
   }
 
+  onSegmentSelected(segment: string | null) {
+    this.selectedSegment.set(segment);
+    this.currentPage.set(1);
+    this.events.set([]);
+    // Clear cache pour ce filtre spécifique quand on change
+    this.explorerFeedService.clearCache(segment);
+    this.loadInitialEvents();
+  }
+
+  getSelectedSegmentLabel(): string {
+    const segment = this.segments().find(s => s.name === this.selectedSegment());
+    return segment ? segment.label : '';
+  }
 
   private initializeScrollListener() {
     this.scrollHandler = () => {
@@ -74,16 +111,10 @@ export class PublicFeedComponent implements OnInit, OnDestroy {
     this.loading.set(true);
     this.error.set(null);
 
-    // Découvrir utilise TOUJOURS le feed aléatoire sans filtres
-    this.publicFeedService.getPublicFeed(1, 30, null).subscribe({
+    // Explorer utilise TOUJOURS getAllEventsFeed pour une navigation complète paginée
+    this.explorerFeedService.getAllEventsFeed(1, 30, this.selectedSegment()).subscribe({
       next: (response: any) => {
-        // console.log('Chargement initial - API Response:', response);
-
         if (!response.success) {
-          // console.error(
-          //   'API returned error:',
-          //   response.message || 'Unknown error'
-          // );
           this.events.set([]);
           this.totalCount.set(0);
           this.error.set(
@@ -102,10 +133,6 @@ export class PublicFeedComponent implements OnInit, OnDestroy {
           this.currentPage.set(pagination.page || 1);
           this.totalPages.set(pagination.totalPages || 1);
           this.totalCount.set(pagination.total || newEvents.length);
-
-          // Check cache pour le feed de découverte
-          const cachedEvents = this.publicFeedService.getPublicCachedEvents();
-          this.hasAllEventsLoaded.set(!!cachedEvents);
         } else {
           this.events.set([]);
           this.totalCount.set(0);
@@ -115,7 +142,6 @@ export class PublicFeedComponent implements OnInit, OnDestroy {
         this.loading.set(false);
       },
       error: (err: any) => {
-        // console.error('Erreur lors du chargement initial:', err);
         this.events.set([]);
 
         let errorMessage =
@@ -147,38 +173,28 @@ export class PublicFeedComponent implements OnInit, OnDestroy {
     this.isLoadingMore.set(true);
     const nextPage = this.currentPage() + 1;
 
-    this.publicFeedService.getPublicFeed(nextPage, 30, null).subscribe({
+    this.explorerFeedService.getAllEventsFeed(nextPage, 30, this.selectedSegment()).subscribe({
       next: (response: any) => {
-        // console.log(
-        //   `Chargement page ${nextPage} - Cache hit:`,
-        //   response.data ? 'Oui' : 'Non'
-        // );
-
         if (response.success && response.data && response.data.events) {
           const newEvents = response.data.events;
           const currentEvents = this.events();
 
           this.events.set([...currentEvents, ...newEvents]);
           this.currentPage.set(nextPage);
-
-          // console.log(
-          //   `Page ${nextPage} chargée, ${newEvents.length} nouveaux événements`
-          // );
         }
 
         this.isLoadingMore.set(false);
       },
       error: (err: any) => {
-        // console.error(`Erreur chargement page ${nextPage}:`, err);
         this.isLoadingMore.set(false);
       },
     });
   }
 
   refresh() {
-    this.publicFeedService.clearPublicEventsCache();
+    // Clear cache pour le filtre actuel
+    this.explorerFeedService.clearCache(this.selectedSegment());
     this.currentPage.set(1);
-    this.hasAllEventsLoaded.set(false);
     this.loadInitialEvents();
   }
 }

@@ -5,12 +5,12 @@ import { Injectable, signal } from '@angular/core';
 })
 export class FeedCommunicationService {
   // État simple pour l'onglet actif et les données de filtres
-  activeTab = signal<'personal' | 'public'>('public');
+  activeTab = signal<'personal' | 'public' | 'explorer'>('public');
   selectedSegment = signal<string | null>(null);
   totalCount = signal<number>(0);
   loading = signal<boolean>(false);
 
-  setActiveTab(tab: 'personal' | 'public') {
+  setActiveTab(tab: 'personal' | 'public' | 'explorer') {
     this.activeTab.set(tab);
   }
 

@@ -16,7 +16,9 @@ export class FiltersComponent {
   @Output() segmentSelected = new EventEmitter<string | null>();
 
   selectSegment(segment: string | null) {
-    this.segmentSelected.emit(segment);
+    // Si on clique sur le segment déjà sélectionné, on le désélectionne
+    const newSegment = this.selectedSegment === segment ? null : segment;
+    this.segmentSelected.emit(newSegment);
   }
 
   getSelectedSegmentLabel(): string {

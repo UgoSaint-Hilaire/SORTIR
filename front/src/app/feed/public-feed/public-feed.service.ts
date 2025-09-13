@@ -15,9 +15,9 @@ export interface EventSegment {
 })
 export class PublicFeedService {
   public readonly SEGMENTS: EventSegment[] = [
-    { id: 'Music', name: 'Music', label: 'Musique' },
+    { id: 'Musique', name: 'Musique', label: 'Musique' },
     { id: 'Sports', name: 'Sports', label: 'Sports' },
-    { id: 'Arts & Theatre', name: 'Arts & Theatre', label: 'Arts & Théâtre' },
+    { id: 'Arts et théâtre', name: 'Arts et théâtre', label: 'Arts & Théâtre' },
   ];
 
   constructor(

@@ -1,6 +1,7 @@
 import { Controller, Get, Query, UseGuards, Request, HttpStatus } from "@nestjs/common";
 import { FeedService } from "../services/feed.service";
 import { JwtAuthGuard } from "../../auth/guards/jwt-auth.guard";
+import { Public } from "../../auth/decorators/public.decorator";
 import { GetFeedDto } from "../dto/get-feed.dto";
 
 @Controller("feed")
@@ -39,6 +40,7 @@ export class FeedController {
     }
   }
 
+  @Public()
   @Get("all")
   async getAllEvents(@Query() query: GetFeedDto) {
     try {
@@ -118,4 +120,5 @@ export class FeedPublicController {
       };
     }
   }
+
 }
