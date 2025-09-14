@@ -6,7 +6,7 @@ import { AuthService, UserPreference } from '../../core/auth/auth.service';
 import { EventCategory, EVENT_CATEGORIES, getCategoriesBySegment } from '../../shared/constants/event-categories.constants';
 
 // Alias pour compatibilité avec le code existant
-export interface PreferenceCategory extends EventCategory {}
+export type PreferenceCategory = EventCategory;
 
 export interface PreferencesResponse {
   success: boolean;

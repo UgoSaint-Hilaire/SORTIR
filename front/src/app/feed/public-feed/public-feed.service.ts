@@ -31,7 +31,7 @@ export class PublicFeedService {
   getPublicFeed(page: number = 1, limit: number = 30, segments?: string[]): Observable<any> {
     // Si des segments sont spécifiés, on utilise le même endpoint avec les paramètres de filtre
     if (segments && segments.length > 0) {
-      let params = new HttpParams()
+      const params = new HttpParams()
         .set('page', page.toString())
         .set('limit', limit.toString())
         .set('segments', segments.join(','));
