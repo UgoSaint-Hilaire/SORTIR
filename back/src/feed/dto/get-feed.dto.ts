@@ -1,5 +1,5 @@
-import { IsOptional, IsInt, Min, Max, IsString } from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsOptional, IsInt, Min, Max, IsString, IsArray } from 'class-validator';
+import { Type, Transform } from 'class-transformer';
 
 export class GetFeedDto {
   @IsOptional()
@@ -16,8 +16,26 @@ export class GetFeedDto {
   limit?: number = 20;
 
   @IsOptional()
-  @IsString()
-  segment?: string;
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      return value.split(',').map(s => s.trim()).filter(s => s.length > 0);
+    }
+    return value;
+  })
+  @IsArray()
+  @IsString({ each: true })
+  segments?: string[];
+
+  @IsOptional()
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      return value.split(',').map(s => s.trim()).filter(s => s.length > 0);
+    }
+    return value;
+  })
+  @IsArray()
+  @IsString({ each: true })
+  genres?: string[];
 
   @IsOptional()
   @IsString()

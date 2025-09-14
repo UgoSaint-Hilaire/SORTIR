@@ -1,9 +1,13 @@
 @if (history().length > 0) {
-<nav
-  aria-label="Historique de navigation"
-  class="rounded-lg p-4 h-fit sticky top-20"
->
-  <div class="mb-4">
+<!-- Accordéon de l'historique -->
+<div class="collapse collapse-arrow mb-6 rounded-lg">
+  <input
+    type="checkbox"
+    class="collapse-toggle"
+    [checked]="historyAccordionOpen()"
+    (change)="toggleHistoryAccordion()"
+  />
+  <div class="collapse-title hover:bg-base-200 rounded-lg cursor-pointer">
     <h2 class="text-lg font-semibold flex items-center gap-2">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -23,73 +27,76 @@
       Récemment consultés
     </h2>
   </div>
-
-  <ul class="menu rounded-box w-full" role="list">
-    @for (event of history(); track event.ticketmasterId) {
-    <li>
-      <button
-        (click)="navigateToEvent(event)"
-        class="btn btn-ghost w-full justify-start p-3 h-auto min-h-0 border-0 focus:border-0 hover:border-0 text-left"
-        [attr.title]="'Retourner sur l\'événement ' + getEventTitle(event)"
-        [attr.aria-label]="'Retourner sur l\'événement ' + getEventTitle(event)"
-        type="button"
-      >
-        <div class="flex gap-3 w-full">
-          @if (getEventImage(event)) {
-          <div class="avatar">
-            <div class="w-12 h-12 rounded-lg">
-              <img
-                [src]="getEventImage(event)"
-                [alt]="'Image de l\'événement ' + getEventTitle(event)"
-                class="object-cover"
-              />
+  <div class="collapse-content">
+    <ul class="w-full space-y-1" role="list">
+      @for (event of history(); track event.ticketmasterId) {
+      <li>
+        <button
+          (click)="navigateToEvent(event)"
+          class="w-full px-2 py-2 hover:bg-base-200/50 rounded-md text-left border-0 bg-transparent"
+          [attr.title]="'Retourner sur l\'événement ' + getEventTitle(event)"
+          [attr.aria-label]="
+            'Retourner sur l\'événement ' + getEventTitle(event)
+          "
+          type="button"
+        >
+          <div class="flex gap-3 w-full min-w-0">
+            @if (getEventImage(event)) {
+            <div class="avatar">
+              <div class="w-12 h-12 rounded-lg">
+                <img
+                  [src]="getEventImage(event)"
+                  [alt]="'Image de l\'événement ' + getEventTitle(event)"
+                  class="object-cover"
+                />
+              </div>
             </div>
-          </div>
-          } @else {
-          <div class="avatar placeholder">
-            <div class="bg-neutral text-neutral-content rounded-lg w-12 h-12">
-              <span class="text-xs">
-                {{ getEventTitle(event).charAt(0).toUpperCase() }}
+            } @else {
+            <div class="avatar placeholder">
+              <div class="bg-neutral text-neutral-content rounded-lg w-12 h-12">
+                <span class="text-xs">
+                  {{ getEventTitle(event).charAt(0).toUpperCase() }}
+                </span>
+              </div>
+            </div>
+            }
+
+            <div class="flex-1 min-w-0">
+              <span
+                class="font-semibold text-sm text-base-content truncate block"
+              >
+                {{ truncateText(getEventTitle(event), 25) }}
+              </span>
+              <span class="text-xs text-base-content/80 truncate block">
+                {{ getEventLocation(event) }}
+              </span>
+              <span class="text-xs text-base-content/80 block">
+                {{ formatDate(event) }}
               </span>
             </div>
-          </div>
-          }
 
-          <div class="flex-1 min-w-0">
-            <span
-              class="font-semibold text-sm text-base-content truncate block"
-            >
-              {{ truncateText(getEventTitle(event), 25) }}
-            </span>
-            <span class="text-xs text-base-content/80 truncate block">
-              {{ getEventLocation(event) }}
-            </span>
-            <span class="text-xs text-base-content/80 block">
-              {{ formatDate(event) }}
-            </span>
+            <div class="flex items-center">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4 text-base-content/80"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                />
+              </svg>
+            </div>
           </div>
-
-          <div class="flex items-center">
-            <svg
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4 text-base-content/80"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-              />
-            </svg>
-          </div>
-        </div>
-      </button>
-    </li>
-    }
-  </ul>
-</nav>
+        </button>
+      </li>
+      }
+    </ul>
+  </div>
+</div>
 }

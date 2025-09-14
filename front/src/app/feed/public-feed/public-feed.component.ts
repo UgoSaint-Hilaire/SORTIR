@@ -75,7 +75,7 @@ export class PublicFeedComponent implements OnInit, OnDestroy {
     this.error.set(null);
 
     // Découvrir utilise TOUJOURS le feed aléatoire sans filtres
-    this.publicFeedService.getPublicFeed(1, 30, null).subscribe({
+    this.publicFeedService.getPublicFeed(1, 30, []).subscribe({
       next: (response: any) => {
         // console.log('Chargement initial - API Response:', response);
 
@@ -147,7 +147,7 @@ export class PublicFeedComponent implements OnInit, OnDestroy {
     this.isLoadingMore.set(true);
     const nextPage = this.currentPage() + 1;
 
-    this.publicFeedService.getPublicFeed(nextPage, 30, null).subscribe({
+    this.publicFeedService.getPublicFeed(nextPage, 30, []).subscribe({
       next: (response: any) => {
         // console.log(
         //   `Chargement page ${nextPage} - Cache hit:`,

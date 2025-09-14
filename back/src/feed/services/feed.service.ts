@@ -112,8 +112,12 @@ export class FeedService {
       status: { $ne: "cancelled" },
     };
 
-    if (query.segment) {
-      filter.segment = query.segment;
+    if (query.segments && query.segments.length > 0) {
+      filter.segment = { $in: query.segments };
+    }
+
+    if (query.genres && query.genres.length > 0) {
+      filter.genre = { $in: query.genres };
     }
 
     if (query.genre) {
@@ -240,5 +244,55 @@ export class FeedService {
         hasPrev: false,
       },
     };
+  }
+
+  async getGenreCounts(): Promise<{ [genre: string]: number }> {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const currentDateString = `${year}-${month}-${day}`;
+
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    const currentTimeString = `${hours}:${minutes}:00`;
+
+    const matchFilter = {
+      $or: [
+        { "date.localDate": { $gt: currentDateString } },
+        {
+          "date.localDate": currentDateString,
+          "date.localTime": { $gte: currentTimeString },
+        },
+      ],
+      status: { $ne: "cancelled" },
+      genre: { $exists: true, $ne: null },
+    };
+
+    const pipeline = [
+      { $match: matchFilter },
+      { 
+        $group: {
+          _id: "$genre",
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          genre: "$_id",
+          count: 1
+        }
+      }
+    ];
+
+    const results = await this.eventModel.aggregate(pipeline).exec();
+    
+    const genreCounts: { [genre: string]: number } = {};
+    results.forEach(result => {
+      genreCounts[result.genre] = result.count;
+    });
+
+    return genreCounts;
   }
 }

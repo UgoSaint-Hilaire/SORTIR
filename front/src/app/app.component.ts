@@ -5,10 +5,10 @@ import { Subscription, filter } from 'rxjs';
 import { NavbarComponent } from './navbar/navbar.component';
 import { HistoryComponent } from './history/history.component';
 import { FiltersComponent } from './feed/filters/filters.component';
+import { PublicFeedService, EventSegment } from './feed/public-feed/public-feed.service';
 import { CacheService } from './core/services';
 import { AuthService } from './core/auth/auth.service';
 import { FeedCommunicationService } from './feed/feed-communication.service';
-import { PublicFeedService, EventSegment } from './feed/public-feed/public-feed.service';
 
 @Component({
   selector: 'app-root',
@@ -62,6 +62,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.hasHistory.set(history.length > 0);
   }
   
+  
   isOnHomePage(): boolean {
     // Vérifier qu'on est sur la page d'accueil ET que l'onglet "Explorer" est actif
     const url = this.currentUrl();
@@ -71,12 +72,17 @@ export class AppComponent implements OnInit, OnDestroy {
     return isHomePage && isExplorerTabActive;
   }
   
-  onSegmentSelected(segment: string | null): void {
-    this.feedCommService.setSelectedSegment(segment);
+  onSegmentsSelected(segments: string[]): void {
+    this.feedCommService.setSelectedSegments(segments);
+  }
+
+  onGenresSelected(genres: string[]): void {
+    this.feedCommService.setSelectedGenres(genres);
   }
   
   // Getters pour exposer les signaux du service
-  get selectedSegment() { return this.feedCommService.selectedSegment; }
+  get selectedSegments() { return this.feedCommService.selectedSegments; }
+  get selectedGenres() { return this.feedCommService.selectedGenres; }
   get totalCount() { return this.feedCommService.totalCount; }
   get loading() { return this.feedCommService.loading; }
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, signal, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EventCardComponent } from '../../events/event-card/event-card.component';
+import { FiltersComponent } from '../filters/filters.component';
 import { PublicFeedService, EventSegment } from '../public-feed/public-feed.service';
 import { ExplorerFeedService } from './explorer-feed.service';
 import { Event } from '../../models/event.model';
@@ -10,7 +11,7 @@ import { FeedCommunicationService } from '../feed-communication.service';
 @Component({
   selector: 'app-explorer-feed',
   standalone: true,
-  imports: [CommonModule, EventCardComponent],
+  imports: [CommonModule, EventCardComponent, FiltersComponent],
   templateUrl: './explorer-feed.component.html',
 })
 export class ExplorerFeedComponent implements OnInit, OnDestroy {
@@ -28,21 +29,42 @@ export class ExplorerFeedComponent implements OnInit, OnDestroy {
   isLoadingMore = signal(false);
   
   segments = signal<EventSegment[]>([]);
-  selectedSegment = signal<string | null>(null);
+  selectedSegments = signal<string[]>([]);
+  selectedGenres = signal<string[]>([]);
+  
 
   constructor() {
-    // Écouter les changements du service de communication
+    // Écouter les changements du service de communication pour les segments
     effect(() => {
-      const newSegment = this.feedCommService.selectedSegment();
-      if (newSegment !== this.selectedSegment()) {
-        this.onSegmentSelected(newSegment);
+      const newSegments = this.feedCommService.selectedSegments();
+      if (JSON.stringify(newSegments) !== JSON.stringify(this.selectedSegments())) {
+        this.selectedSegments.set(newSegments);
+        this.currentPage.set(1);
+        this.events.set([]);
+        // Clear cache pour ce filtre spécifique quand on change
+        this.explorerFeedService.clearCache(newSegments, this.selectedGenres());
+        this.loadInitialEvents();
+      }
+    });
+
+    // Écouter les changements du service de communication pour les genres
+    effect(() => {
+      const newGenres = this.feedCommService.selectedGenres();
+      if (JSON.stringify(newGenres) !== JSON.stringify(this.selectedGenres())) {
+        this.selectedGenres.set(newGenres);
+        this.currentPage.set(1);
+        this.events.set([]);
+        // Clear cache pour ce filtre spécifique quand on change
+        this.explorerFeedService.clearCache(this.selectedSegments(), newGenres);
+        this.loadInitialEvents();
       }
     });
     
     // Synchroniser l'état local avec le service
     effect(() => {
       this.feedCommService.updateFeedData({
-        selectedSegment: this.selectedSegment(),
+        selectedSegments: this.selectedSegments(),
+        selectedGenres: this.selectedGenres(),
         totalCount: this.totalCount(),
         loading: this.loading()
       });
@@ -54,9 +76,11 @@ export class ExplorerFeedComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.segments.set(this.publicFeedService.getSegments());
     
-    // Récupérer l'état du filtre persisté depuis le service
-    const persistedSegment = this.feedCommService.selectedSegment();
-    this.selectedSegment.set(persistedSegment);
+    // Récupérer l'état des filtres persistés depuis le service
+    const persistedSegments = this.feedCommService.selectedSegments();
+    const persistedGenres = this.feedCommService.selectedGenres();
+    this.selectedSegments.set(persistedSegments);
+    this.selectedGenres.set(persistedGenres);
     
     this.loadInitialEvents();
     this.initializeScrollListener();
@@ -66,18 +90,31 @@ export class ExplorerFeedComponent implements OnInit, OnDestroy {
     this.removeScrollListener();
   }
 
-  onSegmentSelected(segment: string | null) {
-    this.selectedSegment.set(segment);
-    this.currentPage.set(1);
-    this.events.set([]);
-    // Clear cache pour ce filtre spécifique quand on change
-    this.explorerFeedService.clearCache(segment);
-    this.loadInitialEvents();
+  onSegmentsSelected(segments: string[]) {
+    // Mettre à jour le service de communication au lieu des signaux locaux
+    // L'effect se chargera de la mise à jour et du rechargement
+    this.feedCommService.setSelectedSegments(segments);
   }
 
-  getSelectedSegmentLabel(): string {
-    const segment = this.segments().find(s => s.name === this.selectedSegment());
-    return segment ? segment.label : '';
+  onGenresSelected(genres: string[]) {
+    // Mettre à jour le service de communication au lieu des signaux locaux
+    // L'effect se chargera de la mise à jour et du rechargement
+    this.feedCommService.setSelectedGenres(genres);
+  }
+
+  getSelectedSegmentLabels(): string {
+    const selectedLabels = this.selectedSegments()
+      .map(segmentName => {
+        const segment = this.segments().find(s => s.name === segmentName);
+        return segment ? segment.label : segmentName;
+      })
+      .join(', ');
+    
+    return selectedLabels;
+  }
+
+  getSelectedGenreLabels(): string {
+    return this.selectedGenres().join(', ');
   }
 
   private initializeScrollListener() {
@@ -112,7 +149,7 @@ export class ExplorerFeedComponent implements OnInit, OnDestroy {
     this.error.set(null);
 
     // Explorer utilise TOUJOURS getAllEventsFeed pour une navigation complète paginée
-    this.explorerFeedService.getAllEventsFeed(1, 30, this.selectedSegment()).subscribe({
+    this.explorerFeedService.getAllEventsFeed(1, 30, this.selectedSegments(), this.selectedGenres()).subscribe({
       next: (response: any) => {
         if (!response.success) {
           this.events.set([]);
@@ -173,7 +210,7 @@ export class ExplorerFeedComponent implements OnInit, OnDestroy {
     this.isLoadingMore.set(true);
     const nextPage = this.currentPage() + 1;
 
-    this.explorerFeedService.getAllEventsFeed(nextPage, 30, this.selectedSegment()).subscribe({
+    this.explorerFeedService.getAllEventsFeed(nextPage, 30, this.selectedSegments(), this.selectedGenres()).subscribe({
       next: (response: any) => {
         if (response.success && response.data && response.data.events) {
           const newEvents = response.data.events;
@@ -193,7 +230,7 @@ export class ExplorerFeedComponent implements OnInit, OnDestroy {
 
   refresh() {
     // Clear cache pour le filtre actuel
-    this.explorerFeedService.clearCache(this.selectedSegment());
+    this.explorerFeedService.clearCache(this.selectedSegments(), this.selectedGenres());
     this.currentPage.set(1);
     this.loadInitialEvents();
   }

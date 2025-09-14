@@ -164,7 +164,21 @@ describe("FeedController", () => {
     });
 
     it("should pass query parameters correctly", async () => {
-      const query: GetFeedDto = { page: 2, limit: 10, segment: "Sports", genre: "Football" };
+      const query: GetFeedDto = { page: 2, limit: 10, segments: ["Sports"], genres: ["Football"] };
+      mockFeedService.getAllEventsFeed.mockResolvedValue(mockFeedResponse);
+
+      await controller.getAllEvents(query);
+
+      expect(mockFeedService.getAllEventsFeed).toHaveBeenCalledWith(query);
+    });
+
+    it("should handle multiple segments and genres", async () => {
+      const query: GetFeedDto = { 
+        page: 1, 
+        limit: 20, 
+        segments: ["Sports", "Musique"], 
+        genres: ["Football", "Rock", "Jazz"] 
+      };
       mockFeedService.getAllEventsFeed.mockResolvedValue(mockFeedResponse);
 
       await controller.getAllEvents(query);
@@ -199,6 +213,53 @@ describe("FeedController", () => {
         success: false,
         code: HttpStatus.INTERNAL_SERVER_ERROR,
         message: "Erreur lors de la récupération du feed découverte",
+      });
+    });
+  });
+
+  describe("getGenreCounts", () => {
+    beforeEach(() => {
+      mockFeedService.getGenreCounts = jest.fn();
+    });
+
+    it("should return successful response with genre counts", async () => {
+      const mockCounts = {
+        "Rock": 15,
+        "Jazz": 8,
+        "Football": 25,
+        "Basketball": 12
+      };
+      mockFeedService.getGenreCounts.mockResolvedValue(mockCounts);
+
+      const result = await controller.getGenreCounts();
+
+      expect(result).toEqual({
+        success: true,
+        code: HttpStatus.OK,
+        message: "Compteurs par genre récupérés avec succès",
+        data: mockCounts,
+      });
+      expect(mockFeedService.getGenreCounts).toHaveBeenCalledWith();
+    });
+
+    it("should handle empty genre counts", async () => {
+      mockFeedService.getGenreCounts.mockResolvedValue({});
+
+      const result = await controller.getGenreCounts();
+
+      expect(result.success).toBe(true);
+      expect(result.data).toEqual({});
+    });
+
+    it("should handle service errors", async () => {
+      mockFeedService.getGenreCounts.mockRejectedValue(new Error("Database error"));
+
+      const result = await controller.getGenreCounts();
+
+      expect(result).toEqual({
+        success: false,
+        code: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: "Erreur lors de la récupération des compteurs par genre",
       });
     });
   });
@@ -251,6 +312,7 @@ describe("FeedPublicController", () => {
   beforeEach(async () => {
     mockFeedService = {
       getPublicFeed: jest.fn(),
+      getAllEventsFeed: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -347,6 +409,69 @@ describe("FeedPublicController", () => {
       expect(segments).toContain("Musique");
       expect(segments).toContain("Sports");
       expect(segments).toContain("Arts & Théâtre");
+    });
+
+    it("should use getAllEventsFeed when segments are provided", async () => {
+      const query: GetFeedDto = { page: 1, limit: 30, segments: ["Sports", "Musique"] };
+      mockFeedService.getAllEventsFeed.mockResolvedValue(mockPublicFeedResponse);
+
+      const result = await controller.getPublicFeed(query);
+
+      expect(result).toEqual({
+        success: true,
+        code: HttpStatus.OK,
+        message: "Feed public filtré récupéré avec succès",
+        data: mockPublicFeedResponse,
+      });
+      expect(mockFeedService.getAllEventsFeed).toHaveBeenCalledWith(query);
+      expect(mockFeedService.getPublicFeed).not.toHaveBeenCalled();
+    });
+
+    it("should use getAllEventsFeed when genres are provided", async () => {
+      const query: GetFeedDto = { page: 1, limit: 30, genres: ["Rock", "Football"] };
+      mockFeedService.getAllEventsFeed.mockResolvedValue(mockPublicFeedResponse);
+
+      const result = await controller.getPublicFeed(query);
+
+      expect(result.message).toBe("Feed public filtré récupéré avec succès");
+      expect(mockFeedService.getAllEventsFeed).toHaveBeenCalledWith(query);
+      expect(mockFeedService.getPublicFeed).not.toHaveBeenCalled();
+    });
+
+    it("should use getAllEventsFeed when legacy genre parameter is provided", async () => {
+      const query: GetFeedDto = { page: 1, limit: 30, genre: "Rock" };
+      mockFeedService.getAllEventsFeed.mockResolvedValue(mockPublicFeedResponse);
+
+      const result = await controller.getPublicFeed(query);
+
+      expect(result.message).toBe("Feed public filtré récupéré avec succès");
+      expect(mockFeedService.getAllEventsFeed).toHaveBeenCalledWith(query);
+      expect(mockFeedService.getPublicFeed).not.toHaveBeenCalled();
+    });
+
+    it("should use getPublicFeed when no filters are provided", async () => {
+      const query: GetFeedDto = { page: 1, limit: 30 };
+      mockFeedService.getPublicFeed.mockResolvedValue(mockPublicFeedResponse);
+
+      const result = await controller.getPublicFeed(query);
+
+      expect(result.message).toBe("Feed public récupéré avec succès");
+      expect(mockFeedService.getPublicFeed).toHaveBeenCalledWith(query);
+      expect(mockFeedService.getAllEventsFeed).not.toHaveBeenCalled();
+    });
+
+    it("should handle error from getAllEventsFeed", async () => {
+      const query: GetFeedDto = { segments: ["Sports"] };
+      mockFeedService.getAllEventsFeed.mockRejectedValue(new Error("Filter error"));
+
+      const result = await controller.getPublicFeed(query);
+
+      expect(result).toEqual({
+        success: false,
+        code: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: "Erreur lors de la récupération du feed public",
+        error: "Filter error",
+      });
     });
   });
 });

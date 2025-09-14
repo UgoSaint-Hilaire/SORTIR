@@ -14,9 +14,9 @@ export class ExplorerFeedService {
     private cacheService: CacheService
   ) {}
 
-  getAllEventsFeed(page: number = 1, limit: number = 30, segment?: string | null, genre?: string | null): Observable<any> {
+  getAllEventsFeed(page: number = 1, limit: number = 30, segments?: string[], genres?: string[], genre?: string | null): Observable<any> {
     // Vérifier le cache avant l'appel API
-    const cachedPage = this.getCachedPage(page, limit, segment, genre);
+    const cachedPage = this.getCachedPage(page, limit, segments, genres, genre);
     if (cachedPage) {
       return of({
         success: true,
@@ -28,8 +28,12 @@ export class ExplorerFeedService {
       .set('page', page.toString())
       .set('limit', limit.toString());
 
-    if (segment) {
-      params = params.set('segment', segment);
+    if (segments && segments.length > 0) {
+      params = params.set('segments', segments.join(','));
+    }
+
+    if (genres && genres.length > 0) {
+      params = params.set('genres', genres.join(','));
     }
 
     if (genre) {
@@ -43,26 +47,27 @@ export class ExplorerFeedService {
       tap((response) => {
         // Mettre en cache les résultats
         if (response.success && response.data && response.data.events) {
-          this.cacheResults(response.data, segment, genre);
+          this.cacheResults(response.data, segments, genres, genre);
         }
       })
     );
   }
 
-  private getCacheKey(segment?: string | null, genre?: string | null): string {
-    const segmentKey = segment || 'all';
+  private getCacheKey(segments?: string[], genres?: string[], genre?: string | null): string {
+    const segmentKey = segments && segments.length > 0 ? segments.sort().join('_') : 'all';
+    const genresKey = genres && genres.length > 0 ? genres.sort().join('_') : 'all';
     const genreKey = genre || '';
-    return `explorer_events_${segmentKey}_${genreKey}`;
+    return `explorer_events_${segmentKey}_${genresKey}_${genreKey}`;
   }
 
-  private cacheResults(data: any, segment?: string | null, genre?: string | null): void {
-    const cacheKey = this.getCacheKey(segment, genre);
+  private cacheResults(data: any, segments?: string[], genres?: string[], genre?: string | null): void {
+    const cacheKey = this.getCacheKey(segments, genres, genre);
     // Stocker les données complètes (events + pagination) pendant 10 minutes
     this.cacheService.set(cacheKey, data, 10);
   }
 
-  private getCachedPage(page: number, limit: number, segment?: string | null, genre?: string | null): any | null {
-    const cacheKey = this.getCacheKey(segment, genre);
+  private getCachedPage(page: number, limit: number, segments?: string[], genres?: string[], genre?: string | null): any | null {
+    const cacheKey = this.getCacheKey(segments, genres, genre);
     const cachedData = this.cacheService.get<any>(cacheKey);
 
     if (!cachedData || !cachedData.events) {
@@ -77,15 +82,26 @@ export class ExplorerFeedService {
     return null;
   }
 
-  clearCache(segment?: string | null, genre?: string | null): void {
-    const cacheKey = this.getCacheKey(segment, genre);
+  clearCache(segments?: string[], genres?: string[], genre?: string | null): void {
+    const cacheKey = this.getCacheKey(segments, genres, genre);
     this.cacheService.clear(cacheKey);
   }
 
   clearAllCache(): void {
     // Nettoyer tous les caches d'explorer
-    ['all', 'Musique', 'Sports', 'Arts et théâtre'].forEach(seg => {
-      const cacheKey = this.getCacheKey(seg === 'all' ? null : seg);
+    const allCombinations = [
+      [], // tous
+      ['Musique'],
+      ['Sports'], 
+      ['Arts et théâtre'],
+      ['Musique', 'Sports'],
+      ['Musique', 'Arts et théâtre'],
+      ['Sports', 'Arts et théâtre'],
+      ['Musique', 'Sports', 'Arts et théâtre']
+    ];
+    
+    allCombinations.forEach(segments => {
+      const cacheKey = this.getCacheKey(segments.length > 0 ? segments : undefined);
       this.cacheService.clear(cacheKey);
     });
   }

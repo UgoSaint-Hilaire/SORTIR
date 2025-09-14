@@ -234,8 +234,8 @@ describe("FeedService", () => {
       expect(result.pagination.total).toBe(3);
     });
 
-    it("should filter by segment when provided", async () => {
-      const query: GetFeedDto = { page: 1, limit: 20, segment: "Sports" };
+    it("should filter by single segment using segments array", async () => {
+      const query: GetFeedDto = { page: 1, limit: 20, segments: ["Sports"] };
 
       mockEventModel.exec.mockResolvedValue([mockEvents[1]]);
       mockEventModel.countDocuments.mockResolvedValue(1);
@@ -244,12 +244,27 @@ describe("FeedService", () => {
 
       expect(mockEventModel.find).toHaveBeenCalledWith(
         expect.objectContaining({
-          segment: "Sports",
+          segment: { $in: ["Sports"] },
         })
       );
     });
 
-    it("should filter by genre when provided", async () => {
+    it("should filter by multiple segments using segments array", async () => {
+      const query: GetFeedDto = { page: 1, limit: 20, segments: ["Sports", "Musique"] };
+
+      mockEventModel.exec.mockResolvedValue([mockEvents[0], mockEvents[1]]);
+      mockEventModel.countDocuments.mockResolvedValue(2);
+
+      await service.getAllEventsFeed(query);
+
+      expect(mockEventModel.find).toHaveBeenCalledWith(
+        expect.objectContaining({
+          segment: { $in: ["Sports", "Musique"] },
+        })
+      );
+    });
+
+    it("should filter by single genre using legacy parameter", async () => {
       const query: GetFeedDto = { page: 1, limit: 20, genre: "Rock" };
 
       mockEventModel.exec.mockResolvedValue([mockEvents[0]]);
@@ -264,8 +279,44 @@ describe("FeedService", () => {
       );
     });
 
-    it("should filter by both segment and genre when provided", async () => {
-      const query: GetFeedDto = { page: 1, limit: 20, segment: "Musique", genre: "Rock" };
+    it("should filter by multiple genres using genres array", async () => {
+      const query: GetFeedDto = { page: 1, limit: 20, genres: ["Rock", "Football"] };
+
+      mockEventModel.exec.mockResolvedValue([mockEvents[0], mockEvents[1]]);
+      mockEventModel.countDocuments.mockResolvedValue(2);
+
+      await service.getAllEventsFeed(query);
+
+      expect(mockEventModel.find).toHaveBeenCalledWith(
+        expect.objectContaining({
+          genre: { $in: ["Rock", "Football"] },
+        })
+      );
+    });
+
+    it("should filter by both segments and genres arrays", async () => {
+      const query: GetFeedDto = { 
+        page: 1, 
+        limit: 20, 
+        segments: ["Musique", "Sports"], 
+        genres: ["Rock", "Football"] 
+      };
+
+      mockEventModel.exec.mockResolvedValue([mockEvents[0], mockEvents[1]]);
+      mockEventModel.countDocuments.mockResolvedValue(2);
+
+      await service.getAllEventsFeed(query);
+
+      expect(mockEventModel.find).toHaveBeenCalledWith(
+        expect.objectContaining({
+          segment: { $in: ["Musique", "Sports"] },
+          genre: { $in: ["Rock", "Football"] },
+        })
+      );
+    });
+
+    it("should filter by both segments and genre when provided", async () => {
+      const query: GetFeedDto = { page: 1, limit: 20, segments: ["Musique"], genre: "Rock" };
 
       mockEventModel.exec.mockResolvedValue([mockEvents[0]]);
       mockEventModel.countDocuments.mockResolvedValue(1);
@@ -274,8 +325,32 @@ describe("FeedService", () => {
 
       expect(mockEventModel.find).toHaveBeenCalledWith(
         expect.objectContaining({
-          segment: "Musique",
+          segment: { $in: ["Musique"] },
           genre: "Rock",
+        })
+      );
+    });
+
+    it("should apply date and time filtering for all queries", async () => {
+      const query: GetFeedDto = { page: 1, limit: 20 };
+
+      mockEventModel.exec.mockResolvedValue(mockEvents);
+      mockEventModel.countDocuments.mockResolvedValue(3);
+
+      await service.getAllEventsFeed(query);
+
+      expect(mockEventModel.find).toHaveBeenCalledWith(
+        expect.objectContaining({
+          $or: expect.arrayContaining([
+            expect.objectContaining({
+              "date.localDate": expect.objectContaining({ $gt: expect.any(String) }),
+            }),
+            expect.objectContaining({
+              "date.localDate": expect.any(String),
+              "date.localTime": expect.objectContaining({ $gte: expect.any(String) }),
+            }),
+          ]),
+          status: { $ne: "cancelled" },
         })
       );
     });
@@ -361,6 +436,104 @@ describe("FeedService", () => {
       expect(result.events).toEqual([]);
       expect(result.pagination.total).toBe(0);
       expect(mockEventModel.aggregate).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("getGenreCounts", () => {
+    beforeEach(() => {
+      mockEventModel.exec.mockResolvedValue([
+        { genre: "Rock", count: 15 },
+        { genre: "Football", count: 25 },
+        { genre: "Jazz", count: 8 },
+        { genre: "Théâtre", count: 12 },
+      ]);
+    });
+
+    it("should return genre counts using aggregation pipeline", async () => {
+      const result = await service.getGenreCounts();
+
+      expect(result).toEqual({
+        "Rock": 15,
+        "Football": 25,
+        "Jazz": 8,
+        "Théâtre": 12,
+      });
+
+      expect(mockEventModel.aggregate).toHaveBeenCalledWith([
+        {
+          $match: expect.objectContaining({
+            $or: expect.arrayContaining([
+              expect.objectContaining({
+                "date.localDate": expect.objectContaining({ $gt: expect.any(String) }),
+              }),
+              expect.objectContaining({
+                "date.localDate": expect.any(String),
+                "date.localTime": expect.objectContaining({ $gte: expect.any(String) }),
+              }),
+            ]),
+            status: { $ne: "cancelled" },
+            genre: { $exists: true, $ne: null },
+          })
+        },
+        {
+          $group: {
+            _id: "$genre",
+            count: { $sum: 1 }
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            genre: "$_id",
+            count: 1
+          }
+        }
+      ]);
+    });
+
+    it("should return empty object when no genres found", async () => {
+      mockEventModel.exec.mockResolvedValue([]);
+
+      const result = await service.getGenreCounts();
+
+      expect(result).toEqual({});
+    });
+
+    it("should filter out cancelled events and null genres", async () => {
+      await service.getGenreCounts();
+
+      expect(mockEventModel.aggregate).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          expect.objectContaining({
+            $match: expect.objectContaining({
+              status: { $ne: "cancelled" },
+              genre: { $exists: true, $ne: null },
+            })
+          })
+        ])
+      );
+    });
+
+    it("should apply date and time filtering for genre counts", async () => {
+      await service.getGenreCounts();
+
+      expect(mockEventModel.aggregate).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          expect.objectContaining({
+            $match: expect.objectContaining({
+              $or: expect.arrayContaining([
+                expect.objectContaining({
+                  "date.localDate": expect.objectContaining({ $gt: expect.any(String) }),
+                }),
+                expect.objectContaining({
+                  "date.localDate": expect.any(String),
+                  "date.localTime": expect.objectContaining({ $gte: expect.any(String) }),
+                }),
+              ]),
+            })
+          })
+        ])
+      );
     });
   });
 });

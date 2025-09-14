@@ -28,13 +28,13 @@ export class PublicFeedService {
 
   private readonly PUBLIC_EVENTS_KEY = 'public_events';
 
-  getPublicFeed(page: number = 1, limit: number = 30, segment?: string | null): Observable<any> {
-    // Si un segment est spécifié, on utilise le même endpoint avec les paramètres de filtre
-    if (segment) {
+  getPublicFeed(page: number = 1, limit: number = 30, segments?: string[]): Observable<any> {
+    // Si des segments sont spécifiés, on utilise le même endpoint avec les paramètres de filtre
+    if (segments && segments.length > 0) {
       let params = new HttpParams()
         .set('page', page.toString())
         .set('limit', limit.toString())
-        .set('segment', segment);
+        .set('segments', segments.join(','));
 
       return this.http.get<any>(
         this.configService.getApiEndpoint('/feed/public'),
@@ -127,5 +127,29 @@ export class PublicFeedService {
 
   getSegments(): EventSegment[] {
     return this.SEGMENTS;
+  }
+
+  private readonly GENRE_COUNTS_KEY = 'genre_counts';
+
+  getGenreCounts(): Observable<{ [genre: string]: number }> {
+    // Vérifier le cache d'abord
+    const cached = this.cacheService.get<{ [genre: string]: number }>(this.GENRE_COUNTS_KEY);
+    if (cached) {
+      return of(cached);
+    }
+
+    return this.http.get<any>(
+      this.configService.getApiEndpoint('/feed/genre-counts')
+    ).pipe(
+      map(response => response.success ? response.data : {}),
+      tap(counts => {
+        // Cache pendant 5 minutes
+        this.cacheService.set(this.GENRE_COUNTS_KEY, counts, 5);
+      })
+    );
+  }
+
+  clearGenreCountsCache(): void {
+    this.cacheService.clear(this.GENRE_COUNTS_KEY);
   }
 }

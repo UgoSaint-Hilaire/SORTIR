@@ -81,6 +81,26 @@ export class FeedController {
       };
     }
   }
+
+  @Get("genre-counts")
+  async getGenreCounts() {
+    try {
+      const counts = await this.feedService.getGenreCounts();
+      
+      return {
+        success: true,
+        code: HttpStatus.OK,
+        message: "Compteurs par genre récupérés avec succès",
+        data: counts,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        code: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: "Erreur lors de la récupération des compteurs par genre",
+      };
+    }
+  }
 }
 
 @Controller("feed")
@@ -90,8 +110,8 @@ export class FeedPublicController {
   @Get("public")
   async getPublicFeed(@Query() query: GetFeedDto) {
     try {
-      // Si un segment est fourni, utiliser getAllEventsFeed avec filtres
-      if (query.segment || query.genre) {
+      // Si des segments ou genres sont fournis, utiliser getAllEventsFeed avec filtres
+      if ((query.segments && query.segments.length > 0) || (query.genres && query.genres.length > 0) || query.genre) {
         const feed = await this.feedService.getAllEventsFeed(query);
         return {
           success: true,

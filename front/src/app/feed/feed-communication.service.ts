@@ -6,7 +6,8 @@ import { Injectable, signal } from '@angular/core';
 export class FeedCommunicationService {
   // État simple pour l'onglet actif et les données de filtres
   activeTab = signal<'personal' | 'public' | 'explorer'>('public');
-  selectedSegment = signal<string | null>(null);
+  selectedSegments = signal<string[]>([]);
+  selectedGenres = signal<string[]>([]);
   totalCount = signal<number>(0);
   loading = signal<boolean>(false);
 
@@ -14,13 +15,27 @@ export class FeedCommunicationService {
     this.activeTab.set(tab);
   }
 
-  setSelectedSegment(segment: string | null) {
-    this.selectedSegment.set(segment);
+  setSelectedSegments(segments: string[]) {
+    this.selectedSegments.set(segments);
   }
 
-  updateFeedData(data: { totalCount: number, loading: boolean, selectedSegment: string | null }) {
+  setSelectedGenres(genres: string[]) {
+    this.selectedGenres.set(genres);
+  }
+
+  updateFeedData(data: { 
+    totalCount: number, 
+    loading: boolean, 
+    selectedSegments?: string[],
+    selectedGenres?: string[]
+  }) {
     this.totalCount.set(data.totalCount);
     this.loading.set(data.loading);
-    this.selectedSegment.set(data.selectedSegment);
+    if (data.selectedSegments !== undefined) {
+      this.selectedSegments.set(data.selectedSegments);
+    }
+    if (data.selectedGenres !== undefined) {
+      this.selectedGenres.set(data.selectedGenres);
+    }
   }
 }

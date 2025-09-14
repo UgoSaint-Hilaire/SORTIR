@@ -1,3 +1,16 @@
+<!-- Filtres pour mobile -->
+<div class="xl:hidden mb-6">
+  <app-filters 
+    [segments]="segments()"
+    [selectedSegments]="selectedSegments()"
+    [selectedGenres]="selectedGenres()"
+    [totalCount]="totalCount()"
+    [loading]="loading()"
+    (segmentsSelected)="onSegmentsSelected($event)"
+    (genresSelected)="onGenresSelected($event)">
+  </app-filters>
+</div>
+
 @if (loading() && !isLoadingMore()) {
   <div class="flex justify-center items-center py-8">
     <span class="loading loading-spinner loading-lg text-primary"></span>
@@ -26,18 +39,28 @@
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
     >
       <path
         stroke-linecap="round"
         stroke-linejoin="round"
         stroke-width="2"
-        d="M9.172 16.172a4 4 0 015.656 0M9 12l6 6m6-6a9 9 0 11-18 0 9 9 0 0118 0z"
+        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
       />
     </svg>
     <h3 class="mt-2 text-sm font-medium text-gray-900">Aucun événement trouvé</h3>
     <p class="mt-1 text-sm text-gray-500">
-      @if (selectedSegment()) {
-        Aucun événement ne correspond à vos critères dans la catégorie "{{ getSelectedSegmentLabel() }}".
+      @if (selectedSegments().length > 0 || selectedGenres().length > 0) {
+        Aucun événement ne correspond à vos critères
+        @if (selectedSegments().length > 0) {
+          dans {{ selectedSegments().length === 1 ? 'la catégorie' : 'les catégories' }} "{{ getSelectedSegmentLabels() }}"
+        }
+        @if (selectedSegments().length > 0 && selectedGenres().length > 0) {
+          et
+        }
+        @if (selectedGenres().length > 0) {
+          pour {{ selectedGenres().length === 1 ? 'le genre' : 'les genres' }} "{{ getSelectedGenreLabels() }}"
+        }.
       } @else {
         Aucun événement n'est disponible pour le moment.
       }
@@ -61,8 +84,17 @@
     <div class="text-center py-8">
       <p class="text-sm text-gray-500">
         Vous avez atteint la fin des résultats
-        @if (selectedSegment()) {
-          pour la catégorie "{{ getSelectedSegmentLabel() }}"
+        @if (selectedSegments().length > 0 || selectedGenres().length > 0) {
+          pour
+          @if (selectedSegments().length > 0) {
+            {{ selectedSegments().length === 1 ? 'la catégorie' : 'les catégories' }} "{{ getSelectedSegmentLabels() }}"
+          }
+          @if (selectedSegments().length > 0 && selectedGenres().length > 0) {
+            et
+          }
+          @if (selectedGenres().length > 0) {
+            {{ selectedGenres().length === 1 ? 'le genre' : 'les genres' }} "{{ getSelectedGenreLabels() }}"
+          }
         }
         ({{ totalCount() }} événement{{ totalCount() > 1 ? 's' : '' }} au total).
       </p>

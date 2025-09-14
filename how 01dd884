@@ -1,0 +1,99 @@
+[33m51464fa[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m avancement filtres
+[33m01dd884[m avancement gestion des filtres
+[33mad8ca48[m[33m ([m[1;31morigin/main[m[33m)[m fix test auth
+[33mb93693a[m assouplissement des seuils des rate limits
+[33m208a4e1[m modification CORS
+[33m0de575d[m[33m ([m[1;33mtag: v1.1.0[m[33m)[m modification CHANGELOG
+[33m2e11ae9[m[33m ([m[1;31morigin/feat/profile-picture[m[33m, [m[1;32mfeat/profile-picture[m[33m)[m Ajout de l'image de profil
+[33m9a48177[m Update README.md
+[33md5b2f76[m Update README.md
+[33m69a82aa[m[33m ([m[1;31morigin/release/v1[m[33m, [m[1;32mrelease/v1[m[33m)[m avancement readme
+[33m8d43251[m avancement changelog
+[33mc9386a2[m[33m ([m[1;32mfeat/user-pp[m[33m)[m ajout dernieres modification doc
+[33m95f13e1[m ajout du readme & dernière doc
+[33ma0cb5b6[m modification rate-limiter
+[33md244786[m augmentation du nombre de requete, à revenir en arrière une fois les détails événements stockés dans le cache
+[33m0ce84ca[m mise en commentaire des log, changement du title
+[33m7107bc3[m report système de surveillance- @todo: ajout des tests
+[33mb1de03c[m ajout documentation
+[33md9398ff[m ajout de codeQL dans la pipeline de sécurité
+[33m21750cd[m[33m ([m[1;33mtag: v1.0.0[m[33m)[m modifications des changelogs, montée de version 1.0.0
+[33me096f46[m modification tests pour correspondre à la timezone de github...
+[33m3840a9f[m ajouts des tests, couverture front > 80%
+[33m9988708[m meilleur gestion de la sécurité, modification de la mire d'authentification en conséquences
+[33m876c618[m[33m ([m[1;31morigin/fix/custom-feed[m[33m, [m[1;32mfix/custom-feed[m[33m)[m fix affichage message d'erreur lorsque l'utilisateur n'a pas de préférence
+[33m180e688[m[33m ([m[1;31morigin/feat/rate-limiter[m[33m, [m[1;32mfeat/rate-limiter[m[33m)[m ajout du rate limiter pour éviter les dénis de service
+[33mc9c5b54[m[33m ([m[1;31morigin/fix/historique-navigation[m[33m, [m[1;32mfix/historique-navigation[m[33m)[m fix de l'historique qui n'apparaissait pas dans le menu hamburger lorsque l'utilisateur n'est pas connecté
+[33m8f27ce4[m Modification templates pour correspondre aux critères d'accessibilités
+[33m23e4c78[m fix historique dans navigation hamburger
+[33m621cfe6[m[33m ([m[1;31morigin/fix/navigation-session[m[33m, [m[1;32mfix/navigation-session[m[33m)[m suppression méthode inutile
+[33mc6d5161[m fix mauvaise route
+[33m8b1d26b[m modification et gestion nouvel environnement
+[33m133caa7[m fix backend route
+[33mf0f1d4a[m fix lien vers backend production
+[33m9435ae3[m ajout 0.0.0.0 pour écouter sur toutes les interfaces + CORS dynamique
+[33m11db17a[m[33m ([m[1;31morigin/cleanup/css[m[33m, [m[1;32mcleanup/css[m[33m)[m suppression des fichiers CSS inutiles
+[33m6af3952[m modification changelog
+[33mf924ba9[m[33m ([m[1;33mtag: v0.11.0[m[33m)[m changement changelog, montée de version
+[33m9b1606a[m Merge branch 'feat/navigation'
+[33m892537a[m[33m ([m[1;31morigin/feat/navigation[m[33m, [m[1;32mfeat/navigation[m[33m)[m suppression d'un test jsp pourquoi il passe pas celui la commence à bien faire
+[33m4bd0f0f[m fix texte de l'historique
+[33mc4537a5[m ajout des tests
+[33mefaf737[m remasterisation de la navigation principale, correspond aux critères rgaa
+[33me201cab[m[33m ([m[1;31morigin/fix/auth[m[33m, [m[1;32mfix/auth[m[33m)[m fix bug lors de la déconnexion
+[33mc263feb[m ajout oublie changelog et montée de version back
+[33m25d69a2[m[33m ([m[1;33mtag: v0.10.0[m[33m)[m modification changelog et montée de version
+[33mcd12add[m[33m ([m[1;31morigin/feat/layout+history[m[33m, [m[1;32mfeat/layout+history[m[33m)[m suppression test bloquant
+[33m7086a95[m ajout d'un layout et prise e ncharge des événemnts dans un historique de session
+[33mf8fa141[m[33m ([m[1;31morigin/feat/event-details[m[33m, [m[1;32mfeat/event-details[m[33m)[m ajout tests et quelques modifications
+[33mf0eba9f[m ajouts informations détail événements
+[33m21d62dd[m modification CHANGELOG
+[33mc989db0[m[33m ([m[1;33mtag: v0.9.0[m[33m, [m[1;31morigin/feat/feed[m[33m, [m[1;32mfeat/feed[m[33m)[m ajout feed personnalisé
+[33m4b003a6[m[33m ([m[1;31morigin/fix/preferences[m[33m, [m[1;32mfix/preferences[m[33m)[m fix de la gestion des préférences
+[33maf5ca13[m[33m ([m[1;31morigin/feat/profil[m[33m, [m[1;32mfeat/profil[m[33m)[m ajout interface profil, gestion des préférences
+[33m7ea3698[m changement CHANGELOG, montée de version
+[33m923ca06[m[33m ([m[1;33mtag: v0.8.0[m[33m)[m Merge branch 'main' of https://github.com/UgoSaint-Hilaire/SORTIR
+[33m28ee645[m[33m ([m[1;31morigin/feat/auth-login[m[33m, [m[1;32mfeat/auth-login[m[33m)[m gestion de l'interface d'authentification, gestion des états
+[33m1e47fe3[m Update CHANGELOG.md
+[33m0212836[m ajout navigation feed
+[33m322f0f2[m ajout tests feed
+[33mdce3ebb[m mise en place de l'interface fonctionnelle du feed
+[33mc5fb0d0[m refacto méthode getPublicFeed
+[33m942e52f[m fix pipeline front
+[33m48b9757[m init tailwind & daisyui
+[33ma16b68f[m modification CHANGELOG
+[33mec5ef7d[m[33m ([m[1;33mtag: v0.7.0[m[33m)[m clean ignore
+[33m9979b0b[m[33m ([m[1;31morigin/feat/users-roles[m[33m, [m[1;32mfeat/users-roles[m[33m)[m Montée de version, modificaition du CHANGELOG.md
+[33m145f454[m modification des tests
+[33m0bc31e6[m reorganisation des fichiers du module auth -> mise à jour des imports sur les autres modules
+[33md805a7c[m ajout d'une gestion des users (membre & admin)
+[33m0d9d3f1[m fix app.module
+[33m6b687c0[m suppression app.controller et app.service + suppression tests respectifs
+[33mbea0c0f[m[33m ([m[1;33mtag: v0.6.0[m[33m)[m modificaition CHANGELOG, modification version packages
+[33ma11dfc4[m[33m ([m[1;31morigin/feat/event-scheduler[m[33m, [m[1;32mfeat/event-scheduler[m[33m)[m ajout scheduler
+[33mb668c93[m Ajout des dépendances manquantes dans les packages.json
+[33m56feb5b[m passage version 0.6.0 dans package.json & package-lock.json
+[33md48a0d8[m ajout du feed utilisateur
+[33mcbe5c92[m[33m ([m[1;33mtag: v0.4.0[m[33m)[m modification CHANGELOG.md
+[33md8f7962[m[33m ([m[1;31morigin/feat/preferences[m[33m, [m[1;32mfeat/preferences[m[33m)[m Ajout des préférences utilisateurs
+[33m65a52cb[m dernier dernier fix
+[33meec545a[m[33m ([m[1;32mfix/security.yml[m[33m)[m dernier fix
+[33m0ecb24d[m[33m ([m[1;31morigin/fix/security.yml[m[33m)[m simplification du workflow
+[33m3176697[m ajout des permissions du workflow, ajout du language ts pour analyse
+[33m2ce6bd2[m modification security.yml
+[33md364044[m[33m ([m[1;31morigin/fix/ci.yml[m[33m, [m[1;32mfix/ci.yml[m[33m)[m ajout configuration d'eslint dans le front + modification ci.yml pour qu'il execute le script
+[33m60103aa[m ajout configuration d'eslint dans le back
+[33mf498581[m[33m ([m[1;31morigin/fix/pipeline-ci/cd[m[33m, [m[1;32mfix/pipeline-ci/cd[m[33m)[m ajout package-lock.json oublié
+[33m3219410[m fix fichier ci.yml
+[33me95e8ef[m[33m ([m[1;33mtag: v0.3.0[m[33m, [m[1;33mtag: push[m[33m)[m modification CHANGELOG.md
+[33mc8b4c5a[m[33m ([m[1;31morigin/feat/events[m[33m)[m ajouts tests module events, fix fonction getClassificationName, réorganisation des fichiers dans des sous-dossiers
+[33m5250da4[m ajout du module de rapatriation des events ticketmaster, mise en place et stockage mongodb, fetching manuel (sans sécurité pour l'instant)
+[33mc919a46[m Update global CHANGELOG.md
+[33m45c503f[m[33m ([m[1;33mtag: v0.2.0[m[33m)[m Modification fichier CHANGELOG back
+[33mc13a27a[m Ajouts des tests auth, users, local.strategy, jwt.strategy
+[33m917bfde[m merge branche feat/auth-login
+[33m95df508[m Gestion des versions repensé + fix CI
+[33me0420b2[m mise en place persistence des données via bdd psql locale, ajout typeORM pour requêtages
+[33mab741f8[m ajout logique d'authentification, ajout des tokens jwt
+[33m3c17c29[m[33m ([m[1;33mtag: v0.1.0[m[33m)[m ajout du fichier de CHANGELOG
+[33m3fe1bbf[m initialisation

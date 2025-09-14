@@ -195,4 +195,105 @@ describe('PublicFeedService', () => {
 
 
   });
+
+  describe('getGenreCounts', () => {
+    it('should return cached genre counts when available', () => {
+      const mockCounts = { 'Rock': 15, 'Football': 25, 'Jazz': 8 };
+      cacheService.get.and.returnValue(mockCounts);
+
+      service.getGenreCounts().subscribe(counts => {
+        expect(counts).toEqual(mockCounts);
+      });
+
+      expect(cacheService.get).toHaveBeenCalledWith('genre_counts');
+      expect(configService.getApiEndpoint).not.toHaveBeenCalled();
+    });
+
+    it('should fetch genre counts from API when cache miss', () => {
+      const mockCounts = { 'Rock': 15, 'Football': 25, 'Jazz': 8 };
+      const apiResponse = {
+        success: true,
+        data: mockCounts
+      };
+
+      cacheService.get.and.returnValue(null);
+      configService.getApiEndpoint.and.returnValue('http://localhost:3001/feed/genre-counts');
+
+      service.getGenreCounts().subscribe(counts => {
+        expect(counts).toEqual(mockCounts);
+      });
+
+      const req = httpMock.expectOne('http://localhost:3001/feed/genre-counts');
+      expect(req.request.method).toBe('GET');
+      req.flush(apiResponse);
+
+      expect(cacheService.set).toHaveBeenCalledWith('genre_counts', mockCounts, 5);
+    });
+
+    it('should return empty object when API response is unsuccessful', () => {
+      const apiResponse = {
+        success: false,
+        data: null
+      };
+
+      cacheService.get.and.returnValue(null);
+      configService.getApiEndpoint.and.returnValue('http://localhost:3001/feed/genre-counts');
+
+      service.getGenreCounts().subscribe(counts => {
+        expect(counts).toEqual({});
+      });
+
+      const req = httpMock.expectOne('http://localhost:3001/feed/genre-counts');
+      req.flush(apiResponse);
+
+      expect(cacheService.set).toHaveBeenCalledWith('genre_counts', {}, 5);
+    });
+  });
+
+  describe('getSegments', () => {
+    it('should return predefined segments', () => {
+      const segments = service.getSegments();
+
+      expect(segments).toBeDefined();
+      expect(Array.isArray(segments)).toBe(true);
+      expect(segments.length).toBeGreaterThan(0);
+      
+      // Verify segments structure
+      segments.forEach(segment => {
+        expect(segment.id).toBeDefined();
+        expect(segment.name).toBeDefined();
+        expect(segment.label).toBeDefined();
+      });
+    });
+
+    it('should include expected segments', () => {
+      const segments = service.getSegments();
+      const segmentNames = segments.map(s => s.name);
+
+      expect(segmentNames).toContain('Musique');
+      expect(segmentNames).toContain('Sports');
+    });
+  });
+
+  describe('cache management', () => {
+    it('should clear public events cache', () => {
+      service.clearPublicEventsCache();
+      expect(cacheService.clear).toHaveBeenCalledWith('public_events');
+    });
+
+    it('should clear genre counts cache', () => {
+      service.clearGenreCountsCache();
+      expect(cacheService.clear).toHaveBeenCalledWith('genre_counts');
+    });
+
+    it('should get cached public events', () => {
+      const cachedEvents = [mockEvents[0]];
+      cacheService.get.and.returnValue(cachedEvents);
+
+      const result = service.getPublicCachedEvents();
+      
+      expect(result).toEqual(cachedEvents);
+      expect(cacheService.get).toHaveBeenCalledWith('public_events');
+    });
+  });
 });

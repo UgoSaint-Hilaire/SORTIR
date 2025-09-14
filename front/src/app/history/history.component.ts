@@ -22,6 +22,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
 
   history = signal<Event[]>([]);
+  historyAccordionOpen = signal(true); // Ouvert par défaut
   private routerSubscription?: Subscription;
   private authSubscription?: Subscription;
 
@@ -47,6 +48,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
   loadHistory(): void {
     const historyEvents = this.cacheService.getViewHistory();
     this.history.set(historyEvents);
+  }
+
+  toggleHistoryAccordion() {
+    this.historyAccordionOpen.set(!this.historyAccordionOpen());
   }
 
   navigateToEvent(event: Event): void {
