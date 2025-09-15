@@ -9,6 +9,7 @@ import {
 
 import { EventDetailComponent } from './event-detail.component';
 import { ConfigService } from '../../core/services';
+import { BackButtonComponent } from '../../shared/components/back-button/back-button.component';
 
 describe('EventDetailComponent', () => {
   let component: EventDetailComponent;
@@ -175,13 +176,15 @@ describe('EventDetailComponent', () => {
     });
   });
 
-  it('should navigate back to home', () => {
-    const router = (component as any).router;
-    spyOn(router, 'navigate');
-
-    component.goBack();
-
-    expect(router.navigate).toHaveBeenCalledWith(['/']);
+  it('should render back button component when event is loaded', () => {
+    // Simuler le chargement de l'événement
+    component.event.set(mockEvent);
+    component.loading.set(false);
+    component.error.set(null);
+    fixture.detectChanges();
+    
+    const compiled = fixture.nativeElement;
+    expect(compiled.querySelector('app-back-button')).toBeTruthy();
   });
 
   describe('Event data methods', () => {

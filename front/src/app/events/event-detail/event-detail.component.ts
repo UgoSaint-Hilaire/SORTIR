@@ -14,12 +14,13 @@ import { HttpClient } from '@angular/common/http';
 import { Event } from '../../models/event.model';
 import { EventService } from '../event.service';
 import { ConfigService, CacheService } from '../../core/services';
+import { BackButtonComponent } from '../../shared/components/back-button/back-button.component';
 import maplibregl from 'maplibre-gl';
 
 @Component({
   selector: 'app-event-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, BackButtonComponent],
   templateUrl: './event-detail.component.html',
   providers: [EventService],
 })
@@ -81,9 +82,6 @@ export class EventDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  goBack(): void {
-    this.router.navigate(['/']);
-  }
 
   formatDate(date: any): string {
     return this.EventService.formatDate(date);

@@ -5,91 +5,136 @@
   <figure class="relative h-64 overflow-hidden">
     <img
       [src]="getEventImage()"
-      [alt]="'Image de l\'événement ' + getEventTitle() + ' à ' + getEventLocation()"
+      [alt]="
+        'Image de l\'événement ' + getEventTitle() + ' à ' + getEventLocation()
+      "
       class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
     />
-    <div class="absolute top-4 right-4">
-      <div class="badge badge-primary badge-lg">{{ getEventCategory() }}</div>
-    </div>
   </figure>
   }
 
-  <div class="card-body space-y-4">
+  <div class="card-body space-y-6" style="padding: 30px">
     <div class="flex items-start justify-between">
-      <h2 class="card-title text-2xl font-bold">{{ getEventTitle() }}</h2>
+      <h2 class="card-title text-2xl" style="font-weight: 800">
+        {{ getEventTitle() }}
+      </h2>
     </div>
 
-    <p class="text-base-content/80 line-clamp-3">{{ event.description }}</p>
+    <p class="text-base text-base-content/80 line-clamp-3">
+      {{ event.description }}
+    </p>
 
-    <div class="space-y-3">
-      <div class="flex items-center gap-2">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="w-5 h-5 text-primary"
+    <div class="bg-base-200/50 rounded-lg p-4 space-y-3">
+      <div class="flex items-center gap-3">
+        <div
+          class="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
-          />
-        </svg>
-        <span class="text-sm">{{ formatDate(event.date) }}</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-4 h-4 text-primary"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
+            />
+          </svg>
+        </div>
+        <div>
+          <div
+            class="text-xs text-base-content/80 uppercase tracking-wide font-medium"
+          >
+            Date
+          </div>
+          <div class="text-sm font-semibold text-base-content">
+            {{ formatDate(event.date) }}
+          </div>
+        </div>
       </div>
 
-      <div class="flex items-center gap-2">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="w-5 h-5 text-primary"
+      <div class="flex items-center gap-3">
+        <div
+          class="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
-          />
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
-          />
-        </svg>
-        <span class="text-sm">{{ getEventLocation() }}</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-4 h-4 text-primary"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+            />
+          </svg>
+        </div>
+        <div>
+          <div
+            class="text-xs text-base-content/80 uppercase tracking-wide font-medium"
+          >
+            Lieu
+          </div>
+          <div class="text-sm font-semibold text-base-content">
+            {{ getEventLocation() }}
+          </div>
+        </div>
       </div>
 
-      <!-- <div class="flex items-center gap-2">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="w-5 h-5 text-primary"
+      <div class="flex items-center gap-3">
+        <div
+          class="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
-        <span class="text-sm">{{ getEventStatus() }}</span>
-      </div> -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-4 h-4 text-primary"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
+            />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 6h.008v.008H6V6z"
+            />
+          </svg>
+        </div>
+        <div>
+          <div
+            class="text-xs text-base-content/80 uppercase tracking-wide font-medium"
+          >
+            Catégories
+          </div>
+          <div class="flex flex-wrap gap-2 mt-1">
+            <div class="badge badge-primary badge-sm">
+              {{ getEventCategory() }}
+            </div>
+            @if (event.genre) {
+            <div class="badge badge-secondary badge-sm">{{ event.genre }}</div>
+            } @if (event.subGenre) {
+            <div class="badge badge-outline badge-sm">{{ event.subGenre }}</div>
+            }
+          </div>
+        </div>
+      </div>
     </div>
-
-    @if (event.genre) {
-    <div class="flex flex-wrap gap-2">
-      <div class="badge badge-secondary badge-sm">{{ event.genre }}</div>
-      @if (event.subGenre) {
-      <div class="badge badge-outline badge-sm">{{ event.subGenre }}</div>
-      }
-    </div>
-    }
 
     <div class="card-actions justify-between items-center pt-4">
       <div class="flex gap-2">
@@ -111,42 +156,14 @@
           </svg>
           Participer
         </button>
-        <button class="btn btn-ghost btn-circle" aria-label="Partager cet événement">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-6 h-6"
-            aria-hidden="true"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"
-            />
-          </svg>
-        </button>
-        <button class="btn btn-ghost btn-circle" aria-label="Ajouter aux favoris">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-6 h-6"
-            aria-hidden="true"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
-            />
-          </svg>
-        </button>
       </div>
-      <button class="btn btn-ghost btn-sm" (click)="navigateToDetail()" aria-label="Voir les détails de cet événement">Voir détails</button>
+      <button
+        class="btn btn-ghost btn-sm"
+        (click)="navigateToDetail()"
+        aria-label="Voir les détails de cet événement"
+      >
+        Voir détails
+      </button>
     </div>
   </div>
 </div>

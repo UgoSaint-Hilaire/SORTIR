@@ -4,10 +4,11 @@ import { Router } from '@angular/router';
 import { AuthService, User } from '../core/auth/auth.service';
 import { PreferencesService } from './preferences-selector/preferences.service';
 import { PreferencesSelectorComponent } from './preferences-selector/preferences-selector.component';
+import { BackButtonComponent } from '../shared/components/back-button/back-button.component';
 
 @Component({
   selector: 'app-profile',
-  imports: [CommonModule, DatePipe, PreferencesSelectorComponent],
+  imports: [CommonModule, DatePipe, PreferencesSelectorComponent, BackButtonComponent],
   templateUrl: './profil.component.html',
 })
 export class ProfileComponent implements OnInit {
