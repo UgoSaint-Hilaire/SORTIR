@@ -8,15 +8,16 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
-import { AuthService, User, CacheService } from '../core/services';
+import { AuthService, User, CacheService, FavoritesService } from '../core/services';
 import { AuthComponent } from '../core/auth/auth.component';
+import { EventListComponent, EventListAction } from '../shared/components/event-list/event-list.component';
 import { Observable, Subscription, filter } from 'rxjs';
 import { Event } from '../models/event.model';
 import { EventService } from '../events/event.service';
 
 @Component({
   selector: 'app-navbar',
-  imports: [CommonModule, RouterModule, AuthComponent],
+  imports: [CommonModule, RouterModule, AuthComponent, EventListComponent],
   templateUrl: './navbar.component.html',
   providers: [EventService],
 })
@@ -31,11 +32,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private cacheService = inject(CacheService);
   private router = inject(Router);
   private eventService = inject(EventService);
+  private favoritesService = inject(FavoritesService);
 
   historyEvents = signal<Event[]>([]);
   private routerSubscription?: Subscription;
   private authSubscription?: Subscription;
   private userSubscription?: Subscription;
+  private modalSubscription?: Subscription;
+  private favoritesSubscription?: Subscription;
 
   constructor(private authService: AuthService) {
     this.currentUser$ = this.authService.currentUser$;
@@ -84,12 +88,23 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.userSubscription = this.authService.currentUser$.subscribe(() => {
       this.updateAvatar();
     });
+
+    this.modalSubscription = this.authService.openModal$.subscribe(() => {
+      this.openAuthModal();
+    });
+
+    // Souscrire aux changements de favoris pour mettre à jour l'indicateur
+    this.favoritesSubscription = this.favoritesService.favorites$.subscribe(() => {
+      // Le template se mettra à jour automatiquement grâce à getFavoritesCount()
+    });
   }
 
   ngOnDestroy(): void {
     this.routerSubscription?.unsubscribe();
     this.authSubscription?.unsubscribe();
     this.userSubscription?.unsubscribe();
+    this.modalSubscription?.unsubscribe();
+    this.favoritesSubscription?.unsubscribe();
   }
 
   private updateAvatar(): void {
@@ -130,6 +145,35 @@ export class NavbarComponent implements OnInit, OnDestroy {
       return text;
     }
     return text.substring(0, maxLength) + '...';
+  }
+
+  getFavoritesCount(): number {
+    return this.favoritesService.getFavoritesCount();
+  }
+
+  getFavoriteEvents(): Event[] {
+    return this.favoritesService.getFavoriteEvents();
+  }
+
+  removeFromFavorites(event: Event): void {
+    const eventId = event._id || event.ticketmasterId;
+    this.favoritesService.removeFromFavorites(eventId).subscribe({
+      next: () => {
+        // L'indicateur se mettra à jour automatiquement grâce à l'observable
+      },
+      error: (error) => {
+        console.error('Erreur lors de la suppression des favoris:', error);
+      }
+    });
+  }
+
+  getFavoritesActions(): EventListAction[] {
+    return [{
+      icon: `<img src="assets/icons/icons8-poubelle.svg" class="w-5 h-5" style="display: block;" />`,
+      label: 'Supprimer des favoris',
+      className: 'bg-red-100 hover:bg-red-200 text-red-600 border-0',
+      onClick: (event: Event) => this.removeFromFavorites(event)
+    }];
   }
 
 }

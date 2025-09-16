@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, BehaviorSubject, tap, catchError, of } from 'rxjs';
+import { Observable, BehaviorSubject, Subject, tap, catchError, of } from 'rxjs';
 import { ConfigService } from '../services/config.service';
 import { CacheService } from '../services/cache.service';
 
@@ -48,10 +48,12 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   private userPreferencesSubject = new BehaviorSubject<UserPreference[]>([]);
+  private openModalSubject = new Subject<void>();
 
   public currentUser$ = this.currentUserSubject.asObservable();
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
   public userPreferences$ = this.userPreferencesSubject.asObservable();
+  public openModal$ = this.openModalSubject.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -305,5 +307,9 @@ export class AuthService {
 
     const seed = user.username;
     return this.generateAvatarUrl(seed, options);
+  }
+
+  requestLogin(): void {
+    this.openModalSubject.next();
   }
 }

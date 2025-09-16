@@ -42,6 +42,48 @@
         </button>
         } @if (isAuthenticated$ | async) {
         <div class="hidden xl:flex items-center gap-2">
+          <!-- Dropdown des favoris -->
+          <div class="dropdown dropdown-end" style="margin-right: 15px">
+            <div
+              tabindex="0"
+              role="button"
+              class="cursor-pointer"
+              aria-label="Mes favoris"
+            >
+              <div class="indicator">
+                @if (getFavoritesCount() > 0) {
+                <span
+                  class="indicator-item badge badge-primary badge-sm translate-x-1 -translate-y-1 min-w-5 h-5 text-xs"
+                  >{{ getFavoritesCount() }}</span
+                >
+                }
+                <div class="btn btn-ghost w-12 h-12">
+                  <img
+                    src="assets/icons/icons8-bookmark.svg"
+                    alt="Favoris"
+                    class="w-5 h-7"
+                  />
+                </div>
+              </div>
+            </div>
+            <ul
+              tabindex="0"
+              role="menu"
+              aria-label="Mes favoris"
+              class="menu dropdown-content mt-3 z-[1] p-4 shadow bg-base-100 rounded-box w-96 border border-base-200"
+            >
+              <app-event-list
+                [events]="getFavoriteEvents()"
+                emptyMessage="Aucun favori pour le moment"
+                [titleMaxLength]="25"
+                [locationMaxLength]="30"
+                [actions]="getFavoritesActions()"
+                [buttonTitlePrefix]="'Voir l\'événement'"
+                (eventClick)="navigateToEvent($event)"
+              ></app-event-list>
+            </ul>
+          </div>
+
           <div class="dropdown dropdown-end">
             <div
               tabindex="0"
@@ -145,7 +187,7 @@
             tabindex="0"
             role="menu"
             aria-label="Menu de navigation mobile"
-            class="menu dropdown-content mt-3 z-[1] p-4 shadow bg-base-100 rounded-box w-80 border border-base-200"
+            class="menu dropdown-content mt-3 z-[1] p-4 shadow bg-base-100 rounded-box w-96 border border-base-200"
           >
             @if (!(isAuthenticated$ | async)) {
             <li>
@@ -217,57 +259,16 @@
                 </svg>
               </button>
             </li>
-            @if (showHistoryDropdown) { @for (event of historyEvents(); track
-            event.ticketmasterId) {
-            <li>
-              <button
-                (click)="navigateToEvent(event)"
-                class="btn btn-ghost w-full justify-start p-3 h-auto min-h-0 border-0 focus:border-0 hover:border-0 text-left"
-                [attr.title]="
-                  'Retourner sur l\'événement ' + getEventTitle(event)
-                "
-                type="button"
-              >
-                <div class="flex items-start gap-3 w-full">
-                  @if (getEventImage(event)) {
-                  <div class="avatar flex-shrink-0">
-                    <div class="w-10 h-10 rounded">
-                      <img
-                        [src]="getEventImage(event)"
-                        [alt]="'Image de l\'événement ' + getEventTitle(event)"
-                        class="object-cover"
-                      />
-                    </div>
-                  </div>
-                  } @else {
-                  <div class="avatar placeholder flex-shrink-0">
-                    <div
-                      class="bg-neutral text-neutral-content rounded w-10 h-10"
-                    >
-                      <span class="text-xs">
-                        {{ getEventTitle(event).charAt(0).toUpperCase() }}
-                      </span>
-                    </div>
-                  </div>
-                  }
-
-                  <div class="flex-1 min-w-0 space-y-1">
-                    <span
-                      class="font-semibold text-sm text-base-content truncate block"
-                    >
-                      {{ truncateText(getEventTitle(event), 25) }}
-                    </span>
-                    <span class="text-xs text-base-content/80 truncate block">
-                      {{ truncateText(getEventLocation(event), 30) }}
-                    </span>
-                    <span class="text-xs text-base-content/80 block">
-                      {{ formatDate(event) }}
-                    </span>
-                  </div>
-                </div>
-              </button>
-            </li>
-            } }
+            @if (showHistoryDropdown) {
+              <app-event-list
+                [events]="historyEvents()"
+                emptyMessage="Aucun événement dans l'historique"
+                [titleMaxLength]="25"
+                [locationMaxLength]="30"
+                [buttonTitlePrefix]="'Retourner sur l\'événement'"
+                (eventClick)="navigateToEvent($event)"
+              ></app-event-list>
+            }
             } @if (isAuthenticated$ | async) {
             <div class="flex justify-center py-4 pointer-events-none">
               <div class="avatar">
@@ -376,57 +377,16 @@
                 </svg>
               </button>
             </li>
-            @if (showHistoryDropdown) { @for (event of historyEvents(); track
-            event.ticketmasterId) {
-            <li>
-              <button
-                (click)="navigateToEvent(event)"
-                class="btn btn-ghost w-full justify-start p-3 h-auto min-h-0 border-0 focus:border-0 hover:border-0 text-left"
-                [attr.title]="
-                  'Retourner sur l\'événement ' + getEventTitle(event)
-                "
-                type="button"
-              >
-                <div class="flex items-start gap-3 w-full">
-                  @if (getEventImage(event)) {
-                  <div class="avatar flex-shrink-0">
-                    <div class="w-10 h-10 rounded">
-                      <img
-                        [src]="getEventImage(event)"
-                        [alt]="'Image de l\'événement ' + getEventTitle(event)"
-                        class="object-cover"
-                      />
-                    </div>
-                  </div>
-                  } @else {
-                  <div class="avatar placeholder flex-shrink-0">
-                    <div
-                      class="bg-neutral text-neutral-content rounded w-10 h-10"
-                    >
-                      <span class="text-xs">
-                        {{ getEventTitle(event).charAt(0).toUpperCase() }}
-                      </span>
-                    </div>
-                  </div>
-                  }
-
-                  <div class="flex-1 min-w-0 space-y-1">
-                    <span
-                      class="font-semibold text-sm text-base-content truncate block"
-                    >
-                      {{ truncateText(getEventTitle(event), 25) }}
-                    </span>
-                    <span class="text-xs text-base-content/80 truncate block">
-                      {{ truncateText(getEventLocation(event), 30) }}
-                    </span>
-                    <span class="text-xs text-base-content/80 block">
-                      {{ formatDate(event) }}
-                    </span>
-                  </div>
-                </div>
-              </button>
-            </li>
-            } } }
+            @if (showHistoryDropdown) {
+              <app-event-list
+                [events]="historyEvents()"
+                emptyMessage="Aucun événement dans l'historique"
+                [titleMaxLength]="25"
+                [locationMaxLength]="30"
+                [buttonTitlePrefix]="'Retourner sur l\'événement'"
+                (eventClick)="navigateToEvent($event)"
+              ></app-event-list>
+            } }
           </ul>
         </div>
       </div>
