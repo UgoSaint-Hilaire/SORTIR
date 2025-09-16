@@ -8,9 +8,17 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
-import { AuthService, User, CacheService, FavoritesService } from '../core/services';
+import {
+  AuthService,
+  User,
+  CacheService,
+  FavoritesService,
+} from '../core/services';
 import { AuthComponent } from '../core/auth/auth.component';
-import { EventListComponent, EventListAction } from '../shared/components/event-list/event-list.component';
+import {
+  EventListComponent,
+  EventListAction,
+} from '../shared/components/event-list/event-list.component';
 import { Observable, Subscription, filter } from 'rxjs';
 import { Event } from '../models/event.model';
 import { EventService } from '../events/event.service';
@@ -50,7 +58,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
   onWindowScroll() {
     this.isScrolled = window.scrollY > 0;
   }
-
 
   openAuthModal(): void {
     this.isAuthModalOpen = true;
@@ -94,9 +101,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
     });
 
     // Souscrire aux changements de favoris pour mettre à jour l'indicateur
-    this.favoritesSubscription = this.favoritesService.favorites$.subscribe(() => {
-      // Le template se mettra à jour automatiquement grâce à getFavoritesCount()
-    });
+    this.favoritesSubscription = this.favoritesService.favorites$.subscribe(
+      () => {
+        // Le template se mettra à jour automatiquement grâce à getFavoritesCount()
+      }
+    );
   }
 
   ngOnDestroy(): void {
@@ -108,7 +117,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   private updateAvatar(): void {
-    this.avatarUrl = this.authService.getCurrentUserAvatar({ size: 48, mood: 'happy' });
+    this.avatarUrl = this.authService.getCurrentUserAvatar({
+      size: 48,
+      mood: 'happy',
+    });
   }
 
   loadHistory(): void {
@@ -163,17 +175,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Erreur lors de la suppression des favoris:', error);
-      }
+      },
     });
   }
 
   getFavoritesActions(): EventListAction[] {
-    return [{
-      icon: `<img src="assets/icons/icons8-poubelle.svg" class="w-5 h-5" style="display: block;" />`,
-      label: 'Supprimer des favoris',
-      className: 'bg-red-100 hover:bg-red-200 text-red-600 border-0',
-      onClick: (event: Event) => this.removeFromFavorites(event)
-    }];
+    return [
+      {
+        icon: `<img src="assets/icons/icons8-poubelle.svg" class="w-5 h-5" style="display: block;" />`,
+        label: 'Supprimer des favoris',
+        className: 'hover:bg-red-500 border-0 opacity-90',
+        onClick: (event: Event) => this.removeFromFavorites(event),
+      },
+    ];
   }
-
 }

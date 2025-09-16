@@ -58,11 +58,16 @@
                 >
                 }
                 <div class="btn btn-ghost w-12 h-12">
-                  <img
-                    src="assets/icons/icons8-bookmark.svg"
-                    alt="Favoris"
-                    class="w-5 h-7"
-                  />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-8 h-8 text-red-500"
+                    fill="currentColor"
+                    viewBox="3 3 18 18"
+                  >
+                    <path
+                      d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                    />
+                  </svg>
                 </div>
               </div>
             </div>
@@ -92,9 +97,14 @@
               aria-label="Menu utilisateur"
             >
               <div class="avatar">
-                <div class="w-12 rounded-lg hover:opacity-80 transition-opacity">
+                <div
+                  class="w-12 rounded-lg hover:opacity-80 transition-opacity"
+                >
                   @if (avatarUrl) {
-                  <img [src]="avatarUrl" [alt]="(currentUser$ | async)?.username + ' avatar'" />
+                  <img
+                    [src]="avatarUrl"
+                    [alt]="(currentUser$ | async)?.username + ' avatar'"
+                  />
                   } @else {
                   <div class="bg-neutral text-neutral-content">
                     <span class="text-sm">{{
@@ -112,7 +122,11 @@
               class="menu dropdown-content mt-3 z-[1] p-4 shadow bg-base-100 rounded-box w-52 border border-base-200"
             >
               <li role="none">
-                <a class="flex items-center gap-2" role="menuitem" routerLink="/profile">
+                <a
+                  class="flex items-center gap-2"
+                  role="menuitem"
+                  routerLink="/profile"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-4 w-4"
@@ -260,26 +274,30 @@
               </button>
             </li>
             @if (showHistoryDropdown) {
-              <app-event-list
-                [events]="historyEvents()"
-                emptyMessage="Aucun événement dans l'historique"
-                [titleMaxLength]="25"
-                [locationMaxLength]="30"
-                [buttonTitlePrefix]="'Retourner sur l\'événement'"
-                (eventClick)="navigateToEvent($event)"
-              ></app-event-list>
-            }
-            } @if (isAuthenticated$ | async) {
+            <app-event-list
+              [events]="historyEvents()"
+              emptyMessage="Aucun événement dans l'historique"
+              [titleMaxLength]="25"
+              [locationMaxLength]="30"
+              [buttonTitlePrefix]="'Retourner sur l\'événement'"
+              (eventClick)="navigateToEvent($event)"
+            ></app-event-list>
+            } } @if (isAuthenticated$ | async) {
             <div class="flex justify-center py-4 pointer-events-none">
               <div class="avatar">
                 <div class="w-16 rounded-lg">
                   @if (avatarUrl) {
-                  <img [src]="avatarUrl" [alt]="(currentUser$ | async)?.username + ' avatar'" />
+                  <img
+                    [src]="avatarUrl"
+                    [alt]="(currentUser$ | async)?.username + ' avatar'"
+                  />
                   } @else {
                   <div class="bg-neutral text-neutral-content">
                     <span class="text-xl">
                       {{
-                        (currentUser$ | async)?.username?.charAt(0)?.toUpperCase()
+                        (currentUser$ | async)?.username
+                          ?.charAt(0)
+                          ?.toUpperCase()
                       }}
                     </span>
                   </div>
@@ -378,14 +396,14 @@
               </button>
             </li>
             @if (showHistoryDropdown) {
-              <app-event-list
-                [events]="historyEvents()"
-                emptyMessage="Aucun événement dans l'historique"
-                [titleMaxLength]="25"
-                [locationMaxLength]="30"
-                [buttonTitlePrefix]="'Retourner sur l\'événement'"
-                (eventClick)="navigateToEvent($event)"
-              ></app-event-list>
+            <app-event-list
+              [events]="historyEvents()"
+              emptyMessage="Aucun événement dans l'historique"
+              [titleMaxLength]="25"
+              [locationMaxLength]="30"
+              [buttonTitlePrefix]="'Retourner sur l\'événement'"
+              (eventClick)="navigateToEvent($event)"
+            ></app-event-list>
             } }
           </ul>
         </div>
