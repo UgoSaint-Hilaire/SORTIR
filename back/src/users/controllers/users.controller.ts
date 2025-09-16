@@ -17,7 +17,9 @@ import { JwtAuthGuard } from "../../auth/guards/jwt-auth.guard";
 
 @Controller("users")
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Get("profile")
@@ -100,4 +102,74 @@ export class UsersController {
     const userId = req.user.userId;
     await this.usersService.deletePreference(userId, preferenceId);
   }
+
+  // Endpoints pour les favoris
+  @UseGuards(JwtAuthGuard)
+  @Post("favorites")
+  @HttpCode(HttpStatus.CREATED)
+  async addToFavorites(@Request() req, @Body() eventData: any) {
+    const userId = req.user.userId;
+    const favorite = await this.usersService.addToFavorites(userId, eventData);
+
+    return {
+      success: true,
+      message: "Événement ajouté aux favoris",
+      favorite: {
+        id: favorite.id,
+        eventId: favorite.eventId,
+        eventName: favorite.eventName,
+        eventDate: favorite.eventDate,
+        eventVenue: favorite.eventVenue,
+        eventCity: favorite.eventCity,
+        eventImage: favorite.eventImage,
+        eventUrl: favorite.eventUrl,
+        createdAt: favorite.createdAt
+      }
+    };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete("favorites/:eventId")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async removeFromFavorites(@Request() req, @Param("eventId") eventId: string): Promise<void> {
+    const userId = req.user.userId;
+    await this.usersService.removeFromFavorites(userId, eventId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get("favorites")
+  async getUserFavorites(@Request() req) {
+    const userId = req.user.userId;
+    const favorites = await this.usersService.getUserFavorites(userId);
+
+    return {
+      success: true,
+      code: 200,
+      message: "Favoris récupérés",
+      favorites: favorites.map(favorite => ({
+        id: favorite.id,
+        eventId: favorite.eventId,
+        eventName: favorite.eventName,
+        eventDate: favorite.eventDate,
+        eventVenue: favorite.eventVenue,
+        eventCity: favorite.eventCity,
+        eventImage: favorite.eventImage,
+        eventUrl: favorite.eventUrl,
+        createdAt: favorite.createdAt
+      }))
+    };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get("favorites/:eventId")
+  async isEventInFavorites(@Request() req, @Param("eventId") eventId: string) {
+    const userId = req.user.userId;
+    const isFavorite = await this.usersService.isEventInFavorites(userId, eventId);
+
+    return {
+      success: true,
+      isFavorite
+    };
+  }
+
 }

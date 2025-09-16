@@ -9,6 +9,11 @@ import { UsersModule } from "./users/users.module";
 import { EventsModule } from "./events/events.module";
 import { FeedModule } from "./feed/feed.module";
 import { HealthModule } from "./health/health.module";
+// Import des entités
+import { User } from "./users/entities/user.entity";
+import { UserPreference } from "./users/entities/user-preference.entity";
+import { UserFavorite } from "./users/entities/user-favorite.entity";
+import { BlacklistedToken } from "./auth/entities/blacklisted-token.entity";
 
 @Module({
   imports: [
@@ -32,7 +37,7 @@ import { HealthModule } from "./health/health.module";
         username: configService.get("DB_USERNAME"),
         password: configService.get("DB_PASSWORD"),
         database: configService.get("DB_DATABASE"),
-        autoLoadEntities: true,
+        entities: [User, UserPreference, UserFavorite, BlacklistedToken],
         synchronize: configService.get("NODE_ENV") === "development",
       }),
       inject: [ConfigService],

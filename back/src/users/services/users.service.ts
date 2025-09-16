@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "../entities/user.entity";
 import { UserPreference } from "../entities/user-preference.entity";
+import { UserFavorite } from "../entities/user-favorite.entity";
 import { getClassificationId } from "../../events/constants/ticketmaster-classifications";
 
 @Injectable()
@@ -11,7 +12,9 @@ export class UsersService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
     @InjectRepository(UserPreference)
-    private userPreferenceRepository: Repository<UserPreference>
+    private userPreferenceRepository: Repository<UserPreference>,
+    @InjectRepository(UserFavorite)
+    private userFavoriteRepository: Repository<UserFavorite>
   ) {}
 
   async findByEmail(email: string): Promise<User | null> {
@@ -117,5 +120,58 @@ export class UsersService {
     if (result.affected === 0) {
       throw new NotFoundException("Préférence non trouvée");
     }
+  }
+
+  // Méthodes pour les favoris
+  async addToFavorites(userId: number, eventData: any): Promise<UserFavorite> {
+    // Vérifier si l'événement n'est pas déjà en favoris
+    const existingFavorite = await this.userFavoriteRepository.findOne({
+      where: { 
+        userId, 
+        eventId: eventData.eventId 
+      }
+    });
+
+    if (existingFavorite) {
+      throw new BadRequestException("Cet événement est déjà dans vos favoris");
+    }
+
+    const favorite = this.userFavoriteRepository.create({
+      userId,
+      eventId: eventData.eventId,
+      eventName: eventData.eventName,
+      eventDate: eventData.eventDate,
+      eventVenue: eventData.eventVenue,
+      eventCity: eventData.eventCity,
+      eventImage: eventData.eventImage,
+      eventUrl: eventData.eventUrl
+    });
+
+    return this.userFavoriteRepository.save(favorite);
+  }
+
+  async removeFromFavorites(userId: number, eventId: string): Promise<void> {
+    const result = await this.userFavoriteRepository.delete({
+      userId,
+      eventId
+    });
+
+    if (result.affected === 0) {
+      throw new NotFoundException("Favori non trouvé");
+    }
+  }
+
+  async getUserFavorites(userId: number): Promise<UserFavorite[]> {
+    return this.userFavoriteRepository.find({
+      where: { userId },
+      order: { createdAt: "DESC" }
+    });
+  }
+
+  async isEventInFavorites(userId: number, eventId: string): Promise<boolean> {
+    const favorite = await this.userFavoriteRepository.findOne({
+      where: { userId, eventId }
+    });
+    return !!favorite;
   }
 }

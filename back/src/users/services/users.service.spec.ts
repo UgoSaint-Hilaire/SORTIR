@@ -3,6 +3,7 @@ import { UsersService } from "./users.service";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { User } from "../entities/user.entity";
 import { UserPreference } from "../entities/user-preference.entity";
+import { UserFavorite } from "../entities/user-favorite.entity";
 import { Repository } from "typeorm";
 import { BadRequestException } from "@nestjs/common";
 import * as ticketmasterClassifications from "../../events/constants/ticketmaster-classifications";
@@ -16,6 +17,7 @@ describe("UsersService", () => {
   let service: UsersService;
   let repository: Repository<User>;
   let preferencesRepository: Repository<UserPreference>;
+  let favoritesRepository: Repository<UserFavorite>;
 
   beforeEach(() => {
     // Reset tous les mocks avant chaque test
@@ -36,6 +38,14 @@ describe("UsersService", () => {
     delete: jest.fn(),
   };
 
+  const mockFavoritesRepository = {
+    findOne: jest.fn(),
+    find: jest.fn(),
+    create: jest.fn(),
+    save: jest.fn(),
+    delete: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -48,12 +58,17 @@ describe("UsersService", () => {
           provide: getRepositoryToken(UserPreference),
           useValue: mockPreferencesRepository,
         },
+        {
+          provide: getRepositoryToken(UserFavorite),
+          useValue: mockFavoritesRepository,
+        },
       ],
     }).compile();
 
     service = module.get<UsersService>(UsersService);
     repository = module.get<Repository<User>>(getRepositoryToken(User));
     preferencesRepository = module.get<Repository<UserPreference>>(getRepositoryToken(UserPreference));
+    favoritesRepository = module.get<Repository<UserFavorite>>(getRepositoryToken(UserFavorite));
 
     jest.clearAllMocks();
   });
