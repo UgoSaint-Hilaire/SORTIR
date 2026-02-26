@@ -54,6 +54,46 @@ export const httpErrorsTotal = new Counter({
   registers: [registry],
 });
 
+// ── Initialisation à zéro ──────────────────────────────────────────────────
+// Pré-crée les séries temporelles pour les routes principales de SORTIR,
+// so qu'elles apparaissent dans /metrics dès le démarrage (même sans trafic).
+
+const KNOWN_ROUTES: Array<{ method: string; route: string }> = [
+  { method: 'GET',    route: '/health' },
+  { method: 'GET',    route: '/metrics' },
+  { method: 'POST',   route: '/auth/login' },
+  { method: 'POST',   route: '/auth/register' },
+  { method: 'POST',   route: '/auth/logout' },
+  { method: 'GET',    route: '/auth/profile' },
+  { method: 'GET',    route: '/feed' },
+  { method: 'GET',    route: '/events' },
+  { method: 'POST',   route: '/events/sync' },
+  { method: 'GET',    route: '/users' },
+  { method: 'GET',    route: '/users/:id' },
+  { method: 'PUT',    route: '/users/:id' },
+  { method: 'DELETE', route: '/users/:id' },
+];
+
+const SUCCESS_CODES = ['200', '201'];
+const ERROR_CODES   = ['400', '401', '403', '404', '500'];
+
+KNOWN_ROUTES.forEach(({ method, route }) => {
+  // Requêtes totales — succès + erreurs
+  [...SUCCESS_CODES, ...ERROR_CODES].forEach((status_code) => {
+    httpRequestsTotal.labels({ method, route, status_code }).inc(0);
+  });
+
+  // Temps de réponse — initialise sur les succès
+  SUCCESS_CODES.forEach((status_code) => {
+    httpRequestDuration.labels({ method, route, status_code }).observe(0);
+  });
+
+  // Erreurs — initialise sur les codes d'erreur courants
+  ERROR_CODES.forEach((status_code) => {
+    httpErrorsTotal.labels({ method, route, status_code }).inc(0);
+  });
+});
+
 const startTime = Date.now();
 
 @Controller('metrics')
